@@ -1,9 +1,15 @@
 # pages/1_Farm_Visit.py
 import streamlit as st
 import pandas as pd
+from datetime import date as dt_date # Import date for setting default today's date
 
-# This config should still be present in each page for independent running
 st.set_page_config(layout="centered", page_title="Ksheersagar - Farm Visit Data Entry")
+
+# --- Session State Initialization for this page ---
+# This ensures 'farm_visit_data' exists even if this page is run directly or first
+if 'farm_visit_data' not in st.session_state:
+    st.session_state.farm_visit_data = []
+# --------------------------------------------------
 
 st.title("🐄 Ksheersagar - Farm Visit Data Entry")
 st.write("Please fill out the details for the farm visit below.")
@@ -15,7 +21,7 @@ with st.form(key='farm_visit_form'):
 
     col1, col2 = st.columns(2)
     with col1:
-        date = st.date_input("Date:", pd.to_datetime("2025-05-07"))
+        date = st.date_input("Date:", value=dt_date(2025, 5, 7)) # Use datetime.date
         activity_type = st.text_input("Activity Type:", "FARM Visit")
         farmer_name = st.text_input("Farmer Name:", "Sarika Pawar")
         farmer_id = st.text_input("Farmer ID:", "123-02-BB-00768", help="Format: 123-02-BB-00768")
@@ -61,10 +67,10 @@ with st.form(key='farm_visit_form'):
         no_of_cattle_in_milk = st.number_input("No Of Cattle In Milk:", min_value=0, value=8)
 
     with col6:
-        shed = st.radio("Shed (Provision For Minimum 5 Animals):", ["YES", "NO"], index=0)
-        loose_housing = st.radio("Loose Housing:", ["YES", "NO"], index=0)
-        ad_hoc_water_availability = st.radio("Ad-hoc Water Availability:", ["YES", "NO"], index=0)
-        floor_mats = st.radio("Floor Mats:", ["YES", "NO"], index=0)
+        shed = st.radio("Shed (Provision For Minimum 5 Animals):", ["YES", "NO"], index=0, key="shed_fv")
+        loose_housing = st.radio("Loose Housing:", ["YES", "NO"], index=0, key="loose_housing_fv")
+        ad_hoc_water_availability = st.radio("Ad-hoc Water Availability:", ["YES", "NO"], index=0, key="ad_hoc_water_fv")
+        floor_mats = st.radio("Floor Mats:", ["YES", "NO"], index=0, key="floor_mats_fv")
 
 
     st.header("Feed & Fodder Management")
@@ -72,7 +78,8 @@ with st.form(key='farm_visit_form'):
     concentrated_feed_option = st.selectbox(
         "Concentrated Feed (If Yes, brand Name Available):",
         ["YES", "NO"],
-        index=0 # Default to YES
+        index=0, # Default to YES
+        key="concentrated_feed_option_fv"
     )
 
     name_of_concentrated_feed = None
@@ -88,10 +95,11 @@ with st.form(key='farm_visit_form'):
                 "6. SDDPL Shakti",
                 "7. Others"
             ],
-            index=3 # Default to SDDPL Samruddhi Plus
+            index=3, # Default to SDDPL Samruddhi Plus
+            key="name_of_concentrated_feed_fv"
         )
 
-    feed_supplements = st.selectbox("Feed Supplements (Mention Names):", ["No", "Yes"], index=0)
+    feed_supplements = st.selectbox("Feed Supplements (Mention Names):", ["No", "Yes"], index=0, key="feed_supplements_fv")
     dry_fodder_name = st.text_input("Dry Fodder Name:", "Not Available")
 
     green_fodder_name = st.selectbox(
@@ -101,24 +109,25 @@ with st.form(key='farm_visit_form'):
             "super Napier", "Sugarcane", "Sugargraze", "Lucerne",
             "berseem", "Methigrass", "others (specify)"
         ],
-        index=0 # Default to Sugarcane tops
+        index=0, # Default to Sugarcane tops
+        key="green_fodder_name_fv"
     )
 
-    silage = st.radio("Silage:", ["YES", "NO"], index=0)
+    silage = st.radio("Silage:", ["YES", "NO"], index=0, key="silage_fv")
 
-    mineral_mixture_option = st.radio("Mineral Mixture (If Yes, Brand Name):", ["NO", "YES"], index=0)
+    mineral_mixture_option = st.radio("Mineral Mixture (If Yes, Brand Name):", ["NO", "YES"], index=0, key="mineral_mixture_option_fv")
     name_of_mineral_mixture = None
     if mineral_mixture_option == "YES":
         name_of_mineral_mixture = st.text_input("Name Of Mineral Mixture:", "")
 
-    toxin_binder = st.radio("Toxin Binder:", ["YES", "NO"], index=0)
-    cmt_kit = st.radio("CMT Kit:", ["NO", "YES"], index=0)
-    dip_cup = st.radio("Dip Cup With Solution:", ["NO", "YES"], index=0)
+    toxin_binder = st.radio("Toxin Binder:", ["YES", "NO"], index=0, key="toxin_binder_fv")
+    cmt_kit = st.radio("CMT Kit:", ["NO", "YES"], index=0, key="cmt_kit_fv")
+    dip_cup = st.radio("Dip Cup With Solution:", ["NO", "YES"], index=0, key="dip_cup_fv")
 
-    separate_space_manure = st.radio("Separate Space For Dumping Pit For Manure Waste:", ["YES", "NO"], index=0)
-    provision_drainage_waste = st.radio("Provision For Drainage And Waste:", ["YES", "NO"], index=0)
-    biogas_installation = st.radio("Biogas Installation:", ["NO", "YES"], index=0)
-    surplus_milk_bmc = st.radio("100% Surplus Milk Poured To BMC:", ["YES", "NO"], index=0)
+    separate_space_manure = st.radio("Separate Space For Dumping Pit For Manure Waste:", ["YES", "NO"], index=0, key="separate_space_manure_fv")
+    provision_drainage_waste = st.radio("Provision For Drainage And Waste:", ["YES", "NO"], index=0, key="provision_drainage_waste_fv")
+    biogas_installation = st.radio("Biogas Installation:", ["NO", "YES"], index=0, key="biogas_installation_fv")
+    surplus_milk_bmc = st.radio("100% Surplus Milk Poured To BMC:", ["YES", "NO"], index=0, key="surplus_milk_bmc_fv")
 
     photo_1 = st.file_uploader("Photo 1:", type=["jpg", "jpeg", "png"])
 
@@ -132,23 +141,32 @@ with st.form(key='farm_visit_form'):
     duration_milk_kept = st.number_input("Duration Of Milk Kept At Farm Post Milking (minutes):", min_value=0, value=15)
     recent_outbreak = st.text_input("Any Recent Outbreak Of Contamination/Disease:", "No recent contamination")
     overall_hygiene = st.text_input("Overall Hygiene Of The Farm:", "HIGH")
-    space_sick_animal = st.radio("Space For Sick Animal Segregation:", ["YES", "NO"], index=0)
+    space_sick_animal = st.radio("Space For Sick Animal Segregation:", ["YES", "NO"], index=0, key="space_sick_animal_fv")
 
     recent_disease_reported_option = st.text_input("Recent Disease Reported:", "OTHERS")
     other_recent_disease = None
-    if recent_disease_reported_option == "OTHERS": # Assuming "OTHERS" will trigger input
+    # Assuming "OTHERS" will trigger input, adjust if "No" or specific diseases are selectable
+    if recent_disease_reported_option.lower() == "others":
         other_recent_disease = st.text_input("Other Recent Disease Reported (Specify):", "No")
+    elif recent_disease_reported_option.lower() == "no":
+        other_recent_disease = "N/A" # Explicitly set to N/A if "No" is chosen and no further input
+    else:
+        other_recent_disease = recent_disease_reported_option # If it's a specific disease listed directly
 
-    last_date_reporting_disease = st.date_input("Last Date Of Reporting Of Disease:", None)
+    last_date_reporting_disease = st.date_input("Last Date Of Reporting Of Disease:", value=None) # No default example given
     no_of_cattle_affected = st.number_input("No Of Cattle Affected:", min_value=0, value=0)
 
     most_recent_vet_treatment_option = st.text_input("Most Recent Veterinary Treatment Given:", "OTHER")
     other_most_recent_vet_treatment = None
-    if most_recent_vet_treatment_option == "OTHER": # Assuming "OTHER" will trigger input
+    # Assuming "OTHER" will trigger input, adjust if "NA" or specific treatments are selectable
+    if most_recent_vet_treatment_option.lower() == "other":
         other_most_recent_vet_treatment = st.text_input("Other Most Recent Veterinary Treatment Given (Specify):", "Artificial Incimiantion")
+    else:
+        other_most_recent_vet_treatment = most_recent_vet_treatment_option # If it's a specific treatment listed directly
 
-    date_last_vet_treatment = st.date_input("Date Of Last Veterinary Treatment:", pd.to_datetime("2025-04-22"))
-    presence_moldy_contaminated_feed = st.radio("Presence Of Moldy Or Contaminated Feed:", ["NO", "YES"], index=0)
+
+    date_last_vet_treatment = st.date_input("Date Of Last Veterinary Treatment:", value=dt_date(2025, 4, 22))
+    presence_moldy_contaminated_feed = st.radio("Presence Of Moldy Or Contaminated Feed:", ["NO", "YES"], index=0, key="presence_moldy_contaminated_feed_fv")
 
 
     st.markdown("---") # Separator
@@ -158,7 +176,7 @@ with st.form(key='farm_visit_form'):
         st.success("Form Submitted Successfully!")
         # Collect data into a dictionary
         submitted_data = {
-            "Date": date,
+            "Date": date.isoformat() if date else None, # Convert date to ISO format string
             "Activity Type": activity_type,
             "Farmer Name": farmer_name,
             "Farmer ID": farmer_id,
@@ -196,7 +214,7 @@ with st.form(key='farm_visit_form'):
             "Provision For Drainage And Waste": provision_drainage_waste,
             "Biogas Installation": biogas_installation,
             "100% Surplus Milk Poured To BMC": surplus_milk_bmc,
-            "Photo 1": photo_1.name if photo_1 else "No file uploaded",
+            "Photo 1": photo_1.name if photo_1 else "No file uploaded", # Display file name if uploaded
             "Source Of Water": source_of_water,
             "Frequency Of CMT Testing (No Of Days)": freq_cmt_testing,
             "Frequency Of Cleaning Of Milking Machines (No Of Days)": freq_cleaning_milking_machines,
@@ -207,11 +225,11 @@ with st.form(key='farm_visit_form'):
             "Space For Sick Animal Segregation": space_sick_animal,
             "Recent Disease Reported": recent_disease_reported_option,
             "Other Recent Disease Reported (Specify)": other_recent_disease,
-            "Last Date Of Reporting Of Disease": last_date_reporting_disease,
+            "Last Date Of Reporting Of Disease": last_date_reporting_disease.isoformat() if last_date_reporting_disease else None,
             "No Of Cattle Affected": no_of_cattle_affected,
             "Most Recent Veterinary Treatment Given": most_recent_vet_treatment_option,
             "Other Most Recent Veterinary Treatment Given (Specify)": other_most_recent_vet_treatment,
-            "Date Of Last Veterinary Treatment": date_last_vet_treatment,
+            "Date Of Last Veterinary Treatment": date_last_vet_treatment.isoformat() if date_last_vet_treatment else None,
             "Presence Of Moldy Or Contaminated Feed": presence_moldy_contaminated_feed
         }
         # Append the collected data to the session state list
@@ -224,7 +242,9 @@ st.header("Real-time View & Download (Current Session)")
 if st.session_state.farm_visit_data:
     st.subheader("Submitted Farm Visit Entries:")
     df_farm_visit = pd.DataFrame(st.session_state.farm_visit_data)
-    st.dataframe(df_farm_visit)
+    # Ensure all columns are strings for consistent display and CSV export
+    df_farm_visit = df_farm_visit.astype(str)
+    st.dataframe(df_farm_visit, use_container_width=True) # Make dataframe wide
 
     csv_farm_visit = df_farm_visit.to_csv(index=False).encode('utf-8')
     st.download_button(
@@ -236,4 +256,4 @@ if st.session_state.farm_visit_data:
     )
     st.info(f"Total Farm Visit entries submitted in this session: {len(st.session_state.farm_visit_data)}")
 else:
-    st.info("No Farm Visit data submitted yet in this session.")
+    st.info("No Farm Visit data submitted yet in this session. Submit the form above to see data here.")
