@@ -26,15 +26,15 @@ with st.form(key='bmc_visit_form'):
         bmc_name_option = st.selectbox(
             "BMC Name:",
             ["GOVIND SHWETKRANTI ABHIYAN HOL", "OTHERS"]
-            + ["JYOTIRLING DUDH SANKALAN VA SHITKARAN KENDRA"], # Example from previous page
+            + ["JYOTIRLING DUDH SANKALAN VA SHITKARAN KENDRA"], # Added an example from Farm Visit for comprehensive dropdown
             index=0,
-            key="bmc_name_option_bmc"
+            key="bmc_name_option_bmc" # Unique key
         )
         activity_created_by = st.selectbox(
             "ACTIVITY CREATED BY:",
             ["Dhanwate Nilesh", "Dr Sachin", "bhusan", "nilesh", "subhrat", "aniket", "ritesh"],
             index=0,
-            key="activity_created_by_bmc"
+            key="activity_created_by_bmc" # Unique key
         )
         organization = st.selectbox("Organization:", ["Govind Milk", "SDDPL", "GOVIND"], index=0, key="organization_bmc")
 
@@ -44,14 +44,14 @@ with st.form(key='bmc_visit_form'):
             "District:",
             ["Satara", "Pune", "Ahmednagar", "Solapur", "OTHERS"],
             index=0,
-            key="district_option_bmc"
+            key="district_option_bmc" # Unique key
         )
         sub_district_option = st.selectbox(
             "Sub District:",
             ["Phaltan", "malshiras", "Baramati", "Indapur", "Daund", "Purander", "Pachgani", "Man",
              "Khatav", "Koregaon", "Khandala", "Shirur", "OTHERS"],
             index=0,
-            key="sub_district_option_bmc"
+            key="sub_district_option_bmc" # Unique key
         )
         collecting_village = st.text_input("Collecting Village:", "Hol")
         village = st.text_input("Village:", "HOL")
@@ -59,26 +59,28 @@ with st.form(key='bmc_visit_form'):
     # Conditional fields for "OTHERS" BMC name / District / Sub District
     other_bmc_name = None
     if bmc_name_option == "OTHERS":
-        other_bmc_name = st.text_input("Other BMC Name (Specify):", "Govind Swetkranti Dudh")
+        other_bmc_name = st.text_input("Other BMC Name (Specify):", "Govind Swetkranti Dudh", key="other_bmc_name_input")
 
-    other_village = None # Initialize to None
-    if village == "OTHERS" or collecting_village == "OTHERS": # Assuming "OTHERS" option in dropdowns
-        other_village = st.text_input("Other Village (Specify if not in list):", "")
-    elif collecting_village != "Hol" or village != "HOL": # For cases where a new village is typed in main input
-        pass # Already captured in main 'village' input
+    # Assuming 'other_village' is specifically for when 'Village' or 'Collecting Village' is 'OTHERS'
+    # Adjusted logic to capture distinct values or an "Other" specification
+    other_village_input = None
+    if "OTHERS" in [collecting_village.upper(), village.upper()]: # Check if 'OTHERS' was explicitly typed
+        other_village_input = st.text_input("Other Village (Specify if not in list):", "", key="other_village_input")
+    other_village = other_village_input if other_village_input else None # Capture its value
 
     tehsil = st.text_input("Tehsil:", "PHALTAN")
-    other_tehsil = None # Initialize to None
-    if tehsil == "OTHERS": # Assuming "OTHERS" option in dropdowns (or if user types OTHERS)
-        other_tehsil = st.text_input("Other Tehsil (Specify if not in list):", "")
+    other_tehsil_input = None
+    if tehsil.upper() == "OTHERS":
+        other_tehsil_input = st.text_input("Other Tehsil (Specify if not in list):", "", key="other_tehsil_input")
+    other_tehsil = other_tehsil_input if other_tehsil_input else None
 
-    district_text_input_val = None
-    other_district = None
+    # Handle District: if 'OTHERS' chosen in selectbox, then offer text input
+    actual_district = district_option
+    other_district_input = None
     if district_option == "OTHERS":
-        district_text_input_val = st.text_input("Other District (Specify):", "") # User provides the actual new district name
-        other_district = district_text_input_val # Capture the value
-    else:
-        district_text_input_val = district_option # If not "OTHERS", use the selected option
+        other_district_input = st.text_input("Other District (Specify):", "", key="other_district_input")
+        actual_district = other_district_input if other_district_input else "OTHERS - Not Specified"
+    other_district = other_district_input # Keep the specific 'other' entry for clarity in data
 
     st.header("BCF (Bulk Milk Cooler Farmer) Details")
     col3, col4 = st.columns(2)
@@ -89,12 +91,12 @@ with st.form(key='bmc_visit_form'):
             "Education:",
             ["10th pass", "12th pass", "Graduation", "Post graduation", "Others (Specify)"],
             index=2, # Default to Graduation
-            key="education_bmc"
+            key="education_bmc" # Unique key
         )
         # Conditional input for "Others (Specify)" education
         other_education = None
         if education == "Others (Specify)":
-            other_education = st.text_input("Other Education (Specify):", "")
+            other_education = st.text_input("Other Education (Specify):", "", key="other_education_input")
 
         bcf_mobile_number = st.text_input("BCF Mobile Number:", "9096807277")
 
@@ -188,7 +190,7 @@ with st.form(key='bmc_visit_form'):
                 "6. SDDPL Shakti", "7. Others"
             ],
             index=0,
-            key="cattle_feed_brand_name_bmc"
+            key="cattle_feed_brand_name_bmc" # Unique key
         )
         farmer_use_mineral_mixture_qty = st.number_input("FARMER USE (MINERAL MIXTURE) Quantity:", min_value=0, value=14)
         mineral_mixture_brand_name = st.text_input("MINERAL MIXTURE BRAND NAME:", "Govind Chileted")
@@ -224,13 +226,13 @@ with st.form(key='bmc_visit_form'):
             "Organization": organization,
             "State": state,
             "District (Option)": district_option,
-            "Other District": other_district, # Captures manual entry if needed
+            "Other District": other_district, # Now correctly maps to the 'Other District (Specify)' input
             "Sub District (Option)": sub_district_option,
             "Collecting Village": collecting_village,
             "Village": village,
-            "Other Village": other_village, # Captures manual entry if needed
+            "Other Village": other_village, # Now correctly maps to the 'Other Village (Specify)' input
             "Tehsil": tehsil,
-            "Other Tehsil": other_tehsil, # Captures manual entry if needed
+            "Other Tehsil": other_tehsil, # Now correctly maps to the 'Other Tehsil (Specify)' input
             "BCF Name": bcf_name,
             "BCF Gender": bcf_gender,
             "Education": education,
