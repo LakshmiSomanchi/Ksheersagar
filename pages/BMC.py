@@ -1,8 +1,15 @@
 # pages/2_BMC_Visit.py
 import streamlit as st
 import pandas as pd
+from datetime import date as dt_date # Import date for setting default today's date
 
 st.set_page_config(layout="centered", page_title="Ksheersagar - BMC Visit Data Entry")
+
+# --- Session State Initialization for this page ---
+# This ensures 'bmc_visit_data' exists even if this page is run directly or first
+if 'bmc_visit_data' not in st.session_state:
+    st.session_state.bmc_visit_data = []
+# --------------------------------------------------
 
 st.title("🚚 Ksheersagar - BMC Visit Data Entry")
 st.write("Please fill out the details for the BMC visit below.")
@@ -15,32 +22,36 @@ with st.form(key='bmc_visit_form'):
     col1, col2 = st.columns(2)
     with col1:
         crop = st.text_input("CROP:")
-        scheduled_start_date = st.date_input("SCHEDULED START DATE:", pd.to_datetime("2025-05-07"))
+        scheduled_start_date = st.date_input("SCHEDULED START DATE:", value=dt_date(2025, 5, 7))
         bmc_name_option = st.selectbox(
             "BMC Name:",
             ["GOVIND SHWETKRANTI ABHIYAN HOL", "OTHERS"]
             + ["JYOTIRLING DUDH SANKALAN VA SHITKARAN KENDRA"], # Example from previous page
-            index=0
+            index=0,
+            key="bmc_name_option_bmc"
         )
         activity_created_by = st.selectbox(
             "ACTIVITY CREATED BY:",
             ["Dhanwate Nilesh", "Dr Sachin", "bhusan", "nilesh", "subhrat", "aniket", "ritesh"],
-            index=0
+            index=0,
+            key="activity_created_by_bmc"
         )
-        organization = st.selectbox("Organization:", ["Govind Milk", "SDDPL", "GOVIND"], index=0)
+        organization = st.selectbox("Organization:", ["Govind Milk", "SDDPL", "GOVIND"], index=0, key="organization_bmc")
 
     with col2:
         state = st.text_input("State:", "Maharashtra")
         district_option = st.selectbox(
             "District:",
-            ["Satara", "Pune", "Ahmednagar", "Solapur"],
-            index=0
+            ["Satara", "Pune", "Ahmednagar", "Solapur", "OTHERS"],
+            index=0,
+            key="district_option_bmc"
         )
         sub_district_option = st.selectbox(
             "Sub District:",
             ["Phaltan", "malshiras", "Baramati", "Indapur", "Daund", "Purander", "Pachgani", "Man",
-             "Khatav", "Koregaon", "Khandala", "Shirur"],
-            index=0
+             "Khatav", "Koregaon", "Khandala", "Shirur", "OTHERS"],
+            index=0,
+            key="sub_district_option_bmc"
         )
         collecting_village = st.text_input("Collecting Village:", "Hol")
         village = st.text_input("Village:", "HOL")
@@ -50,24 +61,35 @@ with st.form(key='bmc_visit_form'):
     if bmc_name_option == "OTHERS":
         other_bmc_name = st.text_input("Other BMC Name (Specify):", "Govind Swetkranti Dudh")
 
-    other_village = st.text_input("Other Village (Specify if not in list):", "") # Assuming this is separate from 'Village'
+    other_village = None # Initialize to None
+    if village == "OTHERS" or collecting_village == "OTHERS": # Assuming "OTHERS" option in dropdowns
+        other_village = st.text_input("Other Village (Specify if not in list):", "")
+    elif collecting_village != "Hol" or village != "HOL": # For cases where a new village is typed in main input
+        pass # Already captured in main 'village' input
 
     tehsil = st.text_input("Tehsil:", "PHALTAN")
-    other_tehsil = st.text_input("Other Tehsil (Specify if not in list):", "") # Assuming this is separate from 'Tehsil'
+    other_tehsil = None # Initialize to None
+    if tehsil == "OTHERS": # Assuming "OTHERS" option in dropdowns (or if user types OTHERS)
+        other_tehsil = st.text_input("Other Tehsil (Specify if not in list):", "")
 
-    district_text_input = st.text_input("District (Text):", "SATARA") # Separate from dropdown if "OTHERS" chosen
-    other_district = st.text_input("Other District (Specify if not in list):", "") # Assuming this is separate from 'District' dropdown
-
+    district_text_input_val = None
+    other_district = None
+    if district_option == "OTHERS":
+        district_text_input_val = st.text_input("Other District (Specify):", "") # User provides the actual new district name
+        other_district = district_text_input_val # Capture the value
+    else:
+        district_text_input_val = district_option # If not "OTHERS", use the selected option
 
     st.header("BCF (Bulk Milk Cooler Farmer) Details")
     col3, col4 = st.columns(2)
     with col3:
         bcf_name = st.text_input("BCF Name:", "Sachin Shahuraje Bhosale")
-        bcf_gender = st.selectbox("BCF Gender:", ["MALE", "FEMALE"], index=0)
+        bcf_gender = st.selectbox("BCF Gender:", ["MALE", "FEMALE"], index=0, key="bcf_gender_bmc")
         education = st.selectbox(
             "Education:",
             ["10th pass", "12th pass", "Graduation", "Post graduation", "Others (Specify)"],
-            index=2 # Default to Graduation
+            index=2, # Default to Graduation
+            key="education_bmc"
         )
         # Conditional input for "Others (Specify)" education
         other_education = None
@@ -119,38 +141,38 @@ with st.form(key='bmc_visit_form'):
 
     col_infra1, col_infra2, col_infra3, col_infra4 = st.columns(4)
     with col_infra1:
-        air_curtain = st.radio("Air curtain:", ["YES", "NO"], index=0)
-        fly_catcher = st.radio("Fly Catcher:", ["YES", "NO"], index=0)
+        air_curtain = st.radio("Air curtain:", ["YES", "NO"], index=0, key="air_curtain_bmc")
+        fly_catcher = st.radio("Fly Catcher:", ["YES", "NO"], index=0, key="fly_catcher_bmc")
     with col_infra2:
-        wash_basin = st.radio("Wash Basin:", ["YES", "NO"], index=0)
-        opening_window_door = st.radio("Opening (Window/Door):", ["YES", "NO"], index=0)
+        wash_basin = st.radio("Wash Basin:", ["YES", "NO"], index=0, key="wash_basin_bmc")
+        opening_window_door = st.radio("Opening (Window/Door):", ["YES", "NO"], index=0, key="opening_window_door_bmc")
     with col_infra3:
-        intact_floor = st.radio("Intact Floor in BMC Premise:", ["YES", "NO"], index=0)
-        digitize_system = st.radio("Digitize System:", ["YES", "NO"], index=0)
+        intact_floor = st.radio("Intact Floor in BMC Premise:", ["YES", "NO"], index=0, key="intact_floor_bmc")
+        digitize_system = st.radio("Digitize System:", ["YES", "NO"], index=0, key="digitize_system_bmc")
     with col_infra4:
-        fssai_licence = st.radio("FSSAI Licence:", ["YES", "NO"], index=0)
+        fssai_licence = st.radio("FSSAI Licence:", ["YES", "NO"], index=0, key="fssai_licence_bmc")
         remark_fssai = st.text_area("Remark (FSSAI):", "Shourya software using for farmer milk data collection")
 
-    wg_scale_licence = st.radio("Wg Scale Licence:", ["NO", "YES"], index=0)
-    sops = st.radio("SOP's:", ["YES", "NO"], index=0)
+    wg_scale_licence = st.radio("Wg Scale Licence:", ["NO", "YES"], index=0, key="wg_scale_licence_bmc")
+    sops = st.radio("SOP's:", ["YES", "NO"], index=0, key="sops_bmc")
 
-    stirrer_ekosilk_indifoss = st.radio("Stirrer/Ekomilk/Indifoss:", ["YES", "NO"], index=0)
+    stirrer_ekosilk_indifoss = st.radio("Stirrer/Ekomilk/Indifoss:", ["YES", "NO"], index=0, key="stirrer_ekosilk_indifoss_bmc")
     remark_stirrer = st.text_area("Remark (Stirrer/Ekomilk/Indifoss):", "")
 
-    sampler_dipper_plunger = st.radio("Sampler/Dipper/Plunger:", ["YES", "NO"], index=0)
+    sampler_dipper_plunger = st.radio("Sampler/Dipper/Plunger:", ["YES", "NO"], index=0, key="sampler_dipper_plunger_bmc")
     remark_sampler = st.text_area("Remark (Sampler/Dipper/Plunger):", "")
 
-    milk_temp_check = st.radio("Milk Temp Check:", ["YES", "NO"], index=0)
+    milk_temp_check = st.radio("Milk Temp Check:", ["YES", "NO"], index=0, key="milk_temp_check_bmc")
     remark_milk_temp = st.text_area("Remark (Milk Temp):", "9°c temp of gold tank at the time of visit 8.49AM")
 
-    cleaning_chemicals = st.radio("Cleaning Chemicals:", ["YES", "NO"], index=0)
+    cleaning_chemicals = st.radio("Cleaning Chemicals:", ["YES", "NO"], index=0, key="cleaning_chemicals_bmc")
     remark_cleaning_chemicals = st.text_area("Remark (Cleaning Chemicals):", "")
 
-    hot_water_source = st.radio("Hot Water Source:", ["YES", "NO"], index=0)
+    hot_water_source = st.radio("Hot Water Source:", ["YES", "NO"], index=0, key="hot_water_source_bmc")
     remark_hot_water = st.text_area("Remark (Hot Water Source):", "Electric water heater using for hot water")
 
-    strainer_nylon_cloth = st.radio("Strainer/Nylon cloth available:", ["YES", "NO"], index=0)
-    sample_bottle = st.radio("Sample Bottle:", ["YES", "NO"], index=0)
+    strainer_nylon_cloth = st.radio("Strainer/Nylon cloth available:", ["YES", "NO"], index=0, key="strainer_nylon_cloth_bmc")
+    sample_bottle = st.radio("Sample Bottle:", ["YES", "NO"], index=0, key="sample_bottle_bmc")
 
     st.header("Farmer & Competitor Details")
     col9, col10 = st.columns(2)
@@ -165,7 +187,8 @@ with st.form(key='bmc_visit_form'):
                 "3. SDDPL Samruddhi", "4. SDDPL Samruddhi Plus", "5. SDDPL Samruddhi Gold",
                 "6. SDDPL Shakti", "7. Others"
             ],
-            index=0
+            index=0,
+            key="cattle_feed_brand_name_bmc"
         )
         farmer_use_mineral_mixture_qty = st.number_input("FARMER USE (MINERAL MIXTURE) Quantity:", min_value=0, value=14)
         mineral_mixture_brand_name = st.text_input("MINERAL MIXTURE BRAND NAME:", "Govind Chileted")
@@ -194,7 +217,7 @@ with st.form(key='bmc_visit_form'):
         # Collect data into a dictionary
         submitted_data = {
             "CROP": crop,
-            "SCHEDULED START DATE": scheduled_start_date,
+            "SCHEDULED START DATE": scheduled_start_date.isoformat() if scheduled_start_date else None,
             "BMC Name (Option)": bmc_name_option,
             "Other BMC Name": other_bmc_name,
             "ACTIVITY CREATED BY": activity_created_by,
@@ -289,7 +312,9 @@ st.header("Real-time View & Download (Current Session)")
 if st.session_state.bmc_visit_data:
     st.subheader("Submitted BMC Visit Entries:")
     df_bmc_visit = pd.DataFrame(st.session_state.bmc_visit_data)
-    st.dataframe(df_bmc_visit)
+    # Ensure all columns are strings for consistent display and CSV export
+    df_bmc_visit = df_bmc_visit.astype(str)
+    st.dataframe(df_bmc_visit, use_container_width=True) # Make dataframe wide
 
     csv_bmc_visit = df_bmc_visit.to_csv(index=False).encode('utf-8')
     st.download_button(
@@ -301,4 +326,4 @@ if st.session_state.bmc_visit_data:
     )
     st.info(f"Total BMC Visit entries submitted in this session: {len(st.session_state.bmc_visit_data)}")
 else:
-    st.info("No BMC Visit data submitted yet in this session.")
+    st.info("No BMC Visit data submitted yet in this session. Submit the form above to see data here.")
