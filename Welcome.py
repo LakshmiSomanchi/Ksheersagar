@@ -1,15 +1,16 @@
-# streamlit_app.py (in the root directory)
+# Welcome.py (in the root directory)
 import streamlit as st
 import pandas as pd
 
-st.set_page_config(layout="centered", page_title="Ksheersagar Project") # This sets the browser tab title
+st.set_page_config(layout="centered", page_title="Ksheersagar Project - Welcome") # You can change the title as desired
 
 # Initialize session state for storing data from both forms
+# This ensures data persists across page navigations within the same session
 if 'farm_visit_data' not in st.session_state:
-    st.session_state.farm_visit_data = []
+    st.session_state.farm_visit_data = [] # List to store farm visit submissions
 
 if 'bmc_visit_data' not in st.session_state:
-    st.session_state.bmc_visit_data = []
+    st.session_state.bmc_visit_data = [] # List to store BMC visit submissions
 
 st.title("Welcome to Ksheersagar Data Entry Portal") # This is your main page title
 st.write("Please select a page from the sidebar to begin:")
@@ -23,5 +24,12 @@ st.write("- **Important:** Data is stored per session. To view or download previ
 st.subheader("Combined Data Overview (Current Session)")
 if st.session_state.farm_visit_data or st.session_state.bmc_visit_data:
     st.info("Navigate to individual pages (Farm Visit / BMC Visit) in the sidebar to view and download specific data sets collected in this session.")
+    # Optional: Display a small summary of collected data here
+    # if st.session_state.farm_visit_data:
+    #     st.write("#### Recent Farm Visit Submissions:")
+    #     st.dataframe(pd.DataFrame(st.session_state.farm_visit_data).tail()) # Show last few entries
+    # if st.session_state.bmc_visit_data:
+    #     st.write("#### Recent BMC Visit Submissions:")
+    #     st.dataframe(pd.DataFrame(st.session_state.bmc_visit_data).tail()) # Show last few entries
 else:
     st.info("No data submitted yet in this session.")
