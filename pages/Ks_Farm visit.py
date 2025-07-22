@@ -21,7 +21,7 @@ with st.form(key='farm_visit_form'):
 
     col1, col2 = st.columns(2)
     with col1:
-        date = st.date_input("Date:", value=dt_date(2025, 5, 7)) # Use datetime.date
+        date = st.date_input("Date:", value=dt_date(2025, 5, 7)) # Using 2025-05-07 as per example
         activity_type = st.text_input("Activity Type:", "FARM Visit")
         farmer_name = st.text_input("Farmer Name:", "Sarika Pawar")
         farmer_id = st.text_input("Farmer ID:", "123-02-BB-00768", help="Format: 123-02-BB-00768")
@@ -145,25 +145,26 @@ with st.form(key='farm_visit_form'):
 
     recent_disease_reported_option = st.text_input("Recent Disease Reported:", "OTHERS")
     other_recent_disease = None
-    # Assuming "OTHERS" will trigger input, adjust if "No" or specific diseases are selectable
+    # Adjusting logic for "OTHERS" or specific text entry based on typical use
     if recent_disease_reported_option.lower() == "others":
         other_recent_disease = st.text_input("Other Recent Disease Reported (Specify):", "No")
-    elif recent_disease_reported_option.lower() == "no":
-        other_recent_disease = "N/A" # Explicitly set to N/A if "No" is chosen and no further input
-    else:
-        other_recent_disease = recent_disease_reported_option # If it's a specific disease listed directly
+    elif recent_disease_reported_option.strip() == "": # If empty, it's not reported
+        other_recent_disease = "Not Reported"
+    else: # If a specific text is entered directly
+        other_recent_disease = recent_disease_reported_option
 
     last_date_reporting_disease = st.date_input("Last Date Of Reporting Of Disease:", value=None) # No default example given
     no_of_cattle_affected = st.number_input("No Of Cattle Affected:", min_value=0, value=0)
 
     most_recent_vet_treatment_option = st.text_input("Most Recent Veterinary Treatment Given:", "OTHER")
     other_most_recent_vet_treatment = None
-    # Assuming "OTHER" will trigger input, adjust if "NA" or specific treatments are selectable
+    # Adjusting logic for "OTHER" or specific text entry based on typical use
     if most_recent_vet_treatment_option.lower() == "other":
         other_most_recent_vet_treatment = st.text_input("Other Most Recent Veterinary Treatment Given (Specify):", "Artificial Incimiantion")
-    else:
-        other_most_recent_vet_treatment = most_recent_vet_treatment_option # If it's a specific treatment listed directly
-
+    elif most_recent_vet_treatment_option.strip() == "": # If empty, no treatment
+        other_most_recent_vet_treatment = "No Treatment"
+    else: # If a specific text is entered directly
+        other_most_recent_vet_treatment = most_recent_vet_treatment_option
 
     date_last_vet_treatment = st.date_input("Date Of Last Veterinary Treatment:", value=dt_date(2025, 4, 22))
     presence_moldy_contaminated_feed = st.radio("Presence Of Moldy Or Contaminated Feed:", ["NO", "YES"], index=0, key="presence_moldy_contaminated_feed_fv")
