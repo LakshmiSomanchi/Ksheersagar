@@ -1,6 +1,8 @@
+# pages/1_Farm_Visit.py
 import streamlit as st
-import pandas as pd # Not strictly needed for just display, but good for data handling
+import pandas as pd
 
+# This config should still be present in each page for independent running
 st.set_page_config(layout="centered", page_title="Ksheersagar - Farm Visit Data Entry")
 
 st.title("🐄 Ksheersagar - Farm Visit Data Entry")
@@ -137,7 +139,7 @@ with st.form(key='farm_visit_form'):
     if recent_disease_reported_option == "OTHERS": # Assuming "OTHERS" will trigger input
         other_recent_disease = st.text_input("Other Recent Disease Reported (Specify):", "No")
 
-    last_date_reporting_disease = st.date_input("Last Date Of Reporting Of Disease:", None) # No default example given
+    last_date_reporting_disease = st.date_input("Last Date Of Reporting Of Disease:", None)
     no_of_cattle_affected = st.number_input("No Of Cattle Affected:", min_value=0, value=0)
 
     most_recent_vet_treatment_option = st.text_input("Most Recent Veterinary Treatment Given:", "OTHER")
@@ -154,11 +156,8 @@ with st.form(key='farm_visit_form'):
 
     if submit_button:
         st.success("Form Submitted Successfully!")
-        st.write("---")
-        st.subheader("Collected Data:")
-
-        # Display all collected data
-        data = {
+        # Collect data into a dictionary
+        submitted_data = {
             "Date": date,
             "Activity Type": activity_type,
             "Farmer Name": farmer_name,
@@ -197,7 +196,7 @@ with st.form(key='farm_visit_form'):
             "Provision For Drainage And Waste": provision_drainage_waste,
             "Biogas Installation": biogas_installation,
             "100% Surplus Milk Poured To BMC": surplus_milk_bmc,
-            "Photo 1": photo_1.name if photo_1 else "No file uploaded", # Display file name if uploaded
+            "Photo 1": photo_1.name if photo_1 else "No file uploaded",
             "Source Of Water": source_of_water,
             "Frequency Of CMT Testing (No Of Days)": freq_cmt_testing,
             "Frequency Of Cleaning Of Milking Machines (No Of Days)": freq_cleaning_milking_machines,
@@ -215,9 +214,26 @@ with st.form(key='farm_visit_form'):
             "Date Of Last Veterinary Treatment": date_last_vet_treatment,
             "Presence Of Moldy Or Contaminated Feed": presence_moldy_contaminated_feed
         }
+        # Append the collected data to the session state list
+        st.session_state.farm_visit_data.append(submitted_data)
+        st.success("Farm Visit data recorded for this session!")
 
-        # You can process 'data' here, e.g., save to a database, a CSV, etc.
-        # For now, we'll just display it.
-        st.json(data) # Displays the data as a JSON object
-        # Alternatively, for a more readable table:
-        # st.write(pd.DataFrame([data]).T.rename(columns={0: 'Value'}))
+# --- Real-time View and Download Option for Farm Visit Data ---
+st.header("Real-time View & Download (Current Session)")
+
+if st.session_state.farm_visit_data:
+    st.subheader("Submitted Farm Visit Entries:")
+    df_farm_visit = pd.DataFrame(st.session_state.farm_visit_data)
+    st.dataframe(df_farm_visit)
+
+    csv_farm_visit = df_farm_visit.to_csv(index=False).encode('utf-8')
+    st.download_button(
+        label="Download Farm Visit Data as CSV",
+        data=csv_farm_visit,
+        file_name="farm_visit_data.csv",
+        mime="text/csv",
+        help="Download all Farm Visit data collected in this session."
+    )
+    st.info(f"Total Farm Visit entries submitted in this session: {len(st.session_state.farm_visit_data)}")
+else:
+    st.info("No Farm Visit data submitted yet in this session.")
