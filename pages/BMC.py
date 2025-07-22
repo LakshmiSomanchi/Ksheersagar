@@ -1,6 +1,6 @@
 # pages/2_BMC_Visit.py
 import streamlit as st
-import pandas as pd # For date handling and potential data display
+import pandas as pd
 
 st.set_page_config(layout="centered", page_title="Ksheersagar - BMC Visit Data Entry")
 
@@ -191,11 +191,8 @@ with st.form(key='bmc_visit_form'):
 
     if submit_button:
         st.success("BMC Visit Data Submitted Successfully!")
-        st.write("---")
-        st.subheader("Collected Data for BMC Visit:")
-
-        # Display all collected data
-        data = {
+        # Collect data into a dictionary
+        submitted_data = {
             "CROP": crop,
             "SCHEDULED START DATE": scheduled_start_date,
             "BMC Name (Option)": bmc_name_option,
@@ -282,4 +279,26 @@ with st.form(key='bmc_visit_form'):
             "Competitor 4 Name": competitor4_name,
             "COMPETITOR 4 MILK (LPD)": competitor4_milk_lpd,
         }
-        st.json(data)
+        # Append the collected data to the session state list
+        st.session_state.bmc_visit_data.append(submitted_data)
+        st.success("BMC Visit data recorded for this session!")
+
+# --- Real-time View and Download Option for BMC Visit Data ---
+st.header("Real-time View & Download (Current Session)")
+
+if st.session_state.bmc_visit_data:
+    st.subheader("Submitted BMC Visit Entries:")
+    df_bmc_visit = pd.DataFrame(st.session_state.bmc_visit_data)
+    st.dataframe(df_bmc_visit)
+
+    csv_bmc_visit = df_bmc_visit.to_csv(index=False).encode('utf-8')
+    st.download_button(
+        label="Download BMC Visit Data as CSV",
+        data=csv_bmc_visit,
+        file_name="bmc_visit_data.csv",
+        mime="text/csv",
+        help="Download all BMC Visit data collected in this session."
+    )
+    st.info(f"Total BMC Visit entries submitted in this session: {len(st.session_state.bmc_visit_data)}")
+else:
+    st.info("No BMC Visit data submitted yet in this session.")
