@@ -14,6 +14,53 @@ if 'farm_visit_data' not in st.session_state:
 st.title("🐄 Ksheersagar - Farm Visit Data Entry")
 st.write("Please fill out the details for the farm visit below.")
 
+# Define BMC names for Govind and SDDPL (re-using these for consistency)
+GOVIND_BMC_NAMES = [
+    "VIGHNAHARTA VIDNI COOLER", "NIRAI DUDH SANKALAN KEND.PANCABIGA", "PAWAR DAIRY ASU",
+    "AJAY DUDH", "JAY HANUMAN BMC NAIKBOMWADI", "SHREE GANESH SASTEWADI BMC",
+    "GOVIND DUDH SANKALAN KENDRA HOL", "JITOBA BULK COOLER JINTI", "JAY MHALLAR DUDH KALAJ",
+    "WAGHESHWARI SASWAD", "BHAIRAVNATH DUDH HINGANGAON", "GOVIND DUDH SANKALAN KENDRA SASWAD",
+    "SHREENATH MILK SANKALAN", "RAJMUDRA DUDH WATHARPHATA BMC", "ROKDESHWAR MILK SANKALAN",
+    "BHAIRAVNATH MANDAVKHADAK COOLER", "SAYALI, MUNJAWADI", "JAY HANUMAN BARAD",
+    "SHIVSHANKAR DUDH BARAD", "CHANDRABHAGA MILK SANKALAN", "KARCHE SAMPAT",
+    "DURGADEVI DUDH ZIRAPVASTI COOLER", "JANAI DUDH SANKALAN KENDRA BMC",
+    "GOKUL DUDH MATHACHIWADI", "GOVIND MAHILA SHVETKRANTI MILK SANKALAN",
+    "VAJUBAI MILK SANKALAN", "SHRIRAM DUDH SANKALAN & SHIT.BHUINJ",
+    "YASHODHAN MILK & MILK PROD. PACWAD", "OM BHAKTI DUDH WAI COW", "MAYURESHWAR DAIRY",
+    "YOGESHWARI MILK SANKALAN", "JAY BHAVANI ANBHULEWADI", "MAHALAXMI MILK",
+    "SHREENATH MILK", "MAHALAXMI DUDH MOHI", "SANCHALIT SUDARSHAN MILK",
+    "MAULI DUDH SANKALAN KENDR.BHALAWADI", "SUPRIYA MILK", "JAGDAMBA DUDH BHATKI",
+    "SHRI GANESH DUDH SAK VARKUTE MASWAD", "DAHIWADI DOCK", "SHREE JAYHARI RANAND PHALTAN COOLER",
+    "SHIVAM DUDH BUDH", "GOMATA DUDH SANKALAN KEND.CHILEWADI", "REVANSIDDHA MILK SANKALAN",
+    "VENKATESH AGRO PROCESSING CO.", "SHIVRAJ DUDH SANKALAN KENDRA",
+    "SHIRAM DUDH PIMPRE DHAIGUDEMALA", "VANGNA DUDH HIVRE COW MILK",
+    "GOWARDHAN MILK COLLECTION", "SHRI DATT DOODH DAIRY ANPATWADI",
+    "JYOTIRLING DUDH SANKALAN KENDRA BORJAIWADI", "SHREE DATT MILK DAIRY AZADPUR",
+    "SHIVKRUPA BMC", "SANT BHAGWANBABA AKOLE", "HINDAVI DAIRY FARM KHADAKI DAUND",
+    "SHIVTEJ DUDH PAWARWASTI BORIBEL", "JAY HANUMAN DUDH VITTHALNAGAR",
+    "BHAIRAVNATH DEVULGOAN RAJE", "A.S.DAIRY FARM", "VENKATESH AGRO PROCESSING CO.",
+    "AKASH DUDH SANKALAN KENDRA", "BHAIRAVNATH MILK SANKALAN", "GOVIND SADASHIVNAGAR",
+    "GOVIND WANIMALA", "GOVIND MILK SANKALAN", "LOKRAJ MILK SANKALAN",
+    "SHAMBHU MAHADEV PHONDSHIRAS", "VISHNU NARAYAN DUDH", "JYOTIRLING DOODH SANKALAN EKSHIV"
+]
+
+SDDPL_BMC_NAMES = [
+    "SHELKEWASTI", "HAKEWASTI", "KUSEGAON", "NYAWASTI", "NANGAON-2", "PARGAON-1",
+    "PARGAON-2", "PIMPALGAON", "YAWAT", "CHANDANWADI", "DALIMB", "NANDUR",
+    "DELAWADI", "KANGAON", "BETWADI", "KHADKI", "ROTI", "SONAWADI",
+    "GOPALWADI", "HOLEWASTI", "MIRADE", "JAWALI", "VIDANI", "BARAD",
+    "GUNWARE", "SOMANTHALI", "CHAUDHARWADI", "SANGAVI-MOHITEWASTI",
+    "RAUTVASTI VIDANI", "PHADTARWADI", "KAPASHI", "MALEWADI", "SAKHARWADI",
+    "RAVADI", "NIMBLAK", "ASU", "TAMKHADA", "HANUMANTWADI", "KHATAKEVASTI",
+    "SATHEPHATA", "GANEGAONDUMALA", "VADGAON RASAI", "RANJANGAON SANDAS",
+    "BHAMBURDE", "INAMGAON6", "NAGARGAON PHATA", "AJNUJ", "INAMGAON5",
+    "PHARATEWADI", "KURULII", "SHINDODI", "GOLEGAON", "NAGARGAON", "NIMONE",
+    "AMBALE 3", "KARDE", "KANHUR MESAI", "MAHADEVWADI", "NIMGAON MHALUNGI",
+    "DHANORE", "TALEGAON DHAMDHERE", "MANDAVGAN PHARATA", "GUNAT", "KASHTI",
+    "GHADAGEMALA", "INAMGAON3", "WANGDHARI", "URALGAONI"
+]
+
+
 # Use a form container for better organization and submission handling
 with st.form(key='farm_visit_form'):
 
@@ -43,19 +90,35 @@ with st.form(key='farm_visit_form'):
     with col3:
         organization = st.selectbox(
             "Organization:",
-            ["Schreiber Dynamix", "Govind", "SDDPL"],
-            index=0 # Default to Schreiber Dynamix
+            ["Govind", "SDDPL", "Schreiber Dynamix"], # Reordered for better flow with BMC dropdown
+            index=0 # Default to Govind
         )
         state = st.text_input("State:", "Maharashtra")
         district = st.text_input("District:", "Satara")
     with col4:
         sub_district = st.text_input("Sub District:", "Phaltan")
         collecting_village = st.text_input("Collecting Village:", "SAKHARWADi")
-        bmc = st.selectbox(
+        
+        # Determine BMC name options based on selected organization
+        bmc_options = []
+        if organization == "Govind":
+            bmc_options = ["SELECT"] + GOVIND_BMC_NAMES + ["OTHERS"]
+        elif organization == "SDDPL":
+            bmc_options = ["SELECT"] + SDDPL_BMC_NAMES + ["OTHERS"]
+        else: # For "Schreiber Dynamix" or any other case, provide "OTHERS" or a generic option
+            bmc_options = ["SELECT", "OTHERS"]
+
+        bmc_selected = st.selectbox(
             "BMC:",
-            ["JYOTIRLING DUDH SANKALAN VA SHITKARAN KENDRA"],
-            index=0
+            bmc_options,
+            index=0,
+            key="bmc_fv"
         )
+        # Conditional text input for "OTHERS" BMC
+        other_bmc_name_fv = None
+        if bmc_selected == "OTHERS":
+            other_bmc_name_fv = st.text_input("Other BMC Name (Specify):", "", key="other_bmc_name_fv_input")
+
 
     st.header("Milk Production & Herd Details")
     col5, col6 = st.columns(2)
@@ -190,7 +253,8 @@ with st.form(key='farm_visit_form'):
             "District": district,
             "Sub District": sub_district,
             "Collecting Village": collecting_village,
-            "BMC": bmc,
+            "BMC": bmc_selected, # Use the selected BMC name
+            "Other BMC Name (Farm Visit)": other_bmc_name_fv, # Include the "Other" BMC name if specified
             "Milk Production At Farm": milk_production,
             "Herd Size": herd_size,
             "No Of Desi": no_of_desi,
