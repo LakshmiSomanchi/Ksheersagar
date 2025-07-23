@@ -310,7 +310,50 @@ with st.form(key='farm_visit_form'):
         st.session_state.farm_visit_data.append(submitted_data)
         st.success("Farm Visit data recorded for this session!")
 
-# --- Real-time View and Download Option for Farm Visit Data ---
+---
+
+### **Admin Access for Past Submissions**
+
+To add the admin access for viewing and downloading past submissions, you'll need to insert the following code block at the **end** of your `pages/1_Farm_Visit.py` file.
+
+```python
+# --- Admin Access for Viewing Past Submissions ---
+ADMIN_USERS = ["mkaushl@tns.org", "rsomanchi@tns.org", "shifalis@tns.org"]
+
+st.sidebar.markdown("---")
+st.sidebar.header("Admin Access")
+admin_username = st.sidebar.text_input("Enter Admin Username to view past submissions:", key="admin_username_fv")
+
+if admin_username in ADMIN_USERS:
+    st.sidebar.success(f"Welcome, {admin_username.split('@')[0]}!")
+    st.header("🔑 Admin View: Past Farm Visit Submissions")
+
+    # This part should ideally load data from a persistent storage (e.g., CSV file, database)
+    # For demonstration, we'll continue to use st.session_state.farm_visit_data
+    # In a real application, you'd load from a saved file here.
+
+    if st.session_state.farm_visit_data:
+        st.subheader("All Farm Visit Entries:")
+        df_all_farm_visit = pd.DataFrame(st.session_state.farm_visit_data)
+        # Ensure all columns are strings for consistent display and CSV export
+        df_all_farm_visit = df_all_farm_visit.astype(str)
+        st.dataframe(df_all_farm_visit, use_container_width=True)
+
+        csv_all_farm_visit = df_all_farm_visit.to_csv(index=False).encode('utf-8')
+        st.download_button(
+            label="Download All Farm Visit Data as CSV (Admin)",
+            data=csv_all_farm_visit,
+            file_name="all_farm_visit_data.csv",
+            mime="text/csv",
+            help="Download all Farm Visit data collected in this session by admins."
+        )
+        st.info(f"Total Farm Visit entries available: {len(st.session_state.farm_visit_data)}")
+    else:
+        st.info("No Farm Visit data has been submitted yet.")
+elif admin_username: # Only show error if something was actually typed
+    st.sidebar.error("Access Denied: Invalid Admin Username.")
+
+# --- Real-time View and Download Option for Farm Visit Data (Original section) ---
 st.header("Real-time View & Download (Current Session)")
 
 if st.session_state.farm_visit_data:
