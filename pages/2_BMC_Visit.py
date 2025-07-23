@@ -1,13 +1,26 @@
 import streamlit as st
 import pandas as pd
-from datetime import date as dt_date # Import date for setting default today's date
+from datetime import date as dt_date
+import os # Import the os module to check for file existence
 
 st.set_page_config(layout="centered", page_title="Ksheersagar - BMC Visit Data Entry")
 
-# --- Session State Initialization for this page ---
-# This ensures 'bmc_visit_data' exists even if this page is run directly or first
+# --- CSV File Path for Persistent Storage ---
+BMC_VISIT_DATA_FILE = "bmc_visit_data.csv"
+
+# --- Session State Initialization and Data Loading ---
 if 'bmc_visit_data' not in st.session_state:
     st.session_state.bmc_visit_data = []
+    # Load existing data from CSV if the file exists
+    if os.path.exists(BMC_VISIT_DATA_FILE):
+        try:
+            df_existing = pd.read_csv(BMC_VISIT_DATA_FILE)
+            # Convert DataFrame rows to dictionaries and extend the session state list
+            st.session_state.bmc_visit_data.extend(df_existing.to_dict('records'))
+            st.success(f"Loaded {len(df_existing)} past BMC visit entries from {BMC_VISIT_DATA_FILE}")
+        except Exception as e:
+            st.error(f"Error loading existing BMC data: {e}")
+            st.session_state.bmc_visit_data = [] # Ensure it's an empty list if loading fails
 # --------------------------------------------------
 
 st.title("🚚 Ksheersagar - BMC Visit Data Entry")
@@ -306,7 +319,6 @@ with st.form(key='bmc_visit_form'):
     submit_button = st.form_submit_button(label='Submit BMC Visit Data')
 
     if submit_button:
-        st.success("BMC Visit Data Submitted Successfully!")
         # Collect data into a dictionary
         submitted_data = {
             "BMC Code": bmc_code, # Renamed
@@ -398,32 +410,48 @@ with st.form(key='bmc_visit_form'):
         }
         # Append the collected data to the session state list
         st.session_state.bmc_visit_data.append(submitted_data)
-        st.success("BMC Visit data recorded for this session!")
+        
+        # Convert to DataFrame and save to CSV
+        df_to_save = pd.DataFrame(st.session_state.bmc_visit_data)
+        df_to_save.to_csv(BMC_VISIT_DATA_FILE, index=False)
+        
+        st.success("BMC Visit data submitted and saved!")
+
 
 # --- Real-time View and Download Option for BMC Visit Data (Conditional Access) ---
-if is_admin:
-    st.header("Real-time View & Download (Current Session) - Admin Access")
+# Display all data from session_state, which now includes loaded persistent data
+st.header("Real-time View & Download (Current Session & Past Submissions)")
 
-    if st.session_state.bmc_visit_data:
-        st.subheader("Submitted BMC Visit Entries:")
-        df_bmc_visit = pd.DataFrame(st.session_state.bmc_visit_data)
-        # Ensure all columns are strings for consistent display and CSV export
-        df_bmc_visit = df_bmc_visit.astype(str)
-        st.dataframe(df_bmc_visit, use_container_width=True) # Make dataframe wide
+if st.session_state.bmc_visit_data:
+    st.subheader("All Submitted BMC Visit Entries:")
+    df_bmc_visit_all = pd.DataFrame(st.session_state.bmc_visit_data)
+    # Ensure all columns are strings for consistent display and CSV export
+    df_bmc_visit_all = df_bmc_visit_all.astype(str)
+    st.dataframe(df_bmc_visit_all, use_container_width=True) # Make dataframe wide
 
-        csv_bmc_visit = df_bmc_visit.to_csv(index=False).encode('utf-8')
-        st.download_button(
-            label="Download BMC Visit Data as CSV",
-            data=csv_bmc_visit,
-            file_name="bmc_visit_data.csv",
-            mime="text/csv",
-            help="Download all BMC Visit data collected in this session."
-        )
-        st.info(f"Total BMC Visit entries submitted in this session: {len(st.session_state.bmc_visit_data)}")
-    else:
-        st.info("No BMC Visit data submitted yet in this session. Submit the form above to see data here.")
+    csv_bmc_visit_all = df_bmc_visit_all.to_csv(index=False).encode('utf-8')
+    st.download_button(
+        label="Download All BMC Visit Data as CSV",
+        data=csv_bmc_visit_all,
+        file_name="all_bmc_visit_data.csv",
+        mime="text/csv",
+        help="Download all BMC Visit data collected across sessions."
+    )
+    st.info(f"Total BMC Visit entries submitted: {len(st.session_state.bmc_visit_data)}")
 else:
-    if admin_username_input: # Only show this message if a username was entered but wasn't admin
-        st.warning("Please enter a valid admin username to view and download past submissions.")
-    else: # Show a generic message if no username is entered
-        st.info("Enter an admin username in the sidebar to view and download past submissions.")
+    st.info("No BMC Visit data submitted yet. Submit the form above to see data here.")
+
+# --- Admin Access Section (unchanged from your original, but now uses loaded data) ---
+if is_admin:
+    st.header("🔑 Admin View: Past BMC Visit Submissions")
+    # This section now effectively shows the same data as the "Real-time View" above
+    # because st.session_state.bmc_visit_data now holds all persistent data.
+    if st.session_state.bmc_visit_data:
+        st.write("Below is the comprehensive list of all BMC Visit entries (includes past submissions).")
+    else:
+        st.info("No BMC Visit data has been submitted yet for admin view.")
+
+elif admin_username_input:
+    st.warning("Please enter a valid admin username to view and download past submissions.")
+else:
+    st.info("Enter an admin username in the sidebar to view and download past submissions.")
