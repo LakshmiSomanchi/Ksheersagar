@@ -73,7 +73,7 @@ CATTLE_FEED_BRAND_OPTIONS = [
 QUALITY_OPTIONS = ["Poor", "Fair", "Good", "Best"]
 
 # Define admin usernames
-ADMIN_USERNAMES = ["mkaushl@tns.org", "rsomanchi@tns.org", "shifalis@tns.org"]
+ADMIN_USERNAMES = ["mkaushal@tns.org", "rsomanchi@tns.org", "shifalis@tns.org"]
 
 # --- Admin Access Field ---
 st.sidebar.subheader("Admin Access")
