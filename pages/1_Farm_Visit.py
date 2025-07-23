@@ -310,13 +310,6 @@ with st.form(key='farm_visit_form'):
         st.session_state.farm_visit_data.append(submitted_data)
         st.success("Farm Visit data recorded for this session!")
 
----
-
-### **Admin Access for Past Submissions**
-
-To add the admin access for viewing and downloading past submissions, you'll need to insert the following code block at the **end** of your `pages/1_Farm_Visit.py` file.
-
-```python
 # --- Admin Access for Viewing Past Submissions ---
 ADMIN_USERS = ["mkaushl@tns.org", "rsomanchi@tns.org", "shifalis@tns.org"]
 
