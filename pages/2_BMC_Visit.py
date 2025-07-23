@@ -1,4 +1,3 @@
-# pages/2_BMC_Visit.py
 import streamlit as st
 import pandas as pd
 from datetime import date as dt_date # Import date for setting default today's date
@@ -60,6 +59,19 @@ SDDPL_BMC_NAMES = [
     "GHADAGEMALA", "INAMGAON3", "WANGDHARI", "URALGAONI"
 ]
 
+# Combined list for BMC Name dropdown
+ALL_BMC_NAMES = sorted(list(set(GOVIND_BMC_NAMES + SDDPL_BMC_NAMES))) # Use set to remove duplicates and sort
+
+# Cattle Feed Brand Name options
+CATTLE_FEED_BRAND_OPTIONS = [
+    "Royal Bypro and classic", "Govind Classic Biopro", "Govind Royle Biopro",
+    "SDDPL Samruddhi", "SDDPL Samruddhi Plus", "SDDPL Samruddhi Gold",
+    "SDDPL Shakti", "Others"
+]
+
+# Dropdown options for "Overall Infrastructure" and "BMC Cleaning & Hygiene"
+QUALITY_OPTIONS = ["Poor", "Fair", "Good", "Best"]
+
 # Use a form container for better organization and submission handling
 with st.form(key='bmc_visit_form'):
 
@@ -67,36 +79,46 @@ with st.form(key='bmc_visit_form'):
 
     col1, col2 = st.columns(2)
     with col1:
-        crop = st.text_input("CROP:")
+        # Renamed "Crop" to "BMC Code"
+        bmc_code = st.text_input("BMC Code:")
         scheduled_start_date = st.date_input("SCHEDULED START DATE:", value=dt_date(2025, 5, 7))
         
-        # Moved 'organization' selection before 'bmc_name_option' to control its options
-        organization = st.selectbox("Organization:", ["Govind Milk", "SDDPL", "GOVIND"], index=0, key="organization_bmc")
+        # Corrected "Organization" options
+        organization = st.selectbox(
+            "Organization:",
+            ["Govind Milk", "SDDPL"], # Combined Govind Milk and GOVIND
+            index=0,
+            key="organization_bmc"
+        )
 
         # Determine BMC name options based on selected organization
-        bmc_options = []
-        if organization == "GOVIND" or organization == "Govind Milk":
-            bmc_options = ["SELECT"] + GOVIND_BMC_NAMES + ["OTHERS"]
-        elif organization == "SDDPL":
-            bmc_options = ["SELECT"] + SDDPL_BMC_NAMES + ["OTHERS"]
-        else: # Default or if no specific organization is selected, provide a generic "OTHERS"
-            bmc_options = ["SELECT", "OTHERS"]
-
+        # The prompt asked for "Names of all BMCs (Refer list in "BMC Names" sheet) Dropdown"
+        # Since I don't have the sheet, I'm combining the two lists you provided.
+        bmc_options_dropdown = ["SELECT"] + ALL_BMC_NAMES + ["OTHERS"]
+        
+        # BMC Name as Dropdown
         bmc_name_option = st.selectbox(
             "BMC Name:",
-            bmc_options,
+            bmc_options_dropdown,
             index=0,
             key="bmc_name_option_bmc" # Unique key
         )
+        # Conditional input for "OTHERS" BMC name
+        other_bmc_name = None
+        if bmc_name_option == "OTHERS":
+            other_bmc_name = st.text_input("Other BMC Name (Specify):", "", key="other_bmc_name_input")
+
+        # Corrected "Activity Created by" options
         activity_created_by = st.selectbox(
             "ACTIVITY CREATED BY:",
-            ["Dhanwate Nilesh", "Dr Sachin", "bhusan", "nilesh", "subhrat", "aniket", "ritesh"],
+            ["Nilesh", "Dr Sachin", "bhusan", "subhrat", "aniket", "ritesh"], # Combined Dhanwate Nilesh and nilesh
             index=0,
             key="activity_created_by_bmc" # Unique key
         )
 
     with col2:
-        state = st.text_input("State:", "Maharashtra")
+        # "State" as Freeze (display only, not editable)
+        state = st.text_input("State:", "Maharashtra", disabled=True) 
         district_option = st.selectbox(
             "District:",
             ["Satara", "Pune", "Ahmednagar", "Solapur", "OTHERS"],
@@ -113,31 +135,25 @@ with st.form(key='bmc_visit_form'):
         collecting_village = st.text_input("Collecting Village:", "Hol")
         village = st.text_input("Village:", "HOL")
 
-    # Conditional fields for "OTHERS" BMC name / District / Sub District
-    other_bmc_name = None
-    if bmc_name_option == "OTHERS":
-        other_bmc_name = st.text_input("Other BMC Name (Specify):", "", key="other_bmc_name_input")
-
-    # Assuming 'other_village' is specifically for when 'Village' or 'Collecting Village' is 'OTHERS'
-    # Adjusted logic to capture distinct values or an "Other" specification
-    other_village_input = None
-    if "OTHERS" in [collecting_village.upper(), village.upper()]: # Check if 'OTHERS' was explicitly typed
-        other_village_input = st.text_input("Other Village (Specify if not in list):", "", key="other_village_input")
-    other_village = other_village_input if other_village_input else None # Capture its value
-
-    tehsil = st.text_input("Tehsil:", "PHALTAN")
-    other_tehsil_input = None
-    if tehsil.upper() == "OTHERS":
-        other_tehsil_input = st.text_input("Other Tehsil (Specify if not in list):", "", key="other_tehsil_input")
-    other_tehsil = other_tehsil_input if other_tehsil_input else None
-
-    # Handle District: if 'OTHERS' chosen in selectbox, then offer text input
-    actual_district = district_option
+    # Conditional fields for "OTHERS" District / Sub District / Village
     other_district_input = None
     if district_option == "OTHERS":
         other_district_input = st.text_input("Other District (Specify):", "", key="other_district_input")
-        actual_district = other_district_input if other_district_input else "OTHERS - Not Specified"
-    other_district = other_district_input # Keep the specific 'other' entry for clarity in data
+    actual_district = other_district_input if district_option == "OTHERS" and other_district_input else district_option
+
+    other_sub_district_input = None
+    if sub_district_option == "OTHERS":
+        other_sub_district_input = st.text_input("Other Sub District (Specify):", "", key="other_sub_district_input")
+    actual_sub_district = other_sub_district_input if sub_district_option == "OTHERS" and other_sub_district_input else sub_district_option
+
+    # Conditional 'other_village' based on explicitly typed "OTHERS" in original village fields
+    other_village_input = None
+    if "OTHERS" in [collecting_village.upper(), village.upper()]:
+        other_village_input = st.text_input("Other Village (Specify if not in list):", "", key="other_village_input")
+    other_village = other_village_input if other_village_input else None
+
+    # Removed Tehsil question as requested
+    tehsil = None # Set to None as it's removed
 
     st.header("BCF (Bulk Milk Cooler Farmer) Details")
     col3, col4 = st.columns(2)
@@ -194,9 +210,11 @@ with st.form(key='bmc_visit_form'):
 
 
     st.header("Infrastructure & Compliance")
-    overall_infrastructure = st.text_input("Overall Infrastructure:", "OK")
+    # "Overall Infrastructure" as Dropdown
+    overall_infrastructure = st.selectbox("Overall Infrastructure:", QUALITY_OPTIONS, index=2) # Default to Good
     remark_infra = st.text_area("Remark (Infrastructure):", "Good infrastructure, seprate room for cattle feed")
-    bmc_cleaning_hygiene = st.text_input("BMC Cleaning & Hygiene:", "3-GOOD")
+    # "BMC Cleaning & Hygiene" as Dropdown
+    bmc_cleaning_hygiene = st.selectbox("BMC Cleaning & Hygiene:", QUALITY_OPTIONS, index=2) # Default to Good
 
     col_infra1, col_infra2, col_infra3, col_infra4 = st.columns(4)
     with col_infra1:
@@ -237,18 +255,23 @@ with st.form(key='bmc_visit_form'):
     col9, col10 = st.columns(2)
     with col9:
         animal_welfare_farm_no = st.number_input("Animal Welfare Farm (No.):", min_value=0, value=9)
-        farmer_use_cattle_feed = st.number_input("FARMER USE (CATTLE FEED):", min_value=0, value=58)
-        cattle_feed_bag_sale_month = st.number_input("Cattle Feed bag sale (month):", min_value=0, value=250)
-        cattle_feed_brand_name = st.selectbox(
+        # Renamed "FARMER USE (CATTLE FEED)"
+        farmer_use_cattle_feed = st.number_input("FARMER USE (compliant CATTLE FEED):", min_value=0, value=58)
+        # Renamed "Cattle Feed bag sale (month)"
+        cattle_feed_bag_sale_month = st.number_input("Compliant Cattle Feed bag sale (month):", min_value=0, value=250)
+        
+        # "Cattle Feed Brand Name" as Multi-select
+        cattle_feed_brand_name = st.multiselect(
             "Cattle Feed Brand Name:",
-            [
-                "Royal Bypro and classic", "1. Govind Classic Biopro", "2. Govind Royle Biopro",
-                "3. SDDPL Samruddhi", "4. SDDPL Samruddhi Plus", "5. SDDPL Samruddhi Gold",
-                "6. SDDPL Shakti", "7. Others"
-            ],
-            index=0,
-            key="cattle_feed_brand_name_bmc" # Unique key
+            CATTLE_FEED_BRAND_OPTIONS,
+            default=["Royal Bypro and classic"], # Set a default if appropriate
+            key="cattle_feed_brand_name_bmc"
         )
+        # Conditional input for "Others" option in multi-select
+        other_cattle_feed_brand_name = None
+        if "Others" in cattle_feed_brand_name:
+            other_cattle_feed_brand_name = st.text_input("Other Cattle Feed Brand Name (Specify):", "", key="other_cattle_feed_brand_name_input")
+
         farmer_use_mineral_mixture_qty = st.number_input("FARMER USE (MINERAL MIXTURE) Quantity:", min_value=0, value=14)
         mineral_mixture_brand_name = st.text_input("MINERAL MIXTURE BRAND NAME:", "Govind Chileted")
         farmer_use_evm_rtu_qty = st.number_input("FARMER USE (EVM RTU) Quantity:", min_value=0, value=0)
@@ -275,7 +298,7 @@ with st.form(key='bmc_visit_form'):
         st.success("BMC Visit Data Submitted Successfully!")
         # Collect data into a dictionary
         submitted_data = {
-            "CROP": crop,
+            "BMC Code": bmc_code, # Renamed
             "SCHEDULED START DATE": scheduled_start_date.isoformat() if scheduled_start_date else None,
             "BMC Name (Option)": bmc_name_option,
             "Other BMC Name": other_bmc_name,
@@ -283,13 +306,13 @@ with st.form(key='bmc_visit_form'):
             "Organization": organization,
             "State": state,
             "District (Option)": district_option,
-            "Other District": other_district, # Now correctly maps to the 'Other District (Specify)' input
+            "Other District": actual_district if district_option == "OTHERS" else None, # Store actual value if "OTHERS" chosen
             "Sub District (Option)": sub_district_option,
+            "Other Sub District": actual_sub_district if sub_district_option == "OTHERS" else None,
             "Collecting Village": collecting_village,
             "Village": village,
-            "Other Village": other_village, # Now correctly maps to the 'Other Village (Specify)' input
-            "Tehsil": tehsil,
-            "Other Tehsil": other_tehsil, # Now correctly maps to the 'Other Tehsil (Specify)' input
+            "Other Village": other_village,
+            "Tehsil": "Removed", # Indicate that Tehsil field was removed
             "BCF Name": bcf_name,
             "BCF Gender": bcf_gender,
             "Education": education,
@@ -343,9 +366,10 @@ with st.form(key='bmc_visit_form'):
             "Strainer/Nylon cloth available": strainer_nylon_cloth,
             "Sample Bottle": sample_bottle,
             "Animal Welfare Farm (No.)": animal_welfare_farm_no,
-            "FARMER USE (CATTLE FEED)": farmer_use_cattle_feed,
-            "Cattle Feed bag sale (month)": cattle_feed_bag_sale_month,
-            "Cattle Feed Brand Name": cattle_feed_brand_name,
+            "FARMER USE (compliant CATTLE FEED)": farmer_use_cattle_feed, # Renamed
+            "Compliant Cattle Feed bag sale (month)": cattle_feed_bag_sale_month, # Renamed
+            "Cattle Feed Brand Name": ", ".join(cattle_feed_brand_name), # Join selected options for storage
+            "Other Cattle Feed Brand Name (Specify)": other_cattle_feed_brand_name, # Store specified name
             "FARMER USE(MINERAL MIXTURE) Quantity": farmer_use_mineral_mixture_qty,
             "MINERAL MIXTURE BRAND NAME": mineral_mixture_brand_name,
             "FARMER USE(EVM RTU) Quantity": farmer_use_evm_rtu_qty,
