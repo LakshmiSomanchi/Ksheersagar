@@ -1,14 +1,26 @@
-# pages/1_Farm_Visit.py
 import streamlit as st
 import pandas as pd
-from datetime import date as dt_date # Import date for setting default today's date
+from datetime import date as dt_date
+import os # Import the os module to check for file existence
 
 st.set_page_config(layout="centered", page_title="Ksheersagar - Farm Visit Data Entry")
 
-# --- Session State Initialization for this page ---
-# This ensures 'farm_visit_data' exists even if this page is run directly or first
+# --- CSV File Path for Persistent Storage ---
+FARM_VISIT_DATA_FILE = "farm_visit_data.csv"
+
+# --- Session State Initialization and Data Loading ---
 if 'farm_visit_data' not in st.session_state:
     st.session_state.farm_visit_data = []
+    # Load existing data from CSV if the file exists
+    if os.path.exists(FARM_VISIT_DATA_FILE):
+        try:
+            df_existing = pd.read_csv(FARM_VISIT_DATA_FILE)
+            # Convert DataFrame rows to dictionaries and extend the session state list
+            st.session_state.farm_visit_data.extend(df_existing.to_dict('records'))
+            st.success(f"Loaded {len(df_existing)} past farm visit entries from {FARM_VISIT_DATA_FILE}")
+        except Exception as e:
+            st.error(f"Error loading existing data: {e}")
+            st.session_state.farm_visit_data = [] # Ensure it's an empty list if loading fails
 # --------------------------------------------------
 
 st.title("🐄 Ksheersagar - Farm Visit Data Entry")
@@ -246,7 +258,6 @@ with st.form(key='farm_visit_form'):
     submit_button = st.form_submit_button(label='Submit Farm Visit Data')
 
     if submit_button:
-        st.success("Form Submitted Successfully!")
         # Collect data into a dictionary
         submitted_data = {
             "Date": date.isoformat() if date else None,
@@ -308,7 +319,12 @@ with st.form(key='farm_visit_form'):
         }
         # Append the collected data to the session state list
         st.session_state.farm_visit_data.append(submitted_data)
-        st.success("Farm Visit data recorded for this session!")
+        
+        # Convert to DataFrame and save to CSV
+        df_to_save = pd.DataFrame(st.session_state.farm_visit_data)
+        df_to_save.to_csv(FARM_VISIT_DATA_FILE, index=False)
+        
+        st.success("Farm Visit data submitted and saved!")
 
 # --- Admin Access for Viewing Past Submissions ---
 ADMIN_USERS = ["mkaushal@tns.org", "rsomanchi@tns.org", "shifalis@tns.org"]
@@ -320,10 +336,6 @@ admin_username = st.sidebar.text_input("Enter Admin Username to view past submis
 if admin_username in ADMIN_USERS:
     st.sidebar.success(f"Welcome, {admin_username.split('@')[0]}!")
     st.header("🔑 Admin View: Past Farm Visit Submissions")
-
-    # This part should ideally load data from a persistent storage (e.g., CSV file, database)
-    # For demonstration, we'll continue to use st.session_state.farm_visit_data
-    # In a real application, you'd load from a saved file here.
 
     if st.session_state.farm_visit_data:
         st.subheader("All Farm Visit Entries:")
@@ -338,7 +350,7 @@ if admin_username in ADMIN_USERS:
             data=csv_all_farm_visit,
             file_name="all_farm_visit_data.csv",
             mime="text/csv",
-            help="Download all Farm Visit data collected in this session by admins."
+            help="Download all Farm Visit data collected across sessions by admins."
         )
         st.info(f"Total Farm Visit entries available: {len(st.session_state.farm_visit_data)}")
     else:
@@ -347,7 +359,7 @@ elif admin_username: # Only show error if something was actually typed
     st.sidebar.error("Access Denied: Invalid Admin Username.")
 
 # --- Real-time View and Download Option for Farm Visit Data (Original section) ---
-st.header("Real-time View & Download (Current Session)")
+st.header("Real-time View & Download (Current Session & Past)")
 
 if st.session_state.farm_visit_data:
     st.subheader("Submitted Farm Visit Entries:")
@@ -362,8 +374,8 @@ if st.session_state.farm_visit_data:
         data=csv_farm_visit,
         file_name="farm_visit_data.csv",
         mime="text/csv",
-        help="Download all Farm Visit data collected in this session."
+        help="Download all Farm Visit data collected across sessions."
     )
-    st.info(f"Total Farm Visit entries submitted in this session: {len(st.session_state.farm_visit_data)}")
+    st.info(f"Total Farm Visit entries submitted: {len(st.session_state.farm_visit_data)}")
 else:
-    st.info("No Farm Visit data submitted yet in this session. Submit the form above to see data here.")
+    st.info("No Farm Visit data submitted yet. Submit the form above to see data here.")
