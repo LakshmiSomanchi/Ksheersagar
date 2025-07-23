@@ -311,7 +311,7 @@ with st.form(key='farm_visit_form'):
         st.success("Farm Visit data recorded for this session!")
 
 # --- Admin Access for Viewing Past Submissions ---
-ADMIN_USERS = ["mkaushl@tns.org", "rsomanchi@tns.org", "shifalis@tns.org"]
+ADMIN_USERS = ["mkaushal@tns.org", "rsomanchi@tns.org", "shifalis@tns.org"]
 
 st.sidebar.markdown("---")
 st.sidebar.header("Admin Access")
