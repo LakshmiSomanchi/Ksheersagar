@@ -72,6 +72,17 @@ CATTLE_FEED_BRAND_OPTIONS = [
 # Dropdown options for "Overall Infrastructure" and "BMC Cleaning & Hygiene"
 QUALITY_OPTIONS = ["Poor", "Fair", "Good", "Best"]
 
+# Define admin usernames
+ADMIN_USERNAMES = ["mkaushl@tns.org", "rsomanchi@tns.org", "shifalis@tns.org"]
+
+# --- Admin Access Field ---
+st.sidebar.subheader("Admin Access")
+admin_username_input = st.sidebar.text_input("Enter Admin Username to View Data:", key="admin_username_input")
+is_admin = admin_username_input in ADMIN_USERNAMES
+if not is_admin and admin_username_input:
+    st.sidebar.warning("Invalid Admin Username.")
+# -------------------------
+
 # Use a form container for better organization and submission handling
 with st.form(key='bmc_visit_form'):
 
@@ -389,24 +400,30 @@ with st.form(key='bmc_visit_form'):
         st.session_state.bmc_visit_data.append(submitted_data)
         st.success("BMC Visit data recorded for this session!")
 
-# --- Real-time View and Download Option for BMC Visit Data ---
-st.header("Real-time View & Download (Current Session)")
+# --- Real-time View and Download Option for BMC Visit Data (Conditional Access) ---
+if is_admin:
+    st.header("Real-time View & Download (Current Session) - Admin Access")
 
-if st.session_state.bmc_visit_data:
-    st.subheader("Submitted BMC Visit Entries:")
-    df_bmc_visit = pd.DataFrame(st.session_state.bmc_visit_data)
-    # Ensure all columns are strings for consistent display and CSV export
-    df_bmc_visit = df_bmc_visit.astype(str)
-    st.dataframe(df_bmc_visit, use_container_width=True) # Make dataframe wide
+    if st.session_state.bmc_visit_data:
+        st.subheader("Submitted BMC Visit Entries:")
+        df_bmc_visit = pd.DataFrame(st.session_state.bmc_visit_data)
+        # Ensure all columns are strings for consistent display and CSV export
+        df_bmc_visit = df_bmc_visit.astype(str)
+        st.dataframe(df_bmc_visit, use_container_width=True) # Make dataframe wide
 
-    csv_bmc_visit = df_bmc_visit.to_csv(index=False).encode('utf-8')
-    st.download_button(
-        label="Download BMC Visit Data as CSV",
-        data=csv_bmc_visit,
-        file_name="bmc_visit_data.csv",
-        mime="text/csv",
-        help="Download all BMC Visit data collected in this session."
-    )
-    st.info(f"Total BMC Visit entries submitted in this session: {len(st.session_state.bmc_visit_data)}")
+        csv_bmc_visit = df_bmc_visit.to_csv(index=False).encode('utf-8')
+        st.download_button(
+            label="Download BMC Visit Data as CSV",
+            data=csv_bmc_visit,
+            file_name="bmc_visit_data.csv",
+            mime="text/csv",
+            help="Download all BMC Visit data collected in this session."
+        )
+        st.info(f"Total BMC Visit entries submitted in this session: {len(st.session_state.bmc_visit_data)}")
+    else:
+        st.info("No BMC Visit data submitted yet in this session. Submit the form above to see data here.")
 else:
-    st.info("No BMC Visit data submitted yet in this session. Submit the form above to see data here.")
+    if admin_username_input: # Only show this message if a username was entered but wasn't admin
+        st.warning("Please enter a valid admin username to view and download past submissions.")
+    else: # Show a generic message if no username is entered
+        st.info("Enter an admin username in the sidebar to view and download past submissions.")
