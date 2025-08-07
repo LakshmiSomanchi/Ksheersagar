@@ -401,12 +401,15 @@ with st.form(key='bmc_visit_form'):
         }
         st.session_state.bmc_visit_data.append(submitted_data)
         
-        # Convert to DataFrame and save to CSV
-        df_to_save = pd.DataFrame(st.session_state.bmc_visit_data)
-        df_to_save.to_csv(BMC_VISIT_DATA_FILE, index=False)
+        # --- NEW LOGIC: Append the single new entry to the CSV ---
+        df_new_entry = pd.DataFrame([submitted_data])
+
+        if not os.path.exists(BMC_VISIT_DATA_FILE):
+             df_new_entry.to_csv(BMC_VISIT_DATA_FILE, index=False)
+        else:
+             df_new_entry.to_csv(BMC_VISIT_DATA_FILE, mode='a', index=False, header=False)
         
         st.success("BMC Visit data submitted and saved!")
-
 
 # --- Real-time View and Download Option for BMC Visit Data (Conditional Access) ---
 st.header("Real-time View & Download (Current Session & Past Submissions)")
