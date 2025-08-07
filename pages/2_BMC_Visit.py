@@ -116,8 +116,6 @@ with st.form(key='bmc_visit_form'):
         )
 
         # Determine BMC name options based on selected organization
-        # The prompt asked for "Names of all BMCs (Refer list in "BMC Names" sheet) Dropdown"
-        # Since I don't have the sheet, I'm combining the two lists you provided.
         bmc_options_dropdown = ["SELECT"] + ALL_BMC_NAMES + ["OTHERS"]
         
         # BMC Name as Dropdown
@@ -125,7 +123,7 @@ with st.form(key='bmc_visit_form'):
             "BMC Name:",
             bmc_options_dropdown,
             index=0,
-            key="bmc_name_option_bmc" # Unique key
+            key="bmc_name_option_bmc"
         )
         # Conditional input for "OTHERS" BMC name
         other_bmc_name = None
@@ -137,7 +135,7 @@ with st.form(key='bmc_visit_form'):
             "ACTIVITY CREATED BY:",
             ["Nilesh", "Dr Sachin", "bhusan", "subhrat", "aniket", "ritesh"], # Combined Dhanwate Nilesh and nilesh
             index=0,
-            key="activity_created_by_bmc" # Unique key
+            key="activity_created_by_bmc"
         )
 
     with col2:
@@ -147,14 +145,14 @@ with st.form(key='bmc_visit_form'):
             "District:",
             ["Satara", "Pune", "Ahmednagar", "Solapur", "OTHERS"],
             index=0,
-            key="district_option_bmc" # Unique key
+            key="district_option_bmc"
         )
         sub_district_option = st.selectbox(
             "Sub District:",
             ["Phaltan", "malshiras", "Baramati", "Indapur", "Daund", "Purander", "Pachgani", "Man",
              "Khatav", "Koregaon", "Khandala", "Shirur", "OTHERS"],
             index=0,
-            key="sub_district_option_bmc" # Unique key
+            key="sub_district_option_bmc"
         )
         collecting_village = st.text_input("Collecting Village:", "Hol")
         village = st.text_input("Village:", "HOL")
@@ -187,8 +185,8 @@ with st.form(key='bmc_visit_form'):
         education = st.selectbox(
             "Education:",
             ["10th pass", "12th pass", "Graduation", "Post graduation", "Others (Specify)"],
-            index=2, # Default to Graduation
-            key="education_bmc" # Unique key
+            index=2,
+            key="education_bmc"
         )
         # Conditional input for "Others (Specify)" education
         other_education = None
@@ -232,13 +230,12 @@ with st.form(key='bmc_visit_form'):
         inward_route_farmer_no = st.number_input("Inward Route Farmer (No.):", min_value=0, value=35)
         inward_route_milk_lpd = st.number_input("Inward Route Milk (LPD):", min_value=0, value=800)
 
-
     st.header("Infrastructure & Compliance")
     # "Overall Infrastructure" as Dropdown
-    overall_infrastructure = st.selectbox("Overall Infrastructure:", QUALITY_OPTIONS, index=2) # Default to Good
+    overall_infrastructure = st.selectbox("Overall Infrastructure:", QUALITY_OPTIONS, index=2)
     remark_infra = st.text_area("Remark (Infrastructure):", "Good infrastructure, seprate room for cattle feed")
     # "BMC Cleaning & Hygiene" as Dropdown
-    bmc_cleaning_hygiene = st.selectbox("BMC Cleaning & Hygiene:", QUALITY_OPTIONS, index=2) # Default to Good
+    bmc_cleaning_hygiene = st.selectbox("BMC Cleaning & Hygiene:", QUALITY_OPTIONS, index=2)
 
     col_infra1, col_infra2, col_infra3, col_infra4 = st.columns(4)
     with col_infra1:
@@ -279,19 +276,15 @@ with st.form(key='bmc_visit_form'):
     col9, col10 = st.columns(2)
     with col9:
         animal_welfare_farm_no = st.number_input("Animal Welfare Farm (No.):", min_value=0, value=9)
-        # Renamed "FARMER USE (CATTLE FEED)"
         farmer_use_cattle_feed = st.number_input("FARMER USE (compliant CATTLE FEED):", min_value=0, value=58)
-        # Renamed "Cattle Feed bag sale (month)"
         cattle_feed_bag_sale_month = st.number_input("Compliant Cattle Feed bag sale (month):", min_value=0, value=250)
         
-        # "Cattle Feed Brand Name" as Multi-select
         cattle_feed_brand_name = st.multiselect(
             "Cattle Feed Brand Name:",
             CATTLE_FEED_BRAND_OPTIONS,
-            default=["Royal Bypro and classic"], # Set a default if appropriate
+            default=["Royal Bypro and classic"],
             key="cattle_feed_brand_name_bmc"
         )
-        # Conditional input for "Others" option in multi-select
         other_cattle_feed_brand_name = None
         if "Others" in cattle_feed_brand_name:
             other_cattle_feed_brand_name = st.text_input("Other Cattle Feed Brand Name (Specify):", "", key="other_cattle_feed_brand_name_input")
@@ -308,20 +301,18 @@ with st.form(key='bmc_visit_form'):
         competitor1_name = st.text_input("COMPETITOR 1 NAME:", "Heritage")
         competitor1_milk_lpd = st.number_input("COMPETITOR 1 MILK (LPD):", min_value=0, value=1300)
         competitor2_name = st.text_input("Competitor 2 Name:", "Amul")
-        competitor2_milk_lpd = st.number_input("COMPETITOR 2 MILK (LPD):", min_value=0, value=2500)
+        competitor2_milk_lpd = st.number_input("Competitor 2 MILK (LPD):", min_value=0, value=2500)
         competitor3_name = st.text_input("Competitor 3 Name:", "Dynamix")
-        competitor3_milk_lpd = st.number_input("COMPETITOR 3 MILK (LPD):", min_value=0, value=1100)
+        competitor3_milk_lpd = st.number_input("Competitor 3 MILK (LPD):", min_value=0, value=1100)
         competitor4_name = st.text_input("Competitor 4 Name:")
-        competitor4_milk_lpd = st.number_input("COMPETITOR 4 MILK (LPD):", min_value=0, value=0)
+        competitor4_milk_lpd = st.number_input("Competitor 4 MILK (LPD):", min_value=0, value=0)
 
-
-    st.markdown("---") # Separator
+    st.markdown("---")
     submit_button = st.form_submit_button(label='Submit BMC Visit Data')
 
     if submit_button:
-        # Collect data into a dictionary
         submitted_data = {
-            "BMC Code": bmc_code, # Renamed
+            "BMC Code": bmc_code,
             "SCHEDULED START DATE": scheduled_start_date.isoformat() if scheduled_start_date else None,
             "BMC Name (Option)": bmc_name_option,
             "Other BMC Name": other_bmc_name,
@@ -329,13 +320,13 @@ with st.form(key='bmc_visit_form'):
             "Organization": organization,
             "State": state,
             "District (Option)": district_option,
-            "Other District": actual_district if district_option == "OTHERS" else None, # Store actual value if "OTHERS" chosen
+            "Other District": actual_district if district_option == "OTHERS" else None,
             "Sub District (Option)": sub_district_option,
             "Other Sub District": actual_sub_district if sub_district_option == "OTHERS" else None,
             "Collecting Village": collecting_village,
             "Village": village,
             "Other Village": other_village,
-            "Tehsil": "Removed", # Indicate that Tehsil field was removed
+            "Tehsil": "Removed",
             "BCF Name": bcf_name,
             "BCF Gender": bcf_gender,
             "Education": education,
@@ -389,10 +380,10 @@ with st.form(key='bmc_visit_form'):
             "Strainer/Nylon cloth available": strainer_nylon_cloth,
             "Sample Bottle": sample_bottle,
             "Animal Welfare Farm (No.)": animal_welfare_farm_no,
-            "FARMER USE (compliant CATTLE FEED)": farmer_use_cattle_feed, # Renamed
-            "Compliant Cattle Feed bag sale (month)": cattle_feed_bag_sale_month, # Renamed
-            "Cattle Feed Brand Name": ", ".join(cattle_feed_brand_name), # Join selected options for storage
-            "Other Cattle Feed Brand Name (Specify)": other_cattle_feed_brand_name, # Store specified name
+            "FARMER USE (compliant CATTLE FEED)": farmer_use_cattle_feed,
+            "Compliant Cattle Feed bag sale (month)": cattle_feed_bag_sale_month,
+            "Cattle Feed Brand Name": ", ".join(cattle_feed_brand_name),
+            "Other Cattle Feed Brand Name (Specify)": other_cattle_feed_brand_name,
             "FARMER USE(MINERAL MIXTURE) Quantity": farmer_use_mineral_mixture_qty,
             "MINERAL MIXTURE BRAND NAME": mineral_mixture_brand_name,
             "FARMER USE(EVM RTU) Quantity": farmer_use_evm_rtu_qty,
@@ -408,7 +399,6 @@ with st.form(key='bmc_visit_form'):
             "Competitor 4 Name": competitor4_name,
             "COMPETITOR 4 MILK (LPD)": competitor4_milk_lpd,
         }
-        # Append the collected data to the session state list
         st.session_state.bmc_visit_data.append(submitted_data)
         
         # Convert to DataFrame and save to CSV
@@ -419,7 +409,6 @@ with st.form(key='bmc_visit_form'):
 
 
 # --- Real-time View and Download Option for BMC Visit Data (Conditional Access) ---
-# Display all data from session_state, which now includes loaded persistent data
 st.header("Real-time View & Download (Current Session & Past Submissions)")
 
 if st.session_state.bmc_visit_data:
@@ -427,8 +416,7 @@ if st.session_state.bmc_visit_data:
     df_bmc_visit_all = pd.DataFrame(st.session_state.bmc_visit_data)
     # Ensure all columns are strings for consistent display and CSV export
     df_bmc_visit_all = df_bmc_visit_all.astype(str)
-    st.dataframe(df_bmc_visit_all, use_container_width=True) # Make dataframe wide
-
+    st.dataframe(df_bmc_visit_all, use_container_width=True)
     csv_bmc_visit_all = df_bmc_visit_all.to_csv(index=False).encode('utf-8')
     st.download_button(
         label="Download All BMC Visit Data as CSV",
@@ -444,8 +432,6 @@ else:
 # --- Admin Access Section (unchanged from your original, but now uses loaded data) ---
 if is_admin:
     st.header("🔑 Admin View: Past BMC Visit Submissions")
-    # This section now effectively shows the same data as the "Real-time View" above
-    # because st.session_state.bmc_visit_data now holds all persistent data.
     if st.session_state.bmc_visit_data:
         st.write("Below is the comprehensive list of all BMC Visit entries (includes past submissions).")
     else:
