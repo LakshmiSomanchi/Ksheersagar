@@ -322,8 +322,14 @@ with st.form(key='farm_visit_form'):
         
         # Convert to DataFrame and save to CSV
         df_to_save = pd.DataFrame(st.session_state.farm_visit_data)
-        df_to_save.to_csv(FARM_VISIT_DATA_FILE, index=False)
         
+        # Use mode='a' to append to the CSV, and header=False to not write the header again
+        # Only write the header if the file does not exist
+        if not os.path.exists(FARM_VISIT_DATA_FILE):
+             df_to_save.to_csv(FARM_VISIT_DATA_FILE, index=False)
+        else:
+             df_to_save.to_csv(FARM_VISIT_DATA_FILE, mode='a', index=False, header=False)
+
         st.success("Farm Visit data submitted and saved!")
 
 # --- Admin Access for Viewing Past Submissions ---
