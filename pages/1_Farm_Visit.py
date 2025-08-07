@@ -317,18 +317,17 @@ with st.form(key='farm_visit_form'):
             "Date Of Last Veterinary Treatment": date_last_vet_treatment.isoformat() if date_last_vet_treatment else None,
             "Presence Of Moldy Or Contaminated Feed": presence_moldy_contaminated_feed
         }
+        
         # Append the collected data to the session state list
         st.session_state.farm_visit_data.append(submitted_data)
         
-        # Convert to DataFrame and save to CSV
-        df_to_save = pd.DataFrame(st.session_state.farm_visit_data)
-        
-        # Use mode='a' to append to the CSV, and header=False to not write the header again
-        # Only write the header if the file does not exist
+        # --- NEW LOGIC: Append the single new entry to the CSV ---
+        df_new_entry = pd.DataFrame([submitted_data])
+
         if not os.path.exists(FARM_VISIT_DATA_FILE):
-             df_to_save.to_csv(FARM_VISIT_DATA_FILE, index=False)
+             df_new_entry.to_csv(FARM_VISIT_DATA_FILE, index=False)
         else:
-             df_to_save.to_csv(FARM_VISIT_DATA_FILE, mode='a', index=False, header=False)
+             df_new_entry.to_csv(FARM_VISIT_DATA_FILE, mode='a', index=False, header=False)
 
         st.success("Farm Visit data submitted and saved!")
 
