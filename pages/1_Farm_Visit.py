@@ -63,7 +63,7 @@ translations = {
         'milk_kept_duration_label': "Duration Of Milk Kept At Farm Post Milking (minutes):",
         'recent_outbreak_label': "Any Recent Outbreak Of Contamination/Disease:",
         'overall_hygiene_label': "Overall Hygiene Of The Farm:",
-        'sick_animal_space_label': "Space For Sick Animal Segregation:",
+        'space_sick_animal_label': "Space For Sick Animal Segregation:", # Corrected Key
         'recent_disease_label': "Recent Disease Reported:",
         'last_disease_date_label': "Last Date Of Reporting Of Disease:",
         'cattle_affected_no_label': "No Of Cattle Affected:",
@@ -133,7 +133,7 @@ translations = {
         'milk_kept_duration_label': "दूध काढल्यानंतर फार्मवर किती वेळ ठेवले जाते (मिनिटे):",
         'recent_outbreak_label': " अलीकडे कोणताही प्रादुर्भाव/रोगराई:",
         'overall_hygiene_label': "शेताची एकूण स्वच्छता:",
-        'sick_animal_space_label': " आजारी जनावरांसाठी वेगळी जागा:",
+        'space_sick_animal_label': " आजारी जनावरांसाठी वेगळी जागा:", # Corrected Key
         'recent_disease_label': "अलीकडील नोंदवलेला आजार:",
         'last_disease_date_label': "आजार नोंदवण्याची शेवटची तारीख:",
         'cattle_affected_no_label': "बाधित जनावरांची संख्या:",
@@ -150,6 +150,7 @@ translations = {
 
 # --- Function to get translated text ---
 def t(key):
+    # This function is the source of the KeyError, ensured the caller uses the correct key
     return translations[st.session_state.language][key]
 
 st.set_page_config(layout="centered", page_title="Ksheersagar - Data Entry")
@@ -374,6 +375,7 @@ with st.form(key='farm_visit_form'):
         t('overall_hygiene_label'),
         t('options_hygiene'), index=2, key="overall_hygiene_fv"
     )
+    # This line was causing the KeyError
     space_sick_animal = st.radio(t('space_sick_animal_label'), [t('yes'), t('no')], index=0, key="space_sick_animal_fv")
     recent_disease_reported = st.text_input(t('recent_disease_label'), "No")
     last_date_reporting_disease = st.date_input(t('last_disease_date_label'), value=None)
@@ -383,6 +385,7 @@ with st.form(key='farm_visit_form'):
     presence_moldy_contaminated_feed = st.radio(t('moldy_feed_presence_label'), [t('no'), t('yes')], index=0, key="presence_moldy_contaminated_feed_fv")
 
     st.markdown("---")
+    # This is the single, correctly placed submit button for the form
     submit_button = st.form_submit_button(label=t('submit_button'))
 
     if submit_button:
@@ -451,13 +454,12 @@ with st.form(key='farm_visit_form'):
         st.session_state.farm_visit_data.append(submitted_data)
         
         df_new_entry = pd.DataFrame([submitted_data])
-        if not os.path.exists(FARM_VISIT_DATA_FILE):
-             df_new_entry.to_csv(FARM_VISIT_DATA_FILE, index=False)
-        else:
-             df_new_entry.to_csv(FARM_VISIT_DATA_FILE, mode='a', index=False, header=False)
+        # Save to CSV (Corrected implementation logic)
+        header = not os.path.exists(FARM_VISIT_DATA_FILE)
+        df_new_entry.to_csv(FARM_VISIT_DATA_FILE, mode='a', index=False, header=header)
         st.success("Farm Visit data submitted and saved!")
 
-# --- Admin Access (This section is OUTSIDE the form, which is correct) ---
+# --- Admin Access ---
 st.sidebar.markdown("---")
 st.sidebar.header("Admin Access")
 admin_username = st.sidebar.text_input("Enter Admin Username to view past submissions:", key="admin_username_fv")
