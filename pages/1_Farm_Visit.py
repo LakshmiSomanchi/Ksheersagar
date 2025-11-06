@@ -457,7 +457,7 @@ with st.form(key='farm_visit_form'):
              df_new_entry.to_csv(FARM_VISIT_DATA_FILE, mode='a', index=False, header=False)
         st.success("Farm Visit data submitted and saved!")
 
-# --- Admin Access ---
+# --- Admin Access (This section is OUTSIDE the form, which is correct) ---
 st.sidebar.markdown("---")
 st.sidebar.header("Admin Access")
 admin_username = st.sidebar.text_input("Enter Admin Username to view past submissions:", key="admin_username_fv")
