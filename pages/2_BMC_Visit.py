@@ -3,6 +3,23 @@ import pandas as pd
 from datetime import date as dt_date
 import os
 
+# --- Constants ---
+BMC_VISIT_DATA_FILE = "bmc_visit_data.csv"
+
+# --- CACHING FIX: Load data only once ---
+@st.cache_data
+def load_existing_data():
+    """Loads existing data from CSV, using caching for performance."""
+    data_list = []
+    if os.path.exists(BMC_VISIT_DATA_FILE):
+        try:
+            # Note: We enforce pandas not to guess data types for faster loading
+            df_existing = pd.read_csv(BMC_VISIT_DATA_FILE, dtype=str)
+            data_list.extend(df_existing.to_dict('records'))
+        except Exception as e:
+            st.warning(f"Warning: Could not load existing BMC data file. Starting fresh. Error: {e}")
+    return data_list
+
 # --- Translation Dictionary ---
 translations = {
     'en': {
@@ -273,11 +290,7 @@ translations = {
 
 # --- Function to get translated text ---
 def t(key):
-    # Fallback to English key if translation is missing
     return translations[st.session_state.language].get(key, key)
-
-# NOTE: The helper function text_input_for_others has been REMOVED and inlined below 
-# to improve Streamlit form loading performance.
 
 st.set_page_config(layout="centered", page_title="Ksheersagar - BMC Visit")
 
@@ -297,16 +310,10 @@ if selected_lang_display == "English":
 else:
     st.session_state.language = 'mr'
 
-# --- CSV File Path & Data Loading ---
-BMC_VISIT_DATA_FILE = "bmc_visit_data.csv"
+# --- Data Loading and Initialization ---
+# Load data ONCE at the start using the cached function
 if 'bmc_visit_data' not in st.session_state:
-    st.session_state.bmc_visit_data = []
-    if os.path.exists(BMC_VISIT_DATA_FILE):
-        try:
-            df_existing = pd.read_csv(BMC_VISIT_DATA_FILE)
-            st.session_state.bmc_visit_data.extend(df_existing.to_dict('records'))
-        except Exception as e:
-            st.error(f"Error loading existing BMC data: {e}")
+    st.session_state.bmc_visit_data = load_existing_data()
 
 # Define static lists (for data consistency)
 GOVIND_BMC_NAMES = ["VIGHNAHARTA VIDNI COOLER", "NIRAI DUDH SANKALAN KEND.PANCABIGA", "PAWAR DAIRY ASU", "AJAY DUDH", "JAY HANUMAN BMC NAIKBOMWADI", "SHREE GANESH SASTEWADI BMC", "GOVIND DUDH SANKALAN KENDRA HOL", "JITOBA BULK COOLER JINTI", "JAY MHALLAR DUDH KALAJ", "WAGHESHWARI SASWAD", "BHAIRAVNATH DUDH HINGANGAON", "GOVIND DUDH SANKALAN KENDRA SASWAD", "SHREENATH MILK SANKALAN", "RAJMUDRA DUDH WATHARPHATA BMC", "ROKDESHWAR MILK SANKALAN", "BHAIRAVNATH MANDAVKHADAK COOLER", "SAYALI, MUNJAWADI", "JAY HANUMAN BARAD", "SHIVSHANKAR DUDH BARAD", "CHANDRABHAGA MILK SANKALAN", "KARCHE SAMPAT", "DURGADEVI DUDH ZIRAPVASTI COOLER", "JANAI DUDH SANKALAN KENDRA BMC", "GOKUL DUDH MATHACHIWADI", "GOVIND MAHILA SHVETKRANTI MILK SANKALAN", "VAJUBAI MILK SANKALAN", "SHRIRAM DUDH SANKALAN & SHIT.BHUINJ", "YASHODHAN MILK & MILK PROD. PACWAD", "OM BHAKTI DUDH WAI COW", "MAYURESHWAR DAIRY", "YOGESHWARI MILK SANKALAN", "JAY BHAVANI ANBHULEWADI", "MAHALAXMI MILK", "SHREENATH MILK", "MAHALAXMI DUDH MOHI", "SANCHALIT SUDARSHAN MILK", "MAULI DUDH SANKALAN KENDR.BHALAWADI", "SUPRIYA MILK", "JAGDAMBA DUDH BHATKI", "SHRI GANESH DUDH SAK VARKUTE MASWAD", "DAHIWADI DOCK", "SHREE JAYHARI RANAND PHALTAN COOLER", "SHIVAM DUDH BUDH", "GOMATA DUDH SANKALAN KEND.CHILEWADI", "REVANSIDDHA MILK SANKALAN", "VENKATESH AGRO PROCESSING CO.", "SHIVRAJ DUDH SANKALAN KENDRA", "SHIRAM DUDH PIMPRE DHAIGUDEMALA", "VANGNA DUDH HIVRE COW MILK", "GOWARDHAN MILK COLLECTION", "SHRI DATT DOODH DAIRY ANPATWADI", "JYOTIRLING DUDH SANKALAN KENDRA BORJAIWADI", "SHREE DATT MILK DAIRY AZADPUR", "SHIVKRUPA BMC", "SANT BHAGWANBABA AKOLE", "HINDAVI DAIRY FARM KHADAKI DAUND", "SHIVTEJ DUDH PAWARWASTI BORIBEL", "JAY HANUMAN DUDH VITTHALNAGAR", "BHAIRAVNATH DEVULGOAN RAJE", "A.S.DAIRY FARM", "VENKATESH AGRO PROCESSING CO.", "AKASH DUDH SANKALAN KENDRA", "BHAIRAVNATH MILK SANKALAN", "GOVIND SADASHIVNAGAR", "GOVIND WANIMALA", "GOVIND MILK SANKALAN", "LOKRAJ MILK SANKALAN", "SHAMBHU MAHADEV PHONDSHIRAS", "VISHNU NARAYAN DUDH", "JYOTIRLING DOODH SANKALAN EKSHIV"]
@@ -505,8 +512,7 @@ with st.form(key='bmc_visit_form'):
     submit_button = st.form_submit_button(label=t('submit_button'))
 
     if submit_button:
-        # Check for required photo uploads (simple check)
-        # NOTE: If you are not using photos, remove this check to avoid blocking submission
+        # NOTE: Photo check disabled if loading is the issue, assume user will upload later
         # if not all([photo_overall, photo_platform, photo_inside]):
         #     st.error("Please upload all three required photos before submitting.")
         #     st.stop()
@@ -626,7 +632,8 @@ with st.form(key='bmc_visit_form'):
 st.header("Real-time View & Download")
 if st.session_state.bmc_visit_data:
     st.subheader("All Submitted BMC Visit Entries:")
-    df_bmc_visit_all = pd.DataFrame(st.session_state.bmc_visit_data).astype(str)
+    # Pass data directly from session state, no more heavy loading here
+    df_bmc_visit_all = pd.DataFrame(st.session_state.bmc_visit_data).astype(str) 
     st.dataframe(df_bmc_visit_all, use_container_width=True)
     csv_bmc_visit_all = df_bmc_visit_all.to_csv(index=False).encode('utf-8')
     st.download_button(
