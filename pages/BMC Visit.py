@@ -13,14 +13,13 @@ def load_existing_data():
     data_list = []
     if os.path.exists(BMC_VISIT_DATA_FILE):
         try:
-            # Note: We enforce pandas not to guess data types for faster loading
             df_existing = pd.read_csv(BMC_VISIT_DATA_FILE, dtype=str)
             data_list.extend(df_existing.to_dict('records'))
         except Exception as e:
             st.warning(f"Warning: Could not load existing BMC data file. Starting fresh. Error: {e}")
     return data_list
 
-# --- Translation Dictionary ---
+# --- Translation Dictionary (Definitions remain the same) ---
 translations = {
     'en': {
         'page_title': "🚚 Ksheersagar - BMC Visit Data Entry",
@@ -300,19 +299,53 @@ translations = {
 def t(key):
     return translations[st.session_state.language].get(key, key)
 
-# --- INLINED LOGIC HELPER FUNCTION (For clean UI code and rendering the specify box) ---
-def render_other_specify_input(select_option, input_label_key, input_key):
-    """Renders the 'If Others, Specify' textbox if the select widget value is 'OTHERS'."""
-    other_specify_input = None
-    # Check if the selection is 'OTHERS' (for single select) or contains 'OTHERS' (for multi-select)
-    is_others_selected = (isinstance(select_option, str) and select_option == t('others')) or \
-                         (isinstance(select_option, list) and t('others') in select_option)
+# --- HELPER FUNCTION FOR CONDITIONAL UI ---
+def render_select_with_specify(container, label_key, options_list, key, specify_label_key=None, is_multi=False):
+    """
+    Renders a select widget and a conditional 'specify' input 
+    in a clean two-column layout. Returns the selected option(s) and the specify input value.
+    """
+    if specify_label_key is None:
+        # Default to using the main label key prefixed with 'other_'
+        specify_label_key = f"other_{label_key}" 
+    
+    col_select, col_specify = container.columns([0.5, 0.5])
+    
+    with col_select:
+        if is_multi:
+            select_output = st.multiselect(
+                t(label_key),
+                options_list,
+                key=key,
+                default=[] # Initialize with an empty list for safety
+            )
+        else:
+            select_output = st.selectbox(
+                t(label_key),
+                options_list,
+                key=key,
+                index=0
+            )
 
-    if is_others_selected:
-        # Use a temporary key to prevent caching conflicts, and retrieve the value at submission time
-        other_specify_input = st.text_input(t(input_label_key), key=input_key)
-    return other_specify_input
-
+    specify_output = None
+    with col_specify:
+        is_others_selected = (isinstance(select_output, str) and select_output == t('others')) or \
+                             (isinstance(select_output, list) and t('others') in select_output)
+        
+        if is_others_selected:
+            # Render the required text input
+            specify_output = st.text_input(
+                t(specify_label_key), 
+                key=f"{key}_specify"
+            )
+        else:
+            # Render an empty area to maintain vertical alignment
+            st.text_area(t(specify_label_key), value="", disabled=True, height=34, label_visibility="visible")
+            # Clear the specify input value from session state if it exists
+            if f"{key}_specify" in st.session_state:
+                 st.session_state[f"{key}_specify"] = ""
+    
+    return select_output, specify_output
 
 st.set_page_config(layout="centered", page_title="Ksheersagar - BMC Visit")
 
@@ -333,7 +366,6 @@ else:
     st.session_state.language = 'mr'
 
 # --- Data Loading and Initialization ---
-# Load data ONCE at the start using the cached function
 if 'bmc_visit_data' not in st.session_state:
     st.session_state.bmc_visit_data = load_existing_data()
 
@@ -367,34 +399,48 @@ with st.form(key='bmc_visit_form'):
     
     # --- General Info ---
     st.header(t('general_info_header'))
+    
+    # BMC Name (Using render_select_with_specify)
+    bmc_name_option, other_bmc_name = render_select_with_specify(
+        st, 
+        'bmc_name_label', 
+        ["SELECT"] + ALL_BMC_NAMES + [t('others')], 
+        'bmc_name_select',
+        'other_bmc_name_label'
+    )
+    actual_bmc_name = other_bmc_name if bmc_name_option == t('others') else bmc_name_option
+
     col1, col2 = st.columns(2)
     
-    # --- COL 1: BMC Info ---
     with col1:
         bmc_code = st.text_input(t('bmc_code_label'))
         scheduled_start_date = st.date_input(t('start_date_label'), value=dt_date(2025, 5, 7))
         organization = st.selectbox(t('organization_label'), ["Govind Milk", "SDDPL"], index=0)
         
-        # 1. BMC Name 'Others' Logic (Rendering)
-        bmc_name_option = st.selectbox(t('bmc_name_label'), ["SELECT"] + ALL_BMC_NAMES + [t('others')], index=0)
-        other_bmc_name = render_other_specify_input(bmc_name_option, 'other_bmc_name_label', "other_bmc_name_input")
-        actual_bmc_name = other_bmc_name if bmc_name_option == t('others') else bmc_name_option
-        
-        # 2. Replaced "Nilesh" with "Dr. Shyam"
+        # Surveyor Name (Dr. Shyam fix)
         activity_created_by = st.selectbox(t('activity_created_by_label'), ["Dr. Shyam", "Dr Sachin", "bhusan", "subhrat", "aniket", "ritesh"], index=0)
 
-    # --- COL 2: Location Info ---
     with col2:
         state = st.text_input(t('state_label'), "Maharashtra", disabled=True)
         
-        # 1. District 'Others' Logic (Rendering)
-        district_option = st.selectbox(t('district_label'), ["Satara", "Pune", "Ahmednagar", "Solapur", t('others')], index=0)
-        other_district_input = render_other_specify_input(district_option, 'other_district_label', "other_district_input")
+        # District (Using render_select_with_specify)
+        district_option, other_district_input = render_select_with_specify(
+            st, 
+            'district_label', 
+            ["Satara", "Pune", "Ahmednagar", "Solapur", t('others')], 
+            'district_select',
+            'other_district_label'
+        )
         actual_district = other_district_input if district_option == t('others') else district_option
 
-        # 1. Sub District 'Others' Logic (Rendering)
-        sub_district_option = st.selectbox(t('sub_district_label'), ["Phaltan", "malshiras", "Baramati", "Indapur", "Daund", "Purander", "Pachgani", "Man", "Khatav", "Koregaon", "Khandala", "Shirur", t('others')], index=0)
-        other_sub_district_input = render_other_specify_input(sub_district_option, 'other_sub_district_label', "other_sub_district_input")
+        # Sub District (Using render_select_with_specify)
+        sub_district_option, other_sub_district_input = render_select_with_specify(
+            st, 
+            'sub_district_label', 
+            ["Phaltan", "malshiras", "Baramati", "Indapur", "Daund", "Purander", "Pachgani", "Man", "Khatav", "Koregaon", "Khandala", "Shirur", t('others')], 
+            'sub_district_select',
+            'other_sub_district_label'
+        )
         actual_sub_district = other_sub_district_input if sub_district_option == t('others') else sub_district_option
         
         # Collecting Village (Numeric)
@@ -405,16 +451,20 @@ with st.form(key='bmc_visit_form'):
     # --- BCF Details ---
     st.header(t('bcf_details_header'))
     
-    # Combined inputs for better display
     col_farmer1, col_farmer2 = st.columns(2)
 
     with col_farmer1:
         bcf_name = st.text_input(t('bcf_name_label'), "Sachin Shahuraje Bhosale")
         bcf_gender = st.selectbox(t('bcf_gender_label'), t('options_gender'), index=0)
         
-        # 1. Education 'Others' Logic (Rendering)
-        education = st.selectbox(t('education_label'), t('options_education'), index=2)
-        other_education = render_other_specify_input(education, 'other_education_label', "other_education_input")
+        # Education (Using render_select_with_specify)
+        education, other_education = render_select_with_specify(
+            st, 
+            'education_label', 
+            t('options_education'), 
+            'education_select',
+            'other_education_label'
+        )
         actual_education = other_education if education == t('others') else education
         
         bcf_mobile_number = st.text_input(t('bcf_mobile_label'), "9096807277")
@@ -429,17 +479,13 @@ with st.form(key='bmc_visit_form'):
     with col_counts1:
         st.markdown("**Total Registered Farmers**")
         total_registered_farmer_no = st.number_input(t('total_farmers_label'), min_value=0, value=93, key="total_reg")
-        # 3. No. of Men Farmers (Total Registered) - NEW
         total_men_farmer_no = st.number_input(t('total_men_farmers_label'), min_value=0, value=78, key="total_men")
-        # No. of Women Farmers (Total Registered)
         total_women_farmer_no = st.number_input(t('total_women_farmers_label'), min_value=0, value=15, key="total_women")
     
     with col_counts2:
         st.markdown("**Active Farmers**")
         active_farmer_no = st.number_input(t('active_farmers_label'), min_value=0, value=65, key="active_reg")
-        # 3. No. of Men Farmers (Active Farmers) - NEW
         active_men_farmer_no = st.number_input(t('active_men_farmers_label'), min_value=0, value=55, key="active_men")
-        # No. of Women Farmers (Active Farmers)
         active_women_farmer_no = st.number_input(t('active_women_farmers_label'), min_value=0, value=10, key="active_women")
 
     # --- Capacity & Collection ---
@@ -491,9 +537,15 @@ with st.form(key='bmc_visit_form'):
     with col_new_infra3:
         notice_board_available = st.radio(t('notice_board_available_label'), yes_no_options, index=0, key="notice_board_available_bmc")
     with col_new_infra4:
-        # 1. Awareness Poster 'Others' Logic (Rendering)
-        awareness_poster = st.multiselect(t('awareness_poster_label'), t('options_awareness_poster'), default=[t('options_awareness_poster')[0]])
-        other_awareness_poster = render_other_specify_input(awareness_poster, 'other_awareness_poster_label', "other_awareness_poster_input")
+        # 1. Awareness Poster (Using render_select_with_specify)
+        awareness_poster, other_awareness_poster = render_select_with_specify(
+            st, 
+            'awareness_poster_label', 
+            t('options_awareness_poster'), 
+            'awareness_poster_select',
+            'other_awareness_poster_label',
+            is_multi=True
+        )
 
 
     # --- Payment Section ---
@@ -513,9 +565,15 @@ with st.form(key='bmc_visit_form'):
         farmer_use_cattle_feed = st.number_input(t('farmer_use_cattle_feed_label'), min_value=0, value=58)
         cattle_feed_bag_sale_month = st.number_input(t('cattle_feed_bag_sale_label'), min_value=0, value=250)
         
-        # 1. Cattle Feed Brand 'Others' Logic (Rendering)
-        cattle_feed_brand_name = st.multiselect(t('cattle_feed_brand_label'), CATTLE_FEED_BRAND_OPTIONS, default=["Royal Bypro and classic"])
-        other_cattle_feed_brand_name = render_other_specify_input(cattle_feed_brand_name, 'other_cattle_feed_brand_label', "other_cattle_feed_brand_name_input")
+        # 1. Cattle Feed Brand (Using render_select_with_specify)
+        cattle_feed_brand_name, other_cattle_feed_brand_name = render_select_with_specify(
+            st, 
+            'cattle_feed_brand_label', 
+            CATTLE_FEED_BRAND_OPTIONS, 
+            'cattle_feed_brand_select',
+            'other_cattle_feed_brand_label',
+            is_multi=True
+        )
         
         farmer_use_mineral_mixture_qty = st.number_input(t('farmer_use_mineral_mixture_label'), min_value=0, value=14)
         mineral_mixture_brand_name = st.text_input(t('mineral_mixture_brand_label'), "Govind Chileted")
@@ -539,14 +597,10 @@ with st.form(key='bmc_visit_form'):
     submit_button = st.form_submit_button(label=t('submit_button'))
 
     if submit_button:
-        # Data submission logic follows
-        # (Assuming photo upload check is currently commented out for troubleshooting load time)
-        
         # Convert translated answers back to English for data consistency
         yes_en, no_en = translations['en']['yes'], translations['en']['no']
         
         submitted_data = {
-            # --- New Fields ---
             "Geolocation (Lat, Long)": bmc_location,
             "Photo 1 (Overall BMC)": photo_overall.name if 'photo_overall' in locals() and photo_overall else "N/A",
             "Photo 2 (Platform)": photo_platform.name if 'photo_platform' in locals() and photo_platform else "N/A",
