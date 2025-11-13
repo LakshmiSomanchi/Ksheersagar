@@ -13,7 +13,6 @@ def load_existing_data():
     data_list = []
     if os.path.exists(BMC_VISIT_DATA_FILE):
         try:
-            # Note: We enforce pandas not to guess data types for faster loading
             df_existing = pd.read_csv(BMC_VISIT_DATA_FILE, dtype=str)
             data_list.extend(df_existing.to_dict('records'))
         except Exception as e:
@@ -300,16 +299,19 @@ translations = {
 def t(key):
     return translations[st.session_state.language].get(key, key)
 
-# --- HELPER FUNCTION FOR CONDITIONAL UI (Updated for stability) ---
+# --- HELPER FUNCTION FOR CONDITIONAL UI (Final Robust Fix) ---
 def render_select_with_specify(container, label_key, options_list, select_key, specify_label_key):
     """
     Renders a select widget and a conditional 'specify' text input 
-    in a clean two-column layout. Returns the selected option.
+    in a clean two-column layout, ensuring the specify box is editable when visible.
+    
+    Returns: (select_output, specify_output)
     """
     
     col_select, col_specify = container.columns([0.5, 0.5])
     
-    is_multi = isinstance(options_list, list) and options_list[0] in translations['en']['options_awareness_poster'] # Simple hack to check if multi-select is intended
+    is_multi = isinstance(options_list, list) and options_list[0] in translations['en']['options_awareness_poster'] 
+    specify_key = f"{select_key}_specify"
     
     with col_select:
         # 1. Render the Select Widget
@@ -328,36 +330,37 @@ def render_select_with_specify(container, label_key, options_list, select_key, s
                 index=0
             )
 
+    specify_output = None
+    is_others_selected = (isinstance(select_output, str) and select_output == t('others')) or \
+                         (isinstance(select_output, list) and t('others') in select_output)
+    
     with col_specify:
         # 2. Conditional Rendering of Specify Input
-        is_others_selected = (isinstance(select_output, str) and select_output == t('others')) or \
-                             (isinstance(select_output, list) and t('others') in select_output)
-        
-        specify_key = f"{select_key}_specify"
-        
         if is_others_selected:
-            # Renders the editable text input, value is auto-managed by Streamlit state
-            st.text_input(
+            # Render the *editable* text input
+            specify_output = st.text_input(
                 t(specify_label_key), 
                 key=specify_key, 
                 label_visibility="visible"
             )
-            # Return the value from state for immediate use in submission logic
-            specify_output = st.session_state.get(specify_key, "")
         else:
-            # Renders a disabled input to maintain alignment and clear the value
-            # NOTE: Clearing the value here ensures we don't save old 'specify' text
-            if specify_key in st.session_state:
-                st.session_state[specify_key] = "" 
+            # Use a dummy input field to maintain vertical spacing and clear state
+            # We use a unique key for the placeholder to avoid input conflicts
+            placeholder_key = f"{select_key}_ph"
             
+            # Clear the specify state if it exists and 'Others' is not selected
+            if specify_key in st.session_state:
+                st.session_state[specify_key] = ""
+                
+            # Render the placeholder (non-editable, disabled, just for alignment)
             st.text_input(
                 t(specify_label_key), 
                 value="", 
                 disabled=True, 
-                key=f"{select_key}_placeholder",
+                key=placeholder_key,
                 label_visibility="visible"
             )
-            specify_output = None # Ensure output is None if 'Others' is not selected
+            specify_output = "" # Ensure output is an empty string if not used
 
     return select_output, specify_output
 
@@ -425,6 +428,7 @@ with st.form(key='bmc_visit_form'):
     )
     actual_bmc_name = other_bmc_name if bmc_name_option == t('others') else bmc_name_option
 
+    # Row 2 (BMC Code, Date, Organization, Activity Creator)
     col1, col2 = st.columns(2)
     
     with col1:
@@ -552,7 +556,7 @@ with st.form(key='bmc_visit_form'):
     with col_new_infra3:
         notice_board_available = st.radio(t('notice_board_available_label'), yes_no_options, index=0, key="notice_board_available_bmc")
     with col_new_infra4:
-        # 1. Awareness Poster (Using render_select_with_specify)
+        # Awareness Poster (Using render_select_with_specify)
         awareness_poster, other_awareness_poster = render_select_with_specify(
             st, 
             'awareness_poster_label', 
@@ -579,7 +583,7 @@ with st.form(key='bmc_visit_form'):
         farmer_use_cattle_feed = st.number_input(t('farmer_use_cattle_feed_label'), min_value=0, value=58)
         cattle_feed_bag_sale_month = st.number_input(t('cattle_feed_bag_sale_label'), min_value=0, value=250)
         
-        # 1. Cattle Feed Brand (Using render_select_with_specify)
+        # Cattle Feed Brand (Using render_select_with_specify)
         cattle_feed_brand_name, other_cattle_feed_brand_name = render_select_with_specify(
             st, 
             'cattle_feed_brand_label', 
