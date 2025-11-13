@@ -303,9 +303,8 @@ def t(key):
 def render_select_with_specify(container, label_key, options_list, select_key, specify_label_key):
     """
     Renders a select widget and a conditional 'specify' text input 
-    in a clean two-column layout, ensuring the specify box is ALWAYS editable when visible.
-    
-    Returns: (select_output, specify_output)
+    in a clean two-column layout. This implementation ensures the text input 
+    is fully editable when visible, without relying on disabling placeholders.
     """
     
     col_select, col_specify = container.columns([0.5, 0.5])
@@ -313,12 +312,12 @@ def render_select_with_specify(container, label_key, options_list, select_key, s
     is_multi = isinstance(options_list, list) and options_list[0] in translations['en']['options_awareness_poster'] 
     specify_key = f"{select_key}_specify"
     
-    # Initialize specify state if it doesn't exist (to prevent KeyErrors in assignment)
+    # 1. Initialize specify state
     if specify_key not in st.session_state:
         st.session_state[specify_key] = ""
     
     with col_select:
-        # 1. Render the Select Widget
+        # 2. Render the Select Widget
         if is_multi:
             select_output = st.multiselect(
                 t(label_key),
@@ -339,29 +338,27 @@ def render_select_with_specify(container, label_key, options_list, select_key, s
                          (isinstance(select_output, list) and t('others') in select_output)
     
     with col_specify:
-        # 2. Conditional Rendering of Specify Input
+        # 3. Conditional Rendering of Specify Input
         if is_others_selected:
             # Render the *editable* text input, linked to session state
-            # This uses the current state value, or an empty string if just selected.
             specify_output = st.text_input(
                 t(specify_label_key), 
-                value=st.session_state[specify_key], # Use the current state value
-                key=specify_key, 
+                value=st.session_state[specify_key], 
+                key=specify_key, # This key is used for editing
                 label_visibility="visible"
             )
         else:
-            # Clear the specify state if it exists and 'Others' is not selected
+            # If 'Others' is deselected, clear the state immediately (this forces a rerun)
             if st.session_state[specify_key] != "":
                 st.session_state[specify_key] = "" 
             
-            # Render a visible, DISABLED input as a placeholder for alignment
-            # NOTE: We MUST render a widget for alignment, but it must be disabled 
-            # to avoid conflicts when 'Others' is not selected.
+            # Render a plain input with a dummy key, ensuring it's never the *same* widget key
+            # as the editable box, which prevents the lock conflict.
             st.text_input(
                 t(specify_label_key), 
                 value="", 
                 disabled=True, 
-                key=f"{select_key}_ph", # Use placeholder key
+                key=f"{select_key}_dummy_ph", 
                 label_visibility="visible"
             )
             specify_output = "" 
@@ -454,7 +451,7 @@ with st.form(key='bmc_visit_form'):
             'district_select',
             'other_district_label'
         )
-        actual_district = other_district_input if district_option == t('others') else other_district_input
+        actual_district = other_district_input if district_option == t('others') else district_option
 
         # Sub District (Using render_select_with_specify)
         sub_district_option, other_sub_district_input = render_select_with_specify(
