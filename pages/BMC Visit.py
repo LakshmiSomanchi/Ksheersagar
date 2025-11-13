@@ -13,6 +13,7 @@ def load_existing_data():
     data_list = []
     if os.path.exists(BMC_VISIT_DATA_FILE):
         try:
+            # Note: We enforce pandas not to guess data types for faster loading
             df_existing = pd.read_csv(BMC_VISIT_DATA_FILE, dtype=str)
             data_list.extend(df_existing.to_dict('records'))
         except Exception as e:
@@ -299,53 +300,67 @@ translations = {
 def t(key):
     return translations[st.session_state.language].get(key, key)
 
-# --- HELPER FUNCTION FOR CONDITIONAL UI ---
-def render_select_with_specify(container, label_key, options_list, key, specify_label_key=None, is_multi=False):
+# --- HELPER FUNCTION FOR CONDITIONAL UI (Updated for stability) ---
+def render_select_with_specify(container, label_key, options_list, select_key, specify_label_key):
     """
-    Renders a select widget and a conditional 'specify' input 
-    in a clean two-column layout. Returns the selected option(s) and the specify input value.
+    Renders a select widget and a conditional 'specify' text input 
+    in a clean two-column layout. Returns the selected option.
     """
-    if specify_label_key is None:
-        # Default to using the main label key prefixed with 'other_'
-        specify_label_key = f"other_{label_key}" 
     
     col_select, col_specify = container.columns([0.5, 0.5])
     
+    is_multi = isinstance(options_list, list) and options_list[0] in translations['en']['options_awareness_poster'] # Simple hack to check if multi-select is intended
+    
     with col_select:
+        # 1. Render the Select Widget
         if is_multi:
             select_output = st.multiselect(
                 t(label_key),
                 options_list,
-                key=key,
-                default=[] # Initialize with an empty list for safety
+                key=select_key,
+                default=[]
             )
         else:
             select_output = st.selectbox(
                 t(label_key),
                 options_list,
-                key=key,
+                key=select_key,
                 index=0
             )
 
-    specify_output = None
     with col_specify:
+        # 2. Conditional Rendering of Specify Input
         is_others_selected = (isinstance(select_output, str) and select_output == t('others')) or \
                              (isinstance(select_output, list) and t('others') in select_output)
         
+        specify_key = f"{select_key}_specify"
+        
         if is_others_selected:
-            # Render the required text input
-            specify_output = st.text_input(
+            # Renders the editable text input, value is auto-managed by Streamlit state
+            st.text_input(
                 t(specify_label_key), 
-                key=f"{key}_specify"
+                key=specify_key, 
+                label_visibility="visible"
             )
+            # Return the value from state for immediate use in submission logic
+            specify_output = st.session_state.get(specify_key, "")
         else:
-            # Render an empty area to maintain vertical alignment
-            st.text_area(t(specify_label_key), value="", disabled=True, height=34, label_visibility="visible")
-            # Clear the specify input value from session state if it exists
-            if f"{key}_specify" in st.session_state:
-                 st.session_state[f"{key}_specify"] = ""
-    
+            # Renders a disabled input to maintain alignment and clear the value
+            # NOTE: Clearing the value here ensures we don't save old 'specify' text
+            if specify_key in st.session_state:
+                st.session_state[specify_key] = "" 
+            
+            st.text_input(
+                t(specify_label_key), 
+                value="", 
+                disabled=True, 
+                key=f"{select_key}_placeholder",
+                label_visibility="visible"
+            )
+            specify_output = None # Ensure output is None if 'Others' is not selected
+
     return select_output, specify_output
+
 
 st.set_page_config(layout="centered", page_title="Ksheersagar - BMC Visit")
 
@@ -543,8 +558,7 @@ with st.form(key='bmc_visit_form'):
             'awareness_poster_label', 
             t('options_awareness_poster'), 
             'awareness_poster_select',
-            'other_awareness_poster_label',
-            is_multi=True
+            'other_awareness_poster_label'
         )
 
 
@@ -571,8 +585,7 @@ with st.form(key='bmc_visit_form'):
             'cattle_feed_brand_label', 
             CATTLE_FEED_BRAND_OPTIONS, 
             'cattle_feed_brand_select',
-            'other_cattle_feed_brand_label',
-            is_multi=True
+            'other_cattle_feed_brand_label'
         )
         
         farmer_use_mineral_mixture_qty = st.number_input(t('farmer_use_mineral_mixture_label'), min_value=0, value=14)
