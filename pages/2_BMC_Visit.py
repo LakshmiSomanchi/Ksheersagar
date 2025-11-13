@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 from datetime import date as dt_date
 import os
-import time 
+# Removed 'import time' as it's no longer needed for geolocation simulation
 
 # --- Translation Dictionary ---
 translations = {
@@ -123,8 +123,7 @@ translations = {
         'competitor4_name_label': "Competitor 4 Name:",
         'competitor4_milk_label': "Competitor 4 MILK (LPD):",
 
-        'photo_upload_header': "BMC Photos and Geolocation",
-        'capture_location_label': "Capture BMC Location (Press to get Lat/Long):",
+        'photo_upload_header': "BMC Photos", # Geolocation removed from header
         'photo_overall_label': "Photo 1: Overall BMC Structure",
         'photo_platform_label': "Photo 2: Platform/Entry Area",
         'photo_inside_label': "Photo 3: BMC Cooling Area (Inside)",
@@ -256,8 +255,7 @@ translations = {
         'competitor4_name_label': "स्पर्धक 4 नाव:",
         'competitor4_milk_label': "स्पर्धक 4 दूध (LPD):",
 
-        'photo_upload_header': "BMC फोटो आणि भौगोलिक स्थान",
-        'capture_location_label': "BMC स्थान मिळवा (बटण दाबा):",
+        'photo_upload_header': "BMC फोटो",
         'photo_overall_label': "फोटो 1: एकूण BMC रचना",
         'photo_platform_label': "फोटो 2: प्लॅटफॉर्म/प्रवेश क्षेत्र",
         'photo_inside_label': "फोटो 3: BMC कूलिंग क्षेत्र (आत)",
@@ -294,27 +292,8 @@ def text_input_for_others(select_widget_value, label_key, input_key):
         
     return other_value
 
-# --- Geolocation Function (FIXED for use inside st.form) ---
-def get_geolocation():
-    if 'location_captured' not in st.session_state:
-        st.session_state.location_captured = "N/A"
-    
-    # FIX: Use st.form_submit_button() instead of st.button() inside the main form.
-    # We use a unique key to distinguish it from the final submission button.
-    if st.form_submit_button(
-        t('capture_location_label'), 
-        key="capture_geo_submit",
-        help="Click this button to capture the simulated location. This action submits the form but won't save data unless the final 'Submit' is also clicked."
-    ):
-        with st.spinner("Capturing location..."):
-            time.sleep(1) # Simulate network delay
-            # Mock Coordinates: Using time to make the coordinates change slightly
-            st.session_state.location_captured = f"{round(18 + 0.1 * time.time() % 1, 5)}, {round(74 + 0.1 * time.time() % 1, 5)}" 
-        st.success("Location captured! Please check the coordinates below.")
-    
-    # Display the captured location
-    st.info(f"Captured Location: **{st.session_state.location_captured}**")
-    return st.session_state.location_captured
+# --- Geolocation Function REMOVED ---
+# To ensure fast loading, the get_geolocation function and its call are removed.
 
 # --- Streamlit App Configuration ---
 st.set_page_config(layout="centered", page_title="Ksheersagar - BMC Visit")
@@ -358,12 +337,8 @@ st.write(t('page_header'))
 
 with st.form(key='bmc_visit_form'):
     
-    # --- GEOLOCATION AND PHOTO UPLOAD SECTION ---
+    # --- PHOTO UPLOAD SECTION (Geolocation Removed) ---
     st.header(t('photo_upload_header'))
-    
-    # Geolocation (FIXED to use st.form_submit_button)
-    bmc_location = get_geolocation()
-    st.markdown("---")
     
     # Photo Uploads
     col_photo1, col_photo2, col_photo3 = st.columns(3)
@@ -541,8 +516,8 @@ with st.form(key='bmc_visit_form'):
         yes_en, no_en = translations['en']['yes'], translations['en']['no']
         
         submitted_data = {
-            # --- New Fields ---
-            "Geolocation (Lat, Long)": bmc_location,
+            # --- New Fields (Geolocation replaced by N/A placeholder) ---
+            "Geolocation (Lat, Long)": "N/A (Removed for speed)", 
             "Photo 1 (Overall BMC)": photo_overall.name if photo_overall else "N/A",
             "Photo 2 (Platform)": photo_platform.name if photo_platform else "N/A",
             "Photo 3 (Inside BMC)": photo_inside.name if photo_inside else "N/A",
