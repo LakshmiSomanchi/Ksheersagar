@@ -119,8 +119,6 @@ dict_translations = {
         "Silage": "सायलेज",
         "Source and Price of Silage": "सायलेजचा स्त्रोत आणि किंमत",
         "Quantity of Silage": "सायलेजचे प्रमाण (किलो/दिवस)",
-        "Type of Farm": "शेताचा प्रकार",
-        "Other Type of Farm (if selected above)": "इतर शेताचा प्रकार (वर निवडल्यास)",
         "Source of Water": "पाण्याचा स्त्रोत (अनेक निवडा)",
         "Name": "सर्वेक्षकाचे नाव",
         "Date of Visit": "भेटीची तारीख",
@@ -140,7 +138,7 @@ dict_translations = {
 }
 
 
-# --- Heritage Specific Data (Syntactically Corrected) ---
+# --- Heritage Specific Data (Combined for simplicity) ---
 VLCC_NAMES = [
 "3025-K.V.PALLE", "3026-KOTHA PALLE", "3028-BONAMVARIPALLE", "3029-BOMMAICHERUVUPALLI", "3030-BADDALAVARIPALLI", "3033-CHINNAGOTTIGALLU", "3034-VODDIPALLE", "3036-MUDUPULAVEMULA", "3037-BAYYAREDDYGARIPALLE", "3038-DODDIPALLE", "3040-MARAMREDDYGARIPALLE", "3041-GUTTAPALEM", "3042-CHERUVUMUNDARAPALLI", "3044-VARAMPATIVARIPALLE",
 "3045-ROMPICHERLA", "3046-BANDAKINDAPALLE", "3047-MARASANIVARIPALLI",
@@ -156,194 +154,33 @@ VLCC_NAMES = [
 "2374-PILER", "2437-MARRIMAKULAPALLE", "2421-MATLOLLPALLAI", "2314-KUMMARAPALLE", "2338-SETTIPALLEVANDLAPALLE", "2500-KAMMAPALLE", "2530-AVULAPEDDIREDDIGARIPALL", "2528-MARAMREDDIGARIPALLE", "2526-AVULAPEDDIREDDIGARIPALL", "2463-BOMMAIAHGARIPALLE", "2444-ROMPICHERLA", "2440-BASIREDDIGARIPALLE",
 "2013-THOTIMALAPALLE", "2083-RAJUVARIPALLI H/W", "2045-RAJUVARIPALLI", "2288-RAJUVARIPALLI", "2272-THATIGUNTAPALEM", "2186-KANTAMVARIPALLE", "2183-REGALLU", "2178-SANKENIGUTTAPALLE", "2173-MUNELLAPALLE", "2160-V.K.THURPUPALLE", "2228-GAJULAVARIPALLI", "0296-BESTAPALLE",
 "0335-MATLOLLPALLAI", "0326-LOKAVARIPALLE", "0256-VOOTUPALLE", "0245-BETAPALLE", "0237-BATTUVARIPALLE", "0417-ROMPICHERLA", "0414-BODIPATIVARIPALLE", "0441-BODIPATIVARIPALLE", "0440-VARANASIVARIPALLE",
-"0360":"CHICHILIVARIPALLE",
-"0357":"AKKISANIVARIPALLE", "0394":"SETTIPALLEVANDLAPALLE", "0072":"VAGALLA",
-"0056":"LEMATIVARIPALLE", "0108":"KONDAREDDIGARIPALLE","0016":"ROMPICHERLA",
-"0030":"MELLAVARIPALLE", "0197":"BASIREDDIGARIPALLE", "0173":"MORAVAPALLE",
-"0221":"KURABAPALLE", "0130":"PATHAKURVAPALLE", "0165":"AGRAHARAM",
-"0151":"BONAMVARIPALLE", "0649":"PILER", "0645":"NADIMPALLE",
-"0643":"SAVVALAVARIPALLE", "0636":"KURAPATHIVARIPALLE", "0689":"VANKAVODDIPALLE",
-"0688":"BADDALAVARIPALLI H.W.","0685":"NAGARIMADUGUVARIPALLE", "0668":"KANDUR",
-"0663":"DEVALAVARIPALLE", "0585":"SRIVARAMPURAM", "0575":"RAMREDDIGARIPALLE",
-"0572":"LOKAVARIPALLE", "0613":"NAGAVANDLAPALLI", "0611":"BODIPATIVARIPALLE",
-"0610":"ROMPICHERLA", "0604":"NAGAVANDLAPALLI", "0782":"CHICHILIVARIPALLE",
-"0770":"DEVALAVARIPALLE", "0767":"PEDDAGOTTIGALLU", "0764":"K.V.PALLE",
-"0762":"JAGADAMVARIPALLE", "0753":"BOLLINANIVARIPALLI", "0813":"ROMPICHERLA",
-"0811":"ALAKAMVARIPALLE", "0809":"KOTAKADAPALLE", "0794":"PEDDAGOTTIGALLU",
-"0793":"DIGUVAJUPALLI", "0789":"SODUM", "0788":"BURUJUPALLE",
-"0786":"PEDDAGOTTIGALLU CROSS", "0719":"NADIMPALLE", "0718":"PEDDAGOTTIGALLU",
-"0714":"BODIPATIVARIPALLE", "0709":"REDDIVARIPALLE", "0700":"RAMIREDDIGARIPALLE",
-"0721":"SODUM", "0747":"KURAVAPALLE", "0745":"ETUKURIVARIPALLE",
-"0743":"ROMPICHERLA", "0736":"VOOTUPALLE", "0732":"ROMPICHERLA",
-"0727":"DUSSAVANDLA PALLI", "0726":"SAVVALAVARIPALLE", "0508":"MUREVANDLAPALLE",
-"0490":"MATAMPALLE", "0551":"TALUPULA", "0512":"BONAMVARIPALLE",
-"0473":"KURAVAPALLE", "0477":"VARANASIVARIPALLE"
+"0360-CHICHILIVARIPALLE", "0357-AKKISANIVARIPALLE", "0394-SETTIPALLEVANDLAPALLE", "0072-VAGALLA",
+"0056-LEMATIVARIPALLE", "0108-KONDAREDDIGARIPALLE","0016-ROMPICHERLA",
+"0030-MELLAVARIPALLE", "0197-BASIREDDIGARIPALLE", "0173-MORAVAPALLE",
+"0221-KURABAPALLE", "0130-PATHAKURVAPALLE", "0165-AGRAHARAM",
+"0151-BONAMVARIPALLE", "0649-PILER", "0645-NADIMPALLE",
+"0643-SAVVALAVARIPALLE", "0636-KURAPATHIVARIPALLE", "0689-VANKAVODDIPALLE",
+"0688-BADDALAVARIPALLI H.W.","0685-NAGARIMADUGUVARIPALLE", "0668-KANDUR",
+"0663-DEVALAVARIPALLE", "0585-SRIVARAMPURAM", "0575-RAMREDDIGARIPALLE",
+"0572-LOKAVARIPALLE", "0613-NAGAVANDLAPALLI", "0611-BODIPATIVARIPALLE",
+"0610-ROMPICHERLA", "0604-NAGAVANDLAPALLI", "0782-CHICHILIVARIPALLE",
+"0770-DEVALAVARIPALLE", "0767-PEDDAGOTTIGALLU", "0764-K.V.PALLE",
+"0762-JAGADAMVARIPALLE", "0753-BOLLINANIVARIPALLI", "0813-ROMPICHERLA",
+"0811-ALAKAMVARIPALLE", "0809-KOTAKADAPALLE", "0794-PEDDAGOTTIGALLU",
+"0793-DIGUVAJUPALLI", "0789-SODUM", "0788-BURUJUPALLE",
+"0786-PEDDAGOTTIGALLU CROSS", "0719-NADIMPALLE", "0718-PEDDAGOTTIGALLU",
+"0714-BODIPATIVARIPALLE", "0709-REDDIVARIPALLE", "0700-RAMIREDDIGARIPALLE",
+"0721-SODUM", "0747-KURAVAPALLE", "0745-ETUKURIVARIPALLE",
+"0743-ROMPICHERLA", "0736-VOOTUPALLE", "0732-ROMPICHERLA",
+"0727-DUSSAVANDLA PALLI", "0726-SAVVALAVARIPALLE", "0508-MUREVANDLAPALLE",
+"0490-MATAMPALLE", "0551-TALUPULA", "0512-BONAMVARIPALLE",
+"0473-KURAVAPALLE", "0477-VARANASIVARIPALLE"
 ]
 
 
-# Extracted Farmer Names and Member Codes from the image
+# Extracted Farmer Names and Member Codes (Combined for simplicity)
 FARMER_DATA = {
-    "0005": "GUBBALA ANAMMA", "0003": "G.REDDY SEKHAR",
-    "0012":"V. Devaki", "0008": "D. PRASAD REDDY", "0006":"G.Ratnamma",
-    "0013": "M.GANGULU", "0014": "K VARADHA NAIDU", "0007": "INDRAVATHI RAMADEVI",
-    "0017": "B SAMPURNA", "0015": "J.GANGULU", "0002": "KRISHNAMA NAIDU",
-    "0021": "M.S.CHOWDARY", "0029": "DASARI VENKATAIAH", "0030": "K.M.KANTHAMMA",
-    "0036": "D.BALAKRISHNA", "0037": "C.SURYA PRAKASH", "0039": "D.CHANDRAMMA",
-    "0041": "G.NARASIMHA NAIDU", "0043": "REDDI RAMADEVI", "0044": "D.CHANDRAMMA",
-    "0045": "S.PEDDAIAH", "0046": "D.PEDDAIAH", "0047": "K.K.KADIRAMMA",
-    "0001": "M.NARAYANAMMA", "0002": "S.K.SUBBAIAH", "0004": "C.M.NARAYANA",
-    "0005": "D.MALLAIAH", "0006": "G.CHANDRAIAH", "0008": "J.RAMADEVI",
-    "0009": "G.SWARNAMMA", "0011": "J.ESWARAMMA", "0013": "K.GURAVAIAH",
-    "0014": "P.DEVAKI DEVI", "0015": "K.NARASIMHULU", "0016": "P REDDY PRASAD",
-    "0018": "D.DEVAKI RAMADEVI", "0019": "P.SATYAMMA", "0020": "B.SAMPURNA",
-    "0021": "P.PEDDAIAH", "0022": "REDDISEKHAR", "0023": "V.SUBRAMANYAM",
-    "0071": "V.REDDY RANI", "0072": "B.GANGULU", "0074": "K.YASHODHA",
-    "0075": "D.RAMADEVI", "0076": "H.RAMADEVI", "0077": "R.RAMADEVI",
-    "0078": "B.RANI", "0079": "K.VENKATAIAH", "0080": "P.SREERAM REDDY",
-    "0081": "M.RAMADEVI", "0082": "M.PENCHALAMAIAH", "0083": "M.M.RATHNAMMA",
-    "0084": "N.GANGULU", "0085": "N.RAMALINGAM", "0086": "N.RAMADEVI",
-    "0087": "V.CHANDRAIAH", "0088": "N.SRINIVASULU", "0089": "M.RAMADEVI",
-    "0090": "B.MURALI", "0091": "S.CHANDRAIAH", "0092": "S.SABEEN TAJ",
-    "0048": "P.LAKSHMAMMA", "0049": "V.RANI", "0050": "K.PEDDAMMA",
-    "0051": "C.VENKATA SUBBA REDDY", "0052": "S.NAGARJUNA", "0055": "E.CHANDRAIAH",
-    "0057": "S.KASAMMA", "0059": "K.NARASIMHA", "0070": "K.NARAYANA",
-    "0069": "K.NARASIMHULU", "0068": "K.RAJAMMA", "0067": "P.CHANDRAIAH",
-    "0066": "M.RAJAMMA", "0060": "P.BHARATHAMMA", "0061": "V.VENKATA RAMANA",
-    "0062": "P.BHARATHAMMA", "0064": "V.PADMAVATHI", "0063": "V.PADMAVATHI",
-    "1664": "G.RAMADEVI", "1651": "P.GIRI BABU", "1740": "G.SUBRAMANYAM",
-    "1718": "M.BABU", "1542": "S.BABU", "1937": "SREENIVASULU",
-    "1993": "J.CHANDRAMMA", "1959": "A.CHANDRAMMA", "1812": "S.BHARATHI",
-    "1781": "A.RAMADEVI", "1773": "P.SYAMALAMMA", "1770": "M.DEVAMMA",
-    "1868": "T.LAKSHMINARI", "1824": "P.BHARATHAMMA", "0884": "M.DEVAMMA",
-    "0881": "M.DEVASENEV", "0880": "M.LAKSHMINARIMMA", "0878": "M.LAKSHMINARIMMA",
-    "0876": "N.NAGARATHNAM", "0874": "N.VENKATARAMANA", "0871": "C.RAMADEVI",
-    "0868": "M.LAKSHMINARIMMA", "0863": "G.PEDDAIAH", "0906": "K.GANGAMMA",
-    "0900": "R.SATYAMMA", "0895": "V.PADMAVATHI", "0893": "G.BALAKRISHNA",
-    "0888": "C.RAMADEVI", "0887": "K.GANGAMMA", "0830": "K.ESWARAMMA",
-    "0826": "G.NARASIMHULU", "0824": "M.VENKATAIAH", "0859": "G.NARASIMHULU",
-    "0851": "K.KRISHNA REDDY", "0848": "G.CHANDRAIAH", "0846": "V.GANGAMMA",
-    "0842": "K.SWARNAMMA", "0839": "B.SATYAMMA", "1058": "P.RAMADEVI",
-    "1057": "K.RAMANAIAH", "1052": "P.RAMADEVI", "1017": "N.NARAYANAMMA",
-    "1003": "N.PEDDI REDDY", "1272": "G.PEDDI REDDY", "1240": "K.PEDDI REDDY",
-    "0916": "M.KRISHNAMA NAIDU", "0915": "S.BALAKRISHNA REDDY", "0982": "C.MUNIREDDY",
-    "2388": "G.PEDDI REDDY", "2380": "K.MUNIREDDY", "2374": "N.RAJAGOPAL",
-    "2437": "M.ADILAKSHMI", "2421": "M.MUNIREDDY", "2314": "K.CHANDRAIAH",
-    "2338": "A.CHANDRAMMA", "2500": "T.VENKATAIAH", "2530": "A.RAMADEVI",
-    "2528": "M.SUBRAMANYAM", "2526": "A.GANGAMMA", "2463": "B.BUMMAIAHGARIPALLE",
-    "2444": "C.RAMADEVI", "2440": "B.SWARNAMMA",
-    "2013": "THOTIMALAPALLE",
-    "2083": "RAJUVARIPALLI H/W", "2045": "RAJUVARIPALLI", "2288": "RAJUVARIPALLI",
-    "2272": "THATIGUNTAPALEM", "2186": "KANTAMVARIPALLE", "2183": "REGALLU",
-    "2178": "SANKENIGUTTAPALLE", "2173": "MUNELLAPALLE", "2160": "V.K.THURPUPALLE",
-    "2228": "GAJULAVARIPALLI", "0296": "BESTAPALLE",
-    "0335": "MATLOLLPALLAI", "0326": "LOKAVARIPALLE", "0256": "VOOTUPALLE", "0245": "BETAPALLE",
-    "0237": "BATTUVARIPALLE", "0417": "ROMPICHERLA", "0414": "BODIPATIVARIPALLE",
-    "0441": "BODIPATIVARIPALLE", "0440": "VARANASIVARIPALLE",
-    "0360":"CHICHILIVARIPALLE",
-    "0357":"AKKISANIVARIPALLE", "0394":"SETTIPALLEVANDLAPALLE", "0072":"VAGALLA",
-    "0056":"LEMATIVARIPALLE", "0108":"KONDAREDDIGARIPALLE","0016":"ROMPICHERLA",
-    "0030":"MELLAVARIPALLE", "0197":"BASIREDDIGARIPALLE", "0173":"MORAVAPALLE",
-    "0221":"KURABAPALLE", "0130":"PATHAKURVAPALLE", "0165":"AGRAHARAM",
-    "0151":"BONAMVARIPALLE", "0649":"PILER", "0645":"NADIMPALLE",
-    "0643":"SAVVALAVARIPALLE", "0636":"KURAPATHIVARIPALLE", "0689":"VANKAVODDIPALLE",
-    "0688":"BADDALAVARIPALLI H.W.","0685":"NAGARIMADUGUVARIPALLE", "0668":"KANDUR",
-    "0663":"DEVALAVARIPALLE", "0585":"SRIVARAMPURAM", "0575":"RAMREDDIGARIPALLE",
-    "0572":"LOKAVARIPALLE", "0613":"NAGAVANDLAPALLI", "0611":"BODIPATIVARIPALLE",
-    "0610":"ROMPICHERLA", "0604":"NAGAVANDLAPALLI", "0782":"CHICHILIVARIPALLE",
-    "0770":"DEVALAVARIPALLE", "0767":"PEDDAGOTTIGALLU", "0764":"K.V.PALLE",
-    "0762":"JAGADAMVARIPALLE", "0753":"BOLLINANIVARIPALLI", "0813":"ROMPICHERLA",
-    "0811":"ALAKAMVARIPALLE", "0809":"KOTAKADAPALLE", "0794":"PEDDAGOTTIGALLU",
-    "0793":"DIGUVAJUPALLI", "0789":"SODUM", "0788":"BURUJUPALLE",
-    "0786":"PEDDAGOTTIGALLU CROSS", "0719":"NADIMPALLE", "0718":"PEDDAGOTTIGALLU",
-    "0714":"BODIPATIVARIPALLE", "0709":"REDDIVARIPALLE", "0700":"RAMIREDDIGARIPALLE",
-    "0721":"SODUM", "0747":"KURAVAPALLE", "0745":"ETUKURIVARIPALLE",
-    "0743":"ROMPICHERLA", "0736":"VOOTUPALLE", "0732":"ROMPICHERLA",
-    "0727":"DUSSAVANDLA PALLI", "0726":"SAVVALAVARIPALLE", "0508":"MUREVANDLAPALLE",
-    "0490":"MATAMPALLE", "0551":"TALUPULA", "0512":"BONAMVARIPALLE",
-    "0473":"KURAVAPALLE", "0477":"VARANASIVARIPALLE"
-}
-
-
-# Extracted Farmer Names and Member Codes from the image
-FARMER_DATA = {
-    "0005": "GUBBALA ANAMMA", "0003": "G.REDDY SEKHAR",
-    "0012":"V. Devaki", "0008": "D. PRASAD REDDY", "0006":"G.Ratnamma",
-    "0013": "M.GANGULU", "0014": "K VARADHA NAIDU", "0007": "INDRAVATHI RAMADEVI",
-    "0017": "B SAMPURNA", "0015": "J.GANGULU", "0002": "KRISHNAMA NAIDU",
-    "0021": "M.S.CHOWDARY", "0029": "DASARI VENKATAIAH", "0030": "K.M.KANTHAMMA",
-    "0036": "D.BALAKRISHNA", "0037": "C.SURYA PRAKASH", "0039": "D.CHANDRAMMA",
-    "0041": "G.NARASIMHA NAIDU", "0043": "REDDI RAMADEVI", "0044": "D.CHANDRAMMA",
-    "0045": "S.PEDDAIAH", "0046": "D.PEDDAIAH", "0047": "K.K.KADIRAMMA",
-    "0001": "M.NARAYANAMMA", "0002": "S.K.SUBBAIAH", "0004": "C.M.NARAYANA",
-    "0005": "D.MALLAIAH", "0006": "G.CHANDRAIAH", "0008": "J.RAMADEVI",
-    "0009": "G.SWARNAMMA", "0011": "J.ESWARAMMA", "0013": "K.GURAVAIAH",
-    "0014": "P.DEVAKI DEVI", "0015": "K.NARASIMHULU", "0016": "P REDDY PRASAD",
-    "0018": "D.DEVAKI RAMADEVI", "0019": "P.SATYAMMA", "0020": "B.SAMPURNA",
-    "0021": "P.PEDDAIAH", "0022": "REDDISEKHAR", "0023": "V.SUBRAMANYAM",
-    "0071": "V.REDDY RANI", "0072": "B.GANGULU", "0074": "K.YASHODHA",
-    "0075": "D.RAMADEVI", "0076": "H.RAMADEVI", "0077": "R.RAMADEVI",
-    "0078": "B.RANI", "0079": "K.VENKATAIAH", "0080": "P.SREERAM REDDY",
-    "0081": "M.RAMADEVI", "0082": "M.PENCHALAMAIAH", "0083": "M.M.RATHNAMMA",
-    "0084": "N.GANGULU", "0085": "N.RAMALINGAM", "0086": "N.RAMADEVI",
-    "0087": "V.CHANDRAIAH", "0088": "N.SRINIVASULU", "0089": "M.RAMADEVI",
-    "0090": "B.MURALI", "0091": "S.CHANDRAIAH", "0092": "S.SABEEN TAJ",
-    "0048": "P.LAKSHMAMMA", "0049": "V.RANI", "0050": "K.PEDDAMMA",
-    "0051": "C.VENKATA SUBBA REDDY", "0052": "S.NAGARJUNA", "0055": "E.CHANDRAIAH",
-    "0057": "S.KASAMMA", "0059": "K.NARASIMHA", "0070": "K.NARAYANA",
-    "0069": "K.NARASIMHULU", "0068": "K.RAJAMMA", "0067": "P.CHANDRAIAH",
-    "0066": "M.RAJAMMA", "0060": "P.BHARATHAMMA", "0061": "V.VENKATA RAMANA",
-    "0062": "P.BHARATHAMMA", "0064": "V.PADMAVATHI", "0063": "V.PADMAVATHI",
-    "1664": "G.RAMADEVI", "1651": "P.GIRI BABU", "1740": "G.SUBRAMANYAM",
-    "1718": "M.BABU", "1542": "S.BABU", "1937": "SREENIVASULU",
-    "1993": "J.CHANDRAMMA", "1959": "A.CHANDRAMMA", "1812": "S.BHARATHI",
-    "1781": "A.RAMADEVI", "1773": "P.SYAMALAMMA", "1770": "M.DEVAMMA",
-    "1868": "T.LAKSHMINARI", "1824": "P.BHARATHAMMA", "0884": "M.DEVAMMA",
-    "0881": "M.DEVASENEV", "0880": "M.LAKSHMINARIMMA", "0878": "M.LAKSHMINARIMMA",
-    "0876": "N.NAGARATHNAM", "0874": "N.VENKATARAMANA", "0871": "C.RAMADEVI",
-    "0868": "M.LAKSHMINARIMMA", "0863": "G.PEDDAIAH", "0906": "K.GANGAMMA",
-    "0900": "R.SATYAMMA", "0895": "V.PADMAVATHI", "0893": "G.BALAKRISHNA",
-    "0888": "C.RAMADEVI", "0887": "K.GANGAMMA", "0830": "K.ESWARAMMA",
-    "0826": "G.NARASIMHULU", "0824": "M.VENKATAIAH", "0859": "G.NARASIMHULU",
-    "0851": "K.KRISHNA REDDY", "0848": "G.CHANDRAIAH", "0846": "V.GANGAMMA",
-    "0842": "K.SWARNAMMA", "0839": "B.SATYAMMA", "1058": "P.RAMADEVI",
-    "1057": "K.RAMANAIAH", "1052": "P.RAMADEVI", "1017": "N.NARAYANAMMA",
-    "1003": "N.PEDDI REDDY", "1272": "G.PEDDI REDDY", "1240": "K.PEDDI REDDY",
-    "0916": "M.KRISHNAMA NAIDU", "0915": "S.BALAKRISHNA REDDY", "0982": "C.MUNIREDDY",
-    "2388": "G.PEDDI REDDY", "2380": "K.MUNIREDDY", "2374": "N.RAJAGOPAL",
-    "2437": "M.ADILAKSHMI", "2421": "M.MUNIREDDY", "2314": "K.CHANDRAIAH",
-    "2338": "A.CHANDRAMMA", "2500": "T.VENKATAIAH", "2530": "A.RAMADEVI",
-    "2528": "M.SUBRAMANYAM", "2526": "A.GANGAMMA", "2463": "B.BUMMAIAHGARIPALLE",
-    "2444": "C.RAMADEVI", "2440": "B.SWARNAMMA",
-    "2013": "THOTIMALAPALLE",
-    "2083": "RAJUVARIPALLI H/W", "2045": "RAJUVARIPALLI", "2288": "RAJUVARIPALLI",
-    "2272": "THATIGUNTAPALEM", "2186": "KANTAMVARIPALLE", "2183": "REGALLU",
-    "2178": "SANKENIGUTTAPALLE", "2173": "MUNELLAPALLE", "2160": "V.K.THURPUPALLE",
-    "2228": "GAJULAVARIPALLI", "0296": "BESTAPALLE",
-    "0335": "MATLOLLPALLAI", "0326": "LOKAVARIPALLE", "0256": "VOOTUPALLE", "0245": "BETAPALLE",
-    "0237": "BATTUVARIPALLE", "0417": "ROMPICHERLA", "0414": "BODIPATIVARIPALLE",
-    "0441": "BODIPATIVARIPALLE", "0440": "VARANASIVARIPALLE",
-    "0360":"CHICHILIVARIPALLE",
-    "0357":"AKKISANIVARIPALLE", "0394":"SETTIPALLEVANDLAPALLE", "0072":"VAGALLA",
-    "0056":"LEMATIVARIPALLE", "0108":"KONDAREDDIGARIPALLE","0016":"ROMPICHERLA",
-    "0030":"MELLAVARIPALLE", "0197":"BASIREDDIGARIPALLE", "0173":"MORAVAPALLE",
-    "0221":"KURABAPALLE", "0130":"PATHAKURVAPALLE", "0165":"AGRAHARAM",
-    "0151":"BONAMVARIPALLE", "0649":"PILER", "0645":"NADIMPALLE",
-    "0643":"SAVVALAVARIPALLE", "0636":"KURAPATHIVARIPALLE", "0689":"VANKAVODDIPALLE",
-    "0688":"BADDALAVARIPALLI H.W.","0685":"NAGARIMADUGUVARIPALLE", "0668":"KANDUR",
-    "0663":"DEVALAVARIPALLE", "0585":"SRIVARAMPURAM", "0575":"RAMREDDIGARIPALLE",
-    "0572":"LOKAVARIPALLE", "0613":"NAGAVANDLAPALLI", "0611":"BODIPATIVARIPALLE",
-    "0610":"ROMPICHERLA", "0604":"NAGAVANDLAPALLI", "0782":"CHICHILIVARIPALLE",
-    "0770":"DEVALAVARIPALLE", "0767":"PEDDAGOTTIGALLU", "0764":"K.V.PALLE",
-    "0762":"JAGADAMVARIPALLE", "0753":"BOLLINANIVARIPALLI", "0813":"ROMPICHERLA",
-    "0811":"ALAKAMVARIPALLE", "0809":"KOTAKADAPALLE", "0794":"PEDDAGOTTIGALLU",
-    "0793":"DIGUVAJUPALLI", "0789":"SODUM", "0788":"BURUJUPALLE",
-    "0786":"PEDDAGOTTIGALLU CROSS", "0719":"NADIMPALLE", "0718":"PEDDAGOTTIGALLU",
-    "0714":"BODIPATIVARIPALLE", "0709":"REDDIVARIPALLE", "0700":"RAMIREDDIGARIPALLE",
-    "0721":"SODUM", "0747":"KURAVAPALLE", "0745":"ETUKURIVARIPALLE",
-    "0743":"ROMPICHERLA", "0736":"VOOTUPALLE", "0732":"ROMPICHERLA",
-    "0727":"DUSSAVANDLA PALLI", "0726":"SAVVALAVARIPALLE", "0508":"MUREVANDLAPALLE",
-    "0490":"MATAMPALLE", "0551":"TALUPULA", "0512":"BONAMVARIPALLE",
-    "0473":"KURAVAPALLE", "0477":"VARANASIVARIPALLE"
+    "0005": "GUBBALA ANAMMA", "0003": "G.REDDY SEKHAR", "0012":"V. Devaki", "0008": "D. PRASAD REDDY", "0006":"G.Ratnamma", "0013": "M.GANGULU", "0014": "K VARADHA NAIDU", "0007": "INDRAVATHI RAMADEVI", "0017": "B SAMPURNA", "0015": "J.GANGULU", "0002": "KRISHNAMA NAIDU", "0021": "M.S.CHOWDARY", "0029": "DASARI VENKATAIAH", "0030": "K.M.KANTHAMMA", "0036": "D.BALAKRISHNA", "0037": "C.SURYA PRAKASH", "0039": "D.CHANDRAMMA", "0041": "G.NARASIMHA NAIDU", "0043": "REDDI RAMADEVI", "0044": "D.CHANDRAMMA", "0045": "S.PEDDAIAH", "0046": "D.PEDDAIAH", "0047": "K.K.KADIRAMMA", "0001": "M.NARAYANAMMA", "0004": "C.M.NARAYANA", "0005": "D.MALLAIAH", "0008": "J.RAMADEVI", "0009": "G.SWARNAMMA", "0011": "J.ESWARAMMA", "0016": "P REDDY PRASAD", "0018": "D.DEVAKI RAMADEVI", "0019": "P.SATYAMMA", "0020": "B.SAMPURNA", "0022": "REDDISEKHAR", "0023": "V.SUBRAMANYAM", "0071": "V.REDDY RANI", "0072": "B.GANGULU", "0074": "K.YASHODHA", "0075": "D.RAMADEVI", "0076": "H.RAMADEVI", "0077": "R.RAMADEVI", "0078": "B.RANI", "0079": "K.VENKATAIAH", "0080": "P.SREERAM REDDY", "0081": "M.RAMADEVI", "0082": "M.PENCHALAMAIAH", "0083": "M.M.RATHNAMMA", "0084": "N.GANGULU", "0085": "N.RAMALINGAM", "0086": "N.RAMADEVI", "0087": "V.CHANDRAIAH", "0088": "N.SRINIVASULU", "0089": "M.RAMADEVI", "0090": "B.MURALI", "0091": "S.CHANDRAIAH", "0092": "S.SABEEN TAJ", "0048": "P.LAKSHMAMMA", "0049": "V.RANI", "0050": "K.PEDDAMMA", "0051": "C.VENKATA SUBBA REDDY", "0052": "S.NAGARJUNA", "0055": "E.CHANDRAIAH", "0057": "S.KASAMMA", "0059": "K.NARASIMHA", "0070": "K.NARAYANA", "0069": "K.NARASIMHULU", "0068": "K.RAJAMMA", "0067": "P.CHANDRAIAH", "0066": "M.RAJAMMA", "0060": "P.BHARATHAMMA", "0061": "V.VENKATA RAMANA", "0062": "P.BHARATHAMMA", "0064": "V.PADMAVATHI", "0063": "V.PADMAVATHI", "1664": "G.RAMADEVI", "1651": "P.GIRI BABU", "1740": "G.SUBRAMANYAM", "1718": "M.BABU", "1542": "S.BABU", "1937": "SREENIVASULU", "1993": "J.CHANDRAMMA", "1959": "A.CHANDRAMMA", "1812": "S.BHARATHI", "1781": "A.RAMADEVI", "1773": "P.SYAMALAMMA", "1770": "M.DEVAMMA", "1868": "T.LAKSHMINARI", "1824": "P.BHARATHAMMA", "0884": "M.DEVAMMA", "0881": "M.DEVASENEV", "0880": "M.LAKSHMINARIMMA", "0878": "M.LAKSHMINARIMMA", "0876": "N.NAGARATHNAM", "0874": "N.VENKATARAMANA", "0871": "C.RAMADEVI", "0868": "M.LAKSHMINARIMMA", "0863": "G.PEDDAIAH", "0906": "K.GANGAMMA", "0900": "R.SATYAMMA", "0895": "V.PADMAVATHI", "0893": "G.BALAKRISHNA", "0888": "C.RAMADEVI", "0887": "K.GANGAMMA", "0830": "K.ESWARAMMA", "0826": "G.NARASIMHULU", "0824": "M.VENKATAIAH", "0859": "G.NARASIMHULU", "0851": "K.KRISHNA REDDY", "0848": "G.CHANDRAIAH", "0846": "V.GANGAMMA", "0842": "K.SWARNAMMA", "0839": "B.SATYAMMA", "1058": "P.RAMADEVI", "1057": "K.RAMANAIAH", "1052": "P.RAMADEVI", "1017": "N.NARAYANAMMA", "1003": "N.PEDDI REDDY", "1272": "G.PEDDI REDDY", "1240": "K.PEDDI REDDY", "0916": "M.KRISHNAMA NAIDU", "0915": "S.BALAKRISHNA REDDY", "0982": "C.MUNIREDDY", "2388": "G.PEDDI REDDY", "2380": "K.MUNIREDDY", "2374": "N.RAJAGOPAL", "2437": "M.ADILAKSHMI", "2421": "M.MUNIREDDY", "2314": "K.CHANDRAIAH", "2338": "A.CHANDRAMMA", "2500": "T.VENKATAIAH", "2530": "A.RAMADEVI", "2528": "M.SUBRAMANYAM", "2526": "A.GANGAMMA", "2463": "B.BUMMAIAHGARIPALLE", "2444": "C.RAMADEVI", "2440": "B.SWARNAMMA", "2013": "THOTIMALAPALLE", "2083": "RAJUVARIPALLI H/W", "2045": "RAJUVARIPALLI", "2288": "RAJUVARIPALLI", "2272": "THATIGUNTAPALEM", "2186": "KANTAMVARIPALLE", "2183": "REGALLU", "2178": "SANKENIGUTTAPALLE", "2173": "MUNELLAPALLE", "2160": "V.K.THURPUPALLE", "2228": "GAJULAVARIPALLI", "0296": "BESTAPALLE", "0335": "MATLOLLPALLAI", "0326": "LOKAVARIPALLE", "0256": "VOOTUPALLE", "0245": "BETAPALLE", "0237": "BATTUVARIPALLE", "0417": "ROMPICHERLA", "0414": "BODIPATIVARIPALLE", "0441": "BODIPATIVARIPALLE", "0440": "VARANASIVARIPALLE", "0360": "CHICHILIVARIPALLE", "0357": "AKKISANIVARIPALLE", "0394": "SETTIPALLEVANDLAPALLE", "0072": "VAGALLA", "0056": "LEMATIVARIPALLE", "0108": "KONDAREDDIGARIPALLE", "0016": "ROMPICHERLA", "0030": "MELLAVARIPALLE", "0197": "BASIREDDIGARIPALLE", "0173": "MORAVAPALLE", "0221": "KURABAPALLE", "0130": "PATHAKURVAPALLE", "0165": "AGRAHARAM", "0151": "BONAMVARIPALLE", "0649": "PILER", "0645": "NADIMPALLE", "0643": "SAVVALAVARIPALLE", "0636": "KURAPATHIVARIPALLE", "0689": "VANKAVODDIPALLE", "0688": "BADDALAVARIPALLI H.W.", "0685": "NAGARIMADUGUVARIPALLE", "0668": "KANDUR", "0663": "DEVALAVARIPALLE", "0585": "SRIVARAMPURAM", "0575": "RAMREDDIGARIPALLE", "0572": "LOKAVARIPALLE", "0613": "NAGAVANDLAPALLI", "0611": "BODIPATIVARIPALLE", "0610": "ROMPICHERLA", "0604": "NAGAVANDLAPALLI", "0782": "CHICHILIVARIPALLE", "0770": "DEVALAVARIPALLE", "0767": "PEDDAGOTTIGALLU", "0764": "K.V.PALLE", "0762": "JAGADAMVARIPALLE", "0753": "BOLLINANIVARIPALLI", "0813": "ROMPICHERLA", "0811": "ALAKAMVARIPALLE", "0809": "KOTAKADAPALLE", "0794": "PEDDAGOTTIGALLU", "0793": "DIGUVAJUPALLI", "0789": "SODUM", "0788": "BURUJUPALLE", "0786": "PEDDAGOTTIGALLU CROSS", "0719": "NADIMPALLE", "0718": "PEDDAGOTTIGALLU", "0714": "BODIPATIVARIPALLE", "0709": "REDDIVARIPALLE", "0700": "RAMIREDDIGARIPALLE", "0721": "SODUM", "0747": "KURAVAPALLE", "0745": "ETUKURIVARIPALLE", "0743": "ROMPICHERLA", "0736": "VOOTUPALLE", "0732": "ROMPICHERLA", "0727": "DUSSAVANDLA PALLI", "0726": "SAVVALAVARIPALLE", "0508": "MUREVANDLAPALLE", "0490": "MATAMPALLE", "0551": "TALUPULA", "0512": "BONAMVARIPALLE", "0473": "KURAVAPALLE", "0477": "VARANASIVARIPALLE"
 }
 
 
@@ -366,6 +203,18 @@ VLCC_NAMES_WITH_OTHER = sorted(VLCC_NAMES + ["Other (Specify)"])
 # -----------------------------
 
 # Define initial_values_defaults at the global scope, before any functions use it
+INITIAL_STATE_KEYS = [
+    'lang_select', 'vlcc_name', 'vlcc_name_specify', 'hpc_code', 'types', 
+    'farmer_name', 'other_farmer_name_specify', 'farmer_code', 'gender', 
+    'cows', 'cattle_in_milk', 'calves', 'desi_cows', 'crossbreed_cows', 
+    'buffalo', 'milk_production', 'green_fodder', 'green_fodder_types', 
+    'green_fodder_qty', 'dry_fodder', 'dry_fodder_types', 'dry_fodder_qty', 
+    'pellet_feed', 'pellet_feed_brands', 'pellet_feed_brands_specify', 
+    'mineral_mixture', 'mineral_brand', 'mineral_brand_specify', 'mineral_qty', 
+    'silage', 'silage_source', 'silage_qty', 'water_sources', 
+    'water_sources_specify', 'surveyor_name', 'surveyor_name_specify', 'visit_date'
+]
+
 initial_values_defaults = {
     'lang_select': "English",
     'vlcc_name': VLCC_NAMES_WITH_OTHER[0] if VLCC_NAMES_WITH_OTHER else None,
@@ -410,8 +259,8 @@ initial_values_defaults = {
 def save_draft():
     draft_filename = os.path.join(DRAFT_DIR, "current_draft.json")
 
-    keys_to_save = list(initial_values_defaults.keys()) + ['other_farmer_name_specify', 'vlcc_name_specify', 'pellet_feed_brands_specify', 'mineral_brand_specify', 'water_sources_specify', 'surveyor_name_specify']
-    draft_data = {key: st.session_state[key] for key in keys_to_save if key in st.session_state}
+    # Use the comprehensive list of keys
+    draft_data = {key: st.session_state[key] for key in INITIAL_STATE_KEYS if key in st.session_state}
 
     if 'visit_date' in draft_data and isinstance(draft_data['visit_date'], datetime.date):
         draft_data['visit_date'] = draft_data['visit_date'].isoformat()
@@ -421,7 +270,8 @@ def save_draft():
             json.dump(draft_data, f, indent=4)
         st.session_state.last_saved_time_persistent = datetime.datetime.now().strftime("%H:%M:%S")
     except Exception as e:
-        st.error(f"Error saving draft: {e}")
+        # Avoid showing error in the main thread during auto-save
+        print(f"Error saving draft: {e}") 
 
 # Function to load draft data into session state
 def load_draft():
@@ -431,38 +281,43 @@ def load_draft():
             with open(draft_filename, 'r') as f:
                 loaded_data = json.load(f)
 
-            for key, value in loaded_data.items():
-                if key == 'visit_date' and isinstance(value, str):
-                    try:
-                        st.session_state[key] = datetime.date.fromisoformat(value)
-                    except ValueError:
-                        st.session_state[key] = initial_values_defaults.get(key, datetime.date.today())
-                elif key in ['green_fodder_types', 'dry_fodder_types', 'pellet_feed_brands', 'water_sources']:
-                    st.session_state[key] = list(value) if isinstance(value, list) else []
-                else:
-                    st.session_state[key] = value
+            # Defensive loading: Iterate over defined keys to avoid crashes
+            for key in INITIAL_STATE_KEYS:
+                value = loaded_data.get(key)
+                if value is not None:
+                    if key == 'visit_date' and isinstance(value, str):
+                        try:
+                            st.session_state[key] = datetime.date.fromisoformat(value)
+                        except ValueError:
+                            st.session_state[key] = initial_values_defaults.get(key, datetime.date.today())
+                    elif key in ['green_fodder_types', 'dry_fodder_types', 'pellet_feed_brands', 'water_sources']:
+                        st.session_state[key] = list(value) if isinstance(value, list) else []
+                    else:
+                        st.session_state[key] = value
+                elif key not in st.session_state:
+                    # If key wasn't in the draft, use default
+                    st.session_state[key] = initial_values_defaults.get(key)
 
+
+            # Recalculate and set correct language-dependent defaults (critical for translations)
             current_labels = dict_translations.get(st.session_state.get('lang_select', 'English'), dict_translations['English'])
-
-            if 'types' in st.session_state and st.session_state['types'] not in (current_labels['HPC'], current_labels['MCC']):
-                st.session_state['types'] = current_labels['HPC']
-            if 'gender' in st.session_state and st.session_state['gender'] not in (current_labels['Male'], current_labels['Female']):
-                st.session_state['gender'] = current_labels['Male']
-            if 'green_fodder' in st.session_state and st.session_state['green_fodder'] not in (current_labels['Yes'], current_labels['No']):
-                st.session_state['green_fodder'] = current_labels['Yes']
-            if 'dry_fodder' in st.session_state and st.session_state['dry_fodder'] not in (current_labels['Yes'], current_labels['No']):
-                st.session_state['dry_fodder'] = current_labels['Yes']
-            if 'pellet_feed' in st.session_state and st.session_state['pellet_feed'] not in (current_labels['Yes'], current_labels['No']):
-                st.session_state['pellet_feed'] = current_labels['Yes']
-            if 'mineral_mixture' in st.session_state and st.session_state['mineral_mixture'] not in (current_labels['Yes'], current_labels['No']):
-                st.session_state['mineral_mixture'] = current_labels['Yes']
-            if 'silage' in st.session_state and st.session_state['silage'] not in (current_labels['Yes'], current_labels['No']):
-                st.session_state['silage'] = current_labels['Yes']
+            
+            for key, options in [
+                ('types', [current_labels['HPC'], current_labels['MCC']]),
+                ('gender', [current_labels['Male'], current_labels['Female']]),
+                ('green_fodder', [current_labels['Yes'], current_labels['No']]),
+                ('dry_fodder', [current_labels['Yes'], current_labels['No']]),
+                ('pellet_feed', [current_labels['Yes'], current_labels['No']]),
+                ('mineral_mixture', [current_labels['Yes'], current_labels['No']]),
+                ('silage', [current_labels['Yes'], current_labels['No']])
+            ]:
+                if key in st.session_state and st.session_state[key] not in options:
+                    st.session_state[key] = options[0] # Default to the first option if the translated value is wrong
 
             st.toast("Draft loaded successfully!")
             return True
         except Exception as e:
-            st.error(f"Error loading draft: {e}. Please try clearing local storage or starting a new draft.")
+            st.error(f"Error loading draft: {e}. Starting new draft.")
             return False
     return False
 
@@ -470,7 +325,9 @@ def load_draft():
 if st.session_state.get('app_initialized_flag', False) is False:
     st.session_state.app_initialized_flag = True
 
-    st.session_state.last_saved_time_persistent = None
+    # Use a specific key for last saved time (for persistent display)
+    if 'last_saved_time_persistent' not in st.session_state:
+        st.session_state.last_saved_time_persistent = None
 
     loaded_a_draft = load_draft()
 
@@ -502,15 +359,9 @@ else:
 with st.form("survey_form"):
     st.header(labels['Farmer Profile'])
 
-    # VLCC Name (with Other Specify)
-    vlcc_name_default_idx = 0
-    if st.session_state.vlcc_name in VLCC_NAMES_WITH_OTHER:
-        vlcc_name_default_idx = VLCC_NAMES_WITH_OTHER.index(st.session_state.vlcc_name)
-    elif VLCC_NAMES_WITH_OTHER:
-        st.session_state.vlcc_name = VLCC_NAMES_WITH_OTHER[0]
-    else:
-        st.session_state.vlcc_name = None
-
+    # --- VLCC Name (with Other Specify) ---
+    vlcc_name_default_idx = VLCC_NAMES_WITH_OTHER.index(st.session_state.vlcc_name) if st.session_state.vlcc_name in VLCC_NAMES_WITH_OTHER else 0
+    
     vlcc_name = st.selectbox(
         labels['VLCC Name'], VLCC_NAMES_WITH_OTHER,
         index=vlcc_name_default_idx,
@@ -519,15 +370,15 @@ with st.form("survey_form"):
     )
 
     # Conditional text input for Other VLCC Name
-    if vlcc_name == labels['Other (Specify)']:
+    if st.session_state.vlcc_name == labels['Other (Specify)']:
         st.text_input(
             labels['Other VLCC Name'],
             value=st.session_state.vlcc_name_specify,
             key="vlcc_name_specify"
         )
-    else:
-        if 'vlcc_name_specify' in st.session_state:
-            st.session_state.vlcc_name_specify = ''
+    # Clear specify field if the option changes away from 'Other (Specify)'
+    elif 'vlcc_name_specify' in st.session_state:
+        st.session_state.vlcc_name_specify = ''
 
 
     # HPC/MCC Code
@@ -546,14 +397,8 @@ with st.form("survey_form"):
         key="types"
     )
 
-    # Dropdown for Farmer Name (with Other Specify)
-    farmer_name_default_idx = 0
-    if st.session_state.farmer_name in FARMER_NAMES_WITH_OTHER:
-        farmer_name_default_idx = FARMER_NAMES_WITH_OTHER.index(st.session_state.farmer_name)
-    elif FARMER_NAMES_WITH_OTHER:
-        st.session_state.farmer_name = FARMER_NAMES_WITH_OTHER[0]
-    else:
-        st.session_state.farmer_name = None
+    # --- Farmer Name (with Other Specify) ---
+    farmer_name_default_idx = FARMER_NAMES_WITH_OTHER.index(st.session_state.farmer_name) if st.session_state.farmer_name in FARMER_NAMES_WITH_OTHER else 0
 
     farmer_name = st.selectbox(
         labels['Farmer Name'], options=FARMER_NAMES_WITH_OTHER,
@@ -563,25 +408,18 @@ with st.form("survey_form"):
     )
 
     # Conditional text input for "Other Farmer Name"
-    if farmer_name == labels['Other (Specify)']:
+    if st.session_state.farmer_name == labels['Other (Specify)']:
         st.text_input(
             labels['Other Farmer Name'],
             value=st.session_state.other_farmer_name_specify,
             key="other_farmer_name_specify"
         )
-    else:
-        if 'other_farmer_name_specify' in st.session_state:
-            st.session_state.other_farmer_name_specify = ''
+    elif 'other_farmer_name_specify' in st.session_state:
+        st.session_state.other_farmer_name_specify = ''
 
 
-    # Dropdown for Farmer Code
-    farmer_code_default_idx = 0
-    if st.session_state.farmer_code in FARMER_CODES:
-        farmer_code_default_idx = FARMER_CODES.index(st.session_state.farmer_code)
-    elif FARMER_CODES:
-        st.session_state.farmer_code = FARMER_CODES[0]
-    else:
-        st.session_state.farmer_code = None
+    # --- Farmer Code ---
+    farmer_code_default_idx = FARMER_CODES.index(st.session_state.farmer_code) if st.session_state.farmer_code in FARMER_CODES else 0
 
     farmer_code = st.selectbox(
         labels['Farmer Code'], options=FARMER_CODES,
@@ -600,240 +438,110 @@ with st.form("survey_form"):
     )
 
     st.header(labels['Farm Details'])
-    # Number of Cows
-    cows = st.number_input(
-        labels['Number of Cows'], min_value=0,
-        value=int(st.session_state.cows),
-        key="cows"
-    )
-    # No. of Cattle in Milk
-    cattle_in_milk = st.number_input(
-        labels['No. of Cattle in Milk'], min_value=0,
-        value=int(st.session_state.cattle_in_milk),
-        key="cattle_in_milk"
-    )
-    # No. of Calves/Heifers
-    calves = st.number_input(
-        labels['No. of Calves/Heifers'], min_value=0,
-        value=int(st.session_state.calves),
-        key="calves"
-    )
-    # No. of Desi cows
-    desi_cows = st.number_input(
-        labels['No. of Desi cows'], min_value=0,
-        value=int(st.session_state.desi_cows),
-        key="desi_cows"
-    )
-    # No. of Cross breed cows
-    crossbreed_cows = st.number_input(
-        labels['No. of Cross breed cows'], min_value=0,
-        value=int(st.session_state.crossbreed_cows),
-        key="crossbreed_cows"
-    )
-    # No. of Buffalo
-    buffalo = st.number_input(
-        labels['No. of Buffalo'], min_value=0,
-        value=int(st.session_state.buffalo),
-        key="buffalo"
-    )
-    # Milk Production
-    milk_production = st.number_input(
-        labels['Milk Production'], min_value=0.0,
-        value=float(st.session_state.milk_production),
-        key="milk_production"
-    )
+    # Farm Detail Inputs
+    cows = st.number_input(labels['Number of Cows'], min_value=0, value=int(st.session_state.cows), key="cows")
+    cattle_in_milk = st.number_input(labels['No. of Cattle in Milk'], min_value=0, value=int(st.session_state.cattle_in_milk), key="cattle_in_milk")
+    calves = st.number_input(labels['No. of Calves/Heifers'], min_value=0, value=int(st.session_state.calves), key="calves")
+    desi_cows = st.number_input(labels['No. of Desi cows'], min_value=0, value=int(st.session_state.desi_cows), key="desi_cows")
+    crossbreed_cows = st.number_input(labels['No. of Cross breed cows'], min_value=0, value=int(st.session_state.crossbreed_cows), key="crossbreed_cows")
+    buffalo = st.number_input(labels['No. of Buffalo'], min_value=0, value=int(st.session_state.buffalo), key="buffalo")
+    milk_production = st.number_input(labels['Milk Production'], min_value=0.0, value=float(st.session_state.milk_production), key="milk_production")
 
     st.header(labels['Specific Questions'])
     # Green Fodder
     green_fodder_options = (labels['Yes'], labels['No'])
     green_fodder_default_idx = green_fodder_options.index(st.session_state.green_fodder) if st.session_state.green_fodder in green_fodder_options else 0
-    green_fodder = st.selectbox(
-        labels['Green Fodder'], green_fodder_options,
-        index=green_fodder_default_idx,
-        key="green_fodder"
-    )
-    # Type of Green Fodder
-    green_fodder_types = st.multiselect(
-        labels['Type of Green Fodder'], GREEN_FODDER_OPTIONS,
-        default=st.session_state.green_fodder_types,
-        key="green_fodder_types"
-    )
-    # Quantity of Green Fodder
-    green_fodder_qty = st.number_input(
-        labels['Quantity of Green Fodder'], min_value=0.0,
-        value=float(st.session_state.green_fodder_qty),
-        key="green_fodder_qty"
-    )
+    green_fodder = st.selectbox(labels['Green Fodder'], green_fodder_options, index=green_fodder_default_idx, key="green_fodder")
+    green_fodder_types = st.multiselect(labels['Type of Green Fodder'], GREEN_FODDER_OPTIONS, default=st.session_state.green_fodder_types, key="green_fodder_types")
+    green_fodder_qty = st.number_input(labels['Quantity of Green Fodder'], min_value=0.0, value=float(st.session_state.green_fodder_qty), key="green_fodder_qty")
+    
     # Dry Fodder
     dry_fodder_options = (labels['Yes'], labels['No'])
     dry_fodder_default_idx = dry_fodder_options.index(st.session_state.dry_fodder) if st.session_state.dry_fodder in dry_fodder_options else 0
-    dry_fodder = st.selectbox(
-        labels['Dry Fodder'], dry_fodder_options,
-        index=dry_fodder_default_idx,
-        key="dry_fodder"
-    )
-    # Type of Dry Fodder
-    dry_fodder_types = st.multiselect(
-        labels['Type of Dry Fodder'], DRY_FODDER_OPTIONS,
-        default=st.session_state.dry_fodder_types,
-        key="dry_fodder_types"
-    )
-    # Quantity of Dry Fodder
-    dry_fodder_qty = st.number_input(
-        labels['Quantity of Dry Fodder'], min_value=0.0,
-        value=float(st.session_state.dry_fodder_qty),
-        key="dry_fodder_qty"
-    )
+    dry_fodder = st.selectbox(labels['Dry Fodder'], dry_fodder_options, index=dry_fodder_default_idx, key="dry_fodder")
+    dry_fodder_types = st.multiselect(labels['Type of Dry Fodder'], DRY_FODDER_OPTIONS, default=st.session_state.dry_fodder_types, key="dry_fodder_types")
+    dry_fodder_qty = st.number_input(labels['Quantity of Dry Fodder'], min_value=0.0, value=float(st.session_state.dry_fodder_qty), key="dry_fodder_qty")
 
     # Pellet Feed
     pellet_feed_options = (labels['Yes'], labels['No'])
     pellet_feed_default_idx = pellet_feed_options.index(st.session_state.pellet_feed) if st.session_state.pellet_feed in pellet_feed_options else 0
-    pellet_feed = st.selectbox(
-        labels['Pellet Feed'], pellet_feed_options,
-        index=pellet_feed_default_idx,
-        key="pellet_feed"
-    )
+    pellet_feed = st.selectbox(labels['Pellet Feed'], pellet_feed_options, index=pellet_feed_default_idx, key="pellet_feed")
+    
     # Pellet Feed Brand (Multiselect with Other Specify)
-    pellet_feed_brands = st.multiselect(
-        labels['Pellet Feed Brand'], PELLET_FEED_BRANDS,
-        default=st.session_state.pellet_feed_brands,
-        key="pellet_feed_brands"
-    )
-    # Conditional text input for Other Pellet Brand
-    if labels['Other (Specify)'] in pellet_feed_brands:
+    pellet_feed_brands = st.multiselect(labels['Pellet Feed Brand'], PELLET_FEED_BRANDS, default=st.session_state.pellet_feed_brands, key="pellet_feed_brands")
+    if labels['Other (Specify)'] in st.session_state.pellet_feed_brands:
         st.text_input(
             labels['Other Pellet Brand'],
             value=st.session_state.pellet_feed_brands_specify,
             key="pellet_feed_brands_specify"
         )
-    else:
-        if 'pellet_feed_brands_specify' in st.session_state:
-            st.session_state.pellet_feed_brands_specify = ''
-
-
-    # Quantity of Pellet Feed
-    pellet_feed_qty = st.number_input(
-        labels['Quantity of Pellet Feed'], min_value=0.0,
-        value=float(st.session_state.pellet_feed_qty),
-        key="pellet_feed_qty"
-    )
+    elif 'pellet_feed_brands_specify' in st.session_state:
+        st.session_state.pellet_feed_brands_specify = ''
+        
+    pellet_feed_qty = st.number_input(labels['Quantity of Pellet Feed'], min_value=0.0, value=float(st.session_state.pellet_feed_qty), key="pellet_feed_qty")
 
     # Mineral Mixture
     mineral_mixture_options = (labels['Yes'], labels['No'])
     mineral_mixture_default_idx = mineral_mixture_options.index(st.session_state.mineral_mixture) if st.session_state.mineral_mixture in mineral_mixture_options else 0
-    mineral_mixture = st.selectbox(
-        labels['Mineral Mixture'], mineral_mixture_options,
-        index=mineral_mixture_default_idx,
-        key="mineral_mixture"
-    )
+    mineral_mixture = st.selectbox(labels['Mineral Mixture'], mineral_mixture_options, index=mineral_mixture_default_idx, key="mineral_mixture")
+    
     # Mineral Mixture Brand (Selectbox with Other Specify)
-    mineral_brand_default_idx = 0
-    if st.session_state.mineral_brand in MINERAL_MIXTURE_BRANDS:
-        mineral_brand_default_idx = MINERAL_MIXTURE_BRANDS.index(st.session_state.mineral_brand)
-    elif MINERAL_MIXTURE_BRANDS:
-        st.session_state.mineral_brand = MINERAL_MIXTURE_BRANDS[0]
-    else:
-        st.session_state.mineral_brand = None
-
-    mineral_brand = st.selectbox(
-        labels['Mineral Mixture Brand'], MINERAL_MIXTURE_BRANDS,
-        index=mineral_brand_default_idx,
-        key="mineral_brand",
-        disabled=(not MINERAL_MIXTURE_BRANDS)
-    )
+    mineral_brand_default_idx = MINERAL_MIXTURE_BRANDS.index(st.session_state.mineral_brand) if st.session_state.mineral_brand in MINERAL_MIXTURE_BRANDS else 0
+    
+    mineral_brand = st.selectbox(labels['Mineral Mixture Brand'], MINERAL_MIXTURE_BRANDS, index=mineral_brand_default_idx, key="mineral_brand", disabled=(not MINERAL_MIXTURE_BRANDS))
 
     # Conditional text input for Other Mineral Brand
-    if mineral_brand == labels['Other (Specify)']:
+    if st.session_state.mineral_brand == labels['Other (Specify)']:
         st.text_input(
             labels['Other Mineral Brand'],
             value=st.session_state.mineral_brand_specify,
             key="mineral_brand_specify"
         )
-    else:
-        if 'mineral_brand_specify' in st.session_state:
-            st.session_state.mineral_brand_specify = ''
+    elif 'mineral_brand_specify' in st.session_state:
+        st.session_state.mineral_brand_specify = ''
 
-
-    # Quantity of Mineral Mixture
-    mineral_qty = st.number_input(
-        labels['Quantity of Mineral Mixture'], min_value=0.0,
-        value=float(st.session_state.mineral_qty),
-        key="mineral_qty"
-    )
+    mineral_qty = st.number_input(labels['Quantity of Mineral Mixture'], min_value=0.0, value=float(st.session_state.mineral_qty), key="mineral_qty")
 
     # Silage
     silage_options = (labels['Yes'], labels['No'])
     silage_default_idx = silage_options.index(st.session_state.silage) if st.session_state.silage in silage_options else 0
-    silage = st.selectbox(
-        labels['Silage'], silage_options,
-        index=silage_default_idx,
-        key="silage"
-    )
-    # Source and Price of Silage
-    silage_source = st.text_input(
-        labels['Source and Price of Silage'],
-        value=st.session_state.silage_source,
-        key="silage_source"
-    )
-    # Quantity of Silage
-    silage_qty = st.number_input(
-        labels['Quantity of Silage'], min_value=0.0,
-        value=float(st.session_state.silage_qty),
-        key="silage_qty"
-    )
+    silage = st.selectbox(labels['Silage'], silage_options, index=silage_default_idx, key="silage")
+    silage_source = st.text_input(labels['Source and Price of Silage'], value=st.session_state.silage_source, key="silage_source")
+    silage_qty = st.number_input(labels['Quantity of Silage'], min_value=0.0, value=float(st.session_state.silage_qty), key="silage_qty")
 
-    # Source of Water (Multiselect with Other Specify)
-    water_sources = st.multiselect(
-        labels['Source of Water'], WATER_SOURCE_OPTIONS,
-        default=st.session_state.water_sources,
-        key="water_sources"
-    )
+    # --- Source of Water (Multiselect with Other Specify) ---
+    water_sources = st.multiselect(labels['Source of Water'], WATER_SOURCE_OPTIONS, default=st.session_state.water_sources, key="water_sources")
+    
     # Conditional text input for Other Water Source
-    if labels['Other (Specify)'] in water_sources:
+    if labels['Other (Specify)'] in st.session_state.water_sources:
         st.text_input(
             labels['Other Water Source'],
             value=st.session_state.water_sources_specify,
             key="water_sources_specify"
         )
-    else:
-        if 'water_sources_specify' in st.session_state:
-            st.session_state.water_sources_specify = ''
+    elif 'water_sources_specify' in st.session_state:
+        st.session_state.water_sources_specify = ''
 
-    # Name of Surveyor (Selectbox with Other Specify)
-    surveyor_name_default_idx = 0
-    if st.session_state.surveyor_name in SURVEYOR_NAMES:
-        surveyor_name_default_idx = SURVEYOR_NAMES.index(st.session_state.surveyor_name)
-    elif SURVEYOR_NAMES:
-        st.session_state.surveyor_name = SURVEYOR_NAMES[0]
-    else:
-        st.session_state.surveyor_name = None
+    # --- Name of Surveyor (Selectbox with Other Specify) ---
+    surveyor_name_default_idx = SURVEYOR_NAMES.index(st.session_state.surveyor_name) if st.session_state.surveyor_name in SURVEYOR_NAMES else 0
 
-    surveyor_name = st.selectbox(
-        labels['Name'], SURVEYOR_NAMES,
-        index=surveyor_name_default_idx,
-        key="surveyor_name",
-        disabled=(not SURVEYOR_NAMES)
-    )
+    surveyor_name = st.selectbox(labels['Name'], SURVEYOR_NAMES, index=surveyor_name_default_idx, key="surveyor_name", disabled=(not SURVEYOR_NAMES))
+    
     # Conditional text input for Other Surveyor Name
-    if surveyor_name == labels['Other (Specify)']:
+    if st.session_state.surveyor_name == labels['Other (Specify)']:
         st.text_input(
             labels['Other Surveyor Name'],
             value=st.session_state.surveyor_name_specify,
             key="surveyor_name_specify"
         )
-    else:
-        if 'surveyor_name_specify' in st.session_state:
-            st.session_state.surveyor_name_specify = ''
+    elif 'surveyor_name_specify' in st.session_state:
+        st.session_state.surveyor_name_specify = ''
 
 
     # Date of Visit
-    visit_date = st.date_input(
-        labels['Date of Visit'],
-        value=st.session_state.visit_date,
-        key="visit_date"
-    )
+    visit_date = st.date_input(labels['Date of Visit'], value=st.session_state.visit_date, key="visit_date")
 
-    # Photo Upload - placed before submit and uses a unique key
+    # Photo Upload
     st.subheader("Upload Farm Photo")
     st.info("Note: Uploaded photos are not auto-saved across sessions/reloads. Please re-upload if you refresh the page before final submission.")
     farm_photo = st.file_uploader("Choose a farm photo (JPG/PNG)", type=["jpg", "jpeg", "png"], key="farm_photo_uploader")
@@ -842,67 +550,60 @@ with st.form("survey_form"):
     submit_button = st.form_submit_button(labels['Submit'])
 
 # Auto-save logic: this runs on every rerun (after any widget interaction)
+# We use a simple hash of the values to check for changes
 if st.session_state.app_initialized_flag:
-    current_form_values = {key: st.session_state.get(key, initial_values_defaults.get(key)) for key in initial_values_defaults.keys()}
-    
-    # Include all 'specify' fields in current_form_values for comparison
-    for key in ['other_farmer_name_specify', 'vlcc_name_specify', 'pellet_feed_brands_specify', 'mineral_brand_specify', 'water_sources_specify', 'surveyor_name_specify']:
-        if key in st.session_state:
-            current_form_values[key] = st.session_state[key]
+    # 1. Collect current values
+    current_form_values = {key: st.session_state.get(key, initial_values_defaults.get(key)) for key in INITIAL_STATE_KEYS}
     
     if isinstance(current_form_values.get('visit_date'), datetime.date):
         current_form_values['visit_date'] = current_form_values['visit_date'].isoformat()
-
+    
+    # 2. Get saved draft data
     draft_filename = os.path.join(DRAFT_DIR, "current_draft.json")
     last_saved_draft_data = {}
     if os.path.exists(draft_filename):
         try:
             with open(draft_filename, 'r') as f:
                 last_saved_draft_data = json.load(f)
-            if 'visit_date' in last_saved_draft_data and isinstance(last_saved_draft_data['visit_date'], datetime.date):
-                last_saved_draft_data['visit_date'] = last_saved_draft_data['visit_date'].isoformat()
         except Exception:
             last_saved_draft_data = {}
 
+    # 3. Save draft only if there's a difference
     if current_form_values != last_saved_draft_data:
         save_draft()
+
 
 # Process submission (this block runs after the form is submitted via submit_button)
 if submit_button:
     now = datetime.datetime.now()
 
-    # --- Determine Final Values for Submission ---
+    # --- Determine Final Values for Submission (Simplified) ---
     other_specify_label = dict_translations.get(st.session_state.lang_select, dict_translations['English'])['Other (Specify)']
 
-    final_vlcc_name = st.session_state.vlcc_name
-    if final_vlcc_name == other_specify_label and st.session_state.vlcc_name_specify:
-        final_vlcc_name = st.session_state.vlcc_name_specify
+    # Helper for single-select/text-input combos
+    def resolve_single_select_other(select_key, specify_key):
+        if st.session_state[select_key] == other_specify_label:
+            return st.session_state[specify_key]
+        return st.session_state[select_key]
     
-    final_farmer_name = st.session_state.farmer_name
-    if final_farmer_name == other_specify_label and st.session_state.other_farmer_name_specify:
-        final_farmer_name = st.session_state.other_farmer_name_specify
-
-    final_surveyor_name = st.session_state.surveyor_name
-    if final_surveyor_name == other_specify_label and st.session_state.surveyor_name_specify:
-        final_surveyor_name = st.session_state.surveyor_name_specify
-        
-    final_mineral_brand = st.session_state.mineral_brand
-    if final_mineral_brand == other_specify_label and st.session_state.mineral_brand_specify:
-        final_mineral_brand = st.session_state.mineral_brand_specify
-
-    # --- Handle Multiselect + Specify Fields ---
-    def process_multiselect_with_other(multiselect_list, specify_field):
-        processed_list = list(multiselect_list)
-        if other_specify_label in processed_list and specify_field:
+    # Helper for multi-select/text-input combos
+    def resolve_multiselect_other(multiselect_key, specify_key):
+        processed_list = list(st.session_state[multiselect_key])
+        if other_specify_label in processed_list and st.session_state[specify_key]:
             processed_list.remove(other_specify_label)
-            processed_list.append(f"Other: {specify_field}")
-        return processed_list
+            processed_list.append(f"Other: {st.session_state[specify_key]}")
+        return ", ".join(processed_list)
 
-    pellet_brands_list = process_multiselect_with_other(st.session_state.pellet_feed_brands, st.session_state.pellet_feed_brands_specify)
-    water_sources_list = process_multiselect_with_other(st.session_state.water_sources, st.session_state.water_sources_specify)
+    final_vlcc_name = resolve_single_select_other('vlcc_name', 'vlcc_name_specify')
+    final_farmer_name = resolve_single_select_other('farmer_name', 'other_farmer_name_specify')
+    final_surveyor_name = resolve_single_select_other('surveyor_name', 'surveyor_name_specify')
+    final_mineral_brand = resolve_single_select_other('mineral_brand', 'mineral_brand_specify')
+    
+    pellet_brands_str = resolve_multiselect_other('pellet_feed_brands', 'pellet_feed_brands_specify')
+    water_sources_str = resolve_multiselect_other('water_sources', 'water_sources_specify')
 
 
-    # Collect all data directly from st.session_state which holds the latest values
+    # Collect all data directly from st.session_state
     data = {
         'Timestamp': now.isoformat(),
         'Language': st.session_state.lang_select,
@@ -926,7 +627,7 @@ if submit_button:
         'Type of Dry Fodder': ", ".join(st.session_state.dry_fodder_types),
         'Quantity of Dry Fodder (Kg/day)': st.session_state.dry_fodder_qty,
         'Pellet Feed': st.session_state.pellet_feed,
-        'Pellet Feed Brand': ", ".join(pellet_brands_list),
+        'Pellet Feed Brand': pellet_brands_str,
         'Quantity of Pellet Feed (Kg/day)': st.session_state.pellet_feed_qty,
         'Mineral Mixture': st.session_state.mineral_mixture,
         'Mineral Mixture Brand': final_mineral_brand,
@@ -934,7 +635,7 @@ if submit_button:
         'Silage': st.session_state.silage,
         'Source and Price of Silage': st.session_state.silage_source,
         'Quantity of Silage (Kg/day)': st.session_state.silage_qty,
-        'Source of Water': ", ".join(water_sources_list),
+        'Source of Water': water_sources_str,
         'Surveyor Name': final_surveyor_name,
         'Date of Visit': st.session_state.visit_date.isoformat()
     }
@@ -955,9 +656,10 @@ if submit_button:
     st.success("📈 Survey Submitted and Saved!")
 
     # Clear session state data and the draft file after successful submission to clear the form
-    for key, default_value in initial_values_defaults.items():
-        if key in st.session_state:
-            st.session_state[key] = default_value
+    for key in INITIAL_STATE_KEYS:
+        if key in initial_values_defaults:
+            st.session_state[key] = initial_values_defaults[key]
+    
     st.session_state.last_saved_time_persistent = None
 
     # Delete the persistent draft file
@@ -1002,8 +704,15 @@ if admin_email in ALLOWED_EMAILS:
     # Add image access for admin
     if st.checkbox("🖼️ View and Download Uploaded Images"):
         # List all image files in the SAVE_DIR folder
-        image_files = [f for f in os.listdir(SAVE_DIR) if f.lower().endswith(('.jpg', '.jpeg', '.png'))]
+        # Files are saved in SAVE_DIR, not DRAFT_DIR
+        image_files = [f for f in os.listdir(SAVE_DIR) if f.lower().endswith(('.jpg', '.jpeg', '.png')) and not f.startswith('farm_photo')]
+        # Also check for files saved with the standard naming convention
+        image_files.extend([f for f in os.listdir(SAVE_DIR) if f.startswith('farm_photo') and f.lower().endswith(('.jpg', '.jpeg', '.png'))])
+        
         if image_files:
+            # Deduplicate the list
+            image_files = list(set(image_files))
+
             for img_file in image_files:
                 img_path = os.path.join(SAVE_DIR, img_file)
 
@@ -1012,11 +721,12 @@ if admin_email in ALLOWED_EMAILS:
 
                 # Provide download button for the image
                 with open(img_path, "rb") as img:
+                    mime_type = "image/jpeg" if img_file.lower().endswith(('.jpg', '.jpeg')) else "image/png"
                     st.download_button(
                         label=f"⬇️ Download {img_file}",
                         data=img,
                         file_name=img_file,
-                        mime="image/jpeg" if img_file.lower().endswith('.jpg') else "image/png"
+                        mime=mime_type
                     )
         else:
             st.warning("⚠️ No images found.")
