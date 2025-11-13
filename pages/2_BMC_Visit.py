@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 from datetime import date as dt_date
 import os
-import time # Added for simulating geoloc and file processing
+import time 
 
 # --- Translation Dictionary ---
 translations = {
@@ -123,11 +123,11 @@ translations = {
         'competitor4_name_label': "Competitor 4 Name:",
         'competitor4_milk_label': "Competitor 4 MILK (LPD):",
 
-        'photo_upload_header': "BMC Photos and Geolocation", # NEW SECTION
-        'capture_location_label': "Click to Capture BMC Location (Latitude, Longitude):", # NEW
-        'photo_overall_label': "Photo 1: Overall BMC Structure", # NEW
-        'photo_platform_label': "Photo 2: Platform/Entry Area", # NEW
-        'photo_inside_label': "Photo 3: BMC Cooling Area (Inside)", # NEW
+        'photo_upload_header': "BMC Photos and Geolocation",
+        'capture_location_label': "Capture BMC Location (Press to get Lat/Long):",
+        'photo_overall_label': "Photo 1: Overall BMC Structure",
+        'photo_platform_label': "Photo 2: Platform/Entry Area",
+        'photo_inside_label': "Photo 3: BMC Cooling Area (Inside)",
         'submit_button': "Submit BMC Visit Data",
         'yes': "YES",
         'no': "NO",
@@ -257,7 +257,7 @@ translations = {
         'competitor4_milk_label': "स्पर्धक 4 दूध (LPD):",
 
         'photo_upload_header': "BMC फोटो आणि भौगोलिक स्थान",
-        'capture_location_label': "BMC स्थान मिळवा (अक्षांश, रेखांश):",
+        'capture_location_label': "BMC स्थान मिळवा (बटण दाबा):",
         'photo_overall_label': "फोटो 1: एकूण BMC रचना",
         'photo_platform_label': "फोटो 2: प्लॅटफॉर्म/प्रवेश क्षेत्र",
         'photo_inside_label': "फोटो 3: BMC कूलिंग क्षेत्र (आत)",
@@ -276,7 +276,6 @@ translations = {
 
 # --- Function to get translated text ---
 def t(key):
-    # Fallback to English key if translation is missing
     return translations[st.session_state.language].get(key, key)
 
 # --- Function to handle 'Others' follow-up text input ---
@@ -291,35 +290,36 @@ def text_input_for_others(select_widget_value, label_key, input_key):
     # Check if the 'Others' option is selected (for single select or multi-select)
     if (isinstance(select_widget_value, str) and select_widget_value == others_option) or \
        (isinstance(select_widget_value, list) and others_option in select_widget_value):
-        # Display the text input
         other_value = st.text_input(t(label_key), key=input_key)
         
     return other_value
 
-# --- Streamlit Geolocation Logic (Requires user interaction/browser support) ---
-# NOTE: Streamlit doesn't natively expose browser geolocation, so this is a 
-# simulated capture or a placeholder for manual entry/future component.
+# --- Geolocation Function (FIXED for use inside st.form) ---
 def get_geolocation():
     if 'location_captured' not in st.session_state:
         st.session_state.location_captured = "N/A"
     
-    # Simulated capture button
-    if st.button(t('capture_location_label'), key="capture_geo"):
+    # FIX: Use st.form_submit_button() instead of st.button() inside the main form.
+    # We use a unique key to distinguish it from the final submission button.
+    if st.form_submit_button(
+        t('capture_location_label'), 
+        key="capture_geo_submit",
+        help="Click this button to capture the simulated location. This action submits the form but won't save data unless the final 'Submit' is also clicked."
+    ):
         with st.spinner("Capturing location..."):
             time.sleep(1) # Simulate network delay
-            # In a real deployed app, you'd use a custom component here.
-            # For pure Streamlit, we simulate or ask for manual entry.
-            st.session_state.location_captured = "18.12345, 74.56789" # Mock Coordinates
-        st.success("Location captured!")
+            # Mock Coordinates: Using time to make the coordinates change slightly
+            st.session_state.location_captured = f"{round(18 + 0.1 * time.time() % 1, 5)}, {round(74 + 0.1 * time.time() % 1, 5)}" 
+        st.success("Location captured! Please check the coordinates below.")
     
     # Display the captured location
     st.info(f"Captured Location: **{st.session_state.location_captured}**")
     return st.session_state.location_captured
 
-
+# --- Streamlit App Configuration ---
 st.set_page_config(layout="centered", page_title="Ksheersagar - BMC Visit")
 
-# --- Language Selection (persists across pages) ---
+# --- Language Selection (sidebar) ---
 if 'language' not in st.session_state:
     st.session_state.language = 'en'
 
@@ -361,7 +361,7 @@ with st.form(key='bmc_visit_form'):
     # --- GEOLOCATION AND PHOTO UPLOAD SECTION ---
     st.header(t('photo_upload_header'))
     
-    # Geolocation (Placeholder/Simulated)
+    # Geolocation (FIXED to use st.form_submit_button)
     bmc_location = get_geolocation()
     st.markdown("---")
     
@@ -433,7 +433,7 @@ with st.form(key='bmc_visit_form'):
         # No. of Women Farmers (Active Farmers)
         active_women_farmer_no = st.number_input(t('active_women_farmers_label'), min_value=0, value=10)
 
-    # --- Capacity & Collection Details ---
+    # --- Capacity & Collection ---
     st.header(t('capacity_header'))
     col5, col6 = st.columns(2)
     with col5:
@@ -528,19 +528,17 @@ with st.form(key='bmc_visit_form'):
         competitor4_milk_lpd = st.number_input(t('competitor4_milk_label'), min_value=0, value=0, key="comp4_milk_lpd")
 
     st.markdown("---")
+    # FINAL SUBMIT BUTTON
     submit_button = st.form_submit_button(label=t('submit_button'))
 
     if submit_button:
-        # Check for photo uploads (simple check)
+        # Check for required photo uploads (simple check)
         if not all([photo_overall, photo_platform, photo_inside]):
             st.error("Please upload all three required photos before submitting.")
             st.stop()
             
         # Convert translated answers back to English for data consistency
         yes_en, no_en = translations['en']['yes'], translations['en']['no']
-        
-        # NOTE: For real-world use, you would save the uploaded files to cloud storage (S3/GCS) 
-        # and record the URL/path here, not the file object itself.
         
         submitted_data = {
             # --- New Fields ---
