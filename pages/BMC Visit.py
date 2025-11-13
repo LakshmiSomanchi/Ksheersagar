@@ -1,752 +1,666 @@
-# app.py (Heritage Specific Streamlit Dairy Survey)
-
 import streamlit as st
 import pandas as pd
-import datetime
+from datetime import date as dt_date
 import os
-import json # To save/load session state as JSON
 
-# Ensure save folder exists
-SAVE_DIR = 'survey_responses'
-os.makedirs(SAVE_DIR, exist_ok=True)
+# --- Constants ---
+BMC_VISIT_DATA_FILE = "bmc_visit_data.csv"
 
-# Define a directory for auto-saved drafts
-DRAFT_DIR = os.path.join(SAVE_DIR, 'drafts')
-os.makedirs(DRAFT_DIR, exist_ok=True)
-
-# Streamlit Page Config - THIS MUST BE THE FIRST STREAMLIT COMMAND
-st.set_page_config(page_title="Heritage Dairy Survey", page_icon="🐄", layout="centered")
-
-
-# --- Multilingual Translations ---
-dict_translations = {
-    'English': {
-        'Language': 'Language', 'Farmer Profile': 'Farmer Profile', 'VLCC Name': 'VLCC Name',
-        'HPC/MCC Code': 'HPC/MCC Code', 'Types': 'Type', 'HPC': 'HPC', 'MCC': 'MCC',
-        'Farmer Name': 'Farmer Name', 'Farmer Code': 'Farmer Code / Pourer ID', 'Gender': 'Gender',
-        'Male': 'Male', 'Female': 'Female', 'Farm Details': 'Farm Details',
-        'Number of Cows': 'Number of Cows', 'No. of Cattle in Milk': 'No. of Cattle in Milk',
-        'No. of Calves/Heifers': 'No. of Calves/Heifers', 'No. of Desi cows': 'No. of Desi cows',
-        'No. of Cross breed cows': 'No. of Cross breed cows', 'No. of Buffalo': 'No. of Buffalo',
-        'Milk Production': 'Milk Production (liters/day)', 'Specific Questions': 'Specific Questions',
-        'Green Fodder': 'Green Fodder', 'Type of Green Fodder': 'Type of Green Fodder (Multiple Select)',
-        'Quantity of Green Fodder': 'Quantity of Green Fodder (Kg/day)',
-        'Dry Fodder': 'Dry Fodder', 'Type of Dry Fodder': 'Type of Dry Fodder (Multiple Select)',
-        'Quantity of Dry Fodder': 'Quantity of Dry Fodder (Kg/day)',
-        'Pellet Feed': 'Pellet Feed', 'Pellet Feed Brand': 'Pellet Feed Brand (Multiple Select)',
-        'Quantity of Pellet Feed': 'Quantity of Pellet Feed (Kg/day)',
-        'Mineral Mixture': 'Mineral Mixture',
-        'Mineral Mixture Brand': 'Mineral Mixture Brand',
-        'Quantity of Mineral Mixture': 'Quantity of Mineral Mixture (gm/day)',
-        'Silage': 'Silage', 'Source and Price of Silage': 'Source and Price of Silage',
-        'Quantity of Silage': 'Quantity of Silage (Kg/day)', 'Source of Water': 'Source of Water (Multiple Select)',
-        'Name': 'Name', 'Date of Visit': 'Date of Visit',
-        'Submit': 'Submit', 'Yes': 'Yes', 'No': 'No', 'Download CSV': 'Download CSV',
-        'Auto-saved!': 'Auto-saved! You can resume filling the form even if you refresh or lose internet temporarily.',
-        'Other (Specify)': 'Other (Specify)',
-        'Other Farmer Name': 'Other Farmer Name (Specify)',
-        'Other VLCC Name': 'Other VLCC Name (Specify)',
-        'Other Pellet Brand': 'Other Pellet Brand (Specify)',
-        'Other Mineral Brand': 'Other Mineral Brand (Specify)',
-        'Other Water Source': 'Other Water Source (Specify)',
-        'Other Surveyor Name': 'Other Surveyor Name (Specify)',
-    },
-    'Hindi': {
-        'Language': 'भाषा', 'Farmer Profile': 'किसान प्रोफ़ाइल', 'VLCC Name': 'वीएलसीसी नाम',
-        'HPC/MCC Code': 'एचपीसी/एमसीसी कोड', 'Types': 'प्रकार', 'HPC': 'एचपीसी', 'MCC': 'एमसीसी',
-        'Farmer Name': 'किसान का नाम', 'Farmer Code': 'किसान कोड/दूधदाता आईडी', 'Gender': 'लिंग',
-        'Male': 'पुरुष', 'Female': 'महिला', 'Farm Details': 'फार्म विवरण',
-        'Number of Cows': 'गायों की संख्या', 'No. of Cattle in Milk': 'दूध देने वाले मवेशी',
-        'No. of Calves/Heifers': 'बछड़े/बछड़ियां', 'No. of Desi cows': 'देसी गायों की संख्या',
-        'No. of Cross breed cows': 'क्रॉसब्रीड गायों की संख्या', 'No. of Buffalo': 'भैंसों की संख्या',
-        'Milk Production': 'दूध उत्पादन (लीटर/दिन)', 'Specific Questions': 'विशिष्ट प्रश्न',
-        'Green Fodder': 'हरा चारा', 'Type of Green Fodder': 'हरे चारे का प्रकार (एकाधिक चयन)',
-        'Quantity of Green Fodder': 'हरे चारे की मात्रा (किलो/दिन)',
-        'Dry Fodder': 'सूखा चारा', 'Type of Dry Fodder': 'सूखे चारे का प्रकार (एकाधिक चयन)',
-        'Quantity of Dry Fodder': 'सूखे चारे की मात्रा (किलो/दिन)',
-        'Pellet Feed': 'पेलेट फ़ीड', 'Pellet Feed Brand': 'पेलेट फ़ीड ब्रांड (एकाधिक चयन)',
-        'Quantity of Pellet Feed': 'पेलेट फ़ीड मात्रा (किलो/दिन)',
-        'Mineral Mixture': 'खनिज मिश्रण',
-        'Mineral Mixture Brand': 'खनिज मिश्रण ब्रांड',
-        'Quantity of Mineral Mixture': 'खनिज मिश्रण मात्रा (ग्राम/दिन)',
-        'Silage': 'सायलेज', 'Source and Price of Silage': 'सायलेज स्रोत और मूल्य',
-        'Quantity of Silage': 'सायलेज मात्रा (किलो/दिन)', 'Source of Water': 'पानी का स्रोत (एकाधिक चयन)',
-        'Name': 'सर्वेक्षक का नाम', 'Date of Visit': 'दौरे की तिथि',
-        'Submit': 'जमा करें', 'Yes': 'हाँ', 'No': 'नहीं', 'Download CSV': 'CSV डाउनलोड करें',
-        'Auto-saved!': 'स्वतः सहेजा गया! आप फ़ॉर्म भरना जारी रख सकते हैं, भले ही आप ताज़ा करें या अस्थायी रूप से इंटरनेट खो दें!',
-        'Other (Specify)': 'अन्य (निर्दिष्ट करें)',
-        'Other Farmer Name': 'अन्य किसान का नाम (निर्दिष्ट करें)',
-        'Other VLCC Name': 'अन्य वीएलसीसी नाम (निर्दिष्ट करें)',
-        'Other Pellet Brand': 'अन्य पेलेट ब्रांड (निर्दिष्ट करें)',
-        'Other Mineral Brand': 'अन्य खनिज ब्रांड (निर्दिष्ट करें)',
-        'Other Water Source': 'अन्य जल स्रोत (निर्दिष्ट करें)',
-        'Other Surveyor Name': 'अन्य सर्वेक्षक का नाम (निर्दिष्ट करें)',
-    },
-    'Marathi': {
-        "Language": "भाषा",
-        "Farmer Profile": "शेतकरी प्रोफाइल",
-        "VLCC Name": "वीएलसीसी नाव",
-        "HPC/MCC Code": "एचपीसी/एमसीसी कोड",
-        "Types": "प्रकार",
-        "HPC": "एचपीसी",
-        "MCC": "एमसीसी",
-        "Farmer Name": "शेतकऱ्याचे नाव",
-        "Farmer Code": "शेतकरी कोड/दूध देणारा आयडी",
-        "Gender": "लिंग",
-        "Male": "पुरुष",
-        "Female": "महिला",
-        "Farm Details": "फार्म तपशील",
-        "Number of Cows": "गायींची संख्या",
-        "No. of Cattle in Milk": "दूध देणाऱ्या जनावरांची संख्या",
-        "No. of Calves/Heifers": "वासरे/वषाडांची संख्या",
-        "No. of Desi cows": "देशी गायींची संख्या",
-        "No. of Cross breed cows": "संकरित गायींची संख्या",
-        "No. of Buffalo": "म्हशींची संख्या",
-        "Milk Production": "दूध उत्पादन (लिटर/दिवस)",
-        "Specific Questions": "विशिष्ट प्रश्न",
-        "Green Fodder": "हिरवा चारा",
-        "Type of Green Fodder": "हिरव्या चाऱ्याचा प्रकार (अनेक निवडा)",
-        "Quantity of Green Fodder": "हिरव्या चाऱ्याचे प्रमाण (किलो/दिवस)",
-        "Dry Fodder": "कोरडा चारा",
-        "Type of Dry Fodder": "कोरड्या चाऱ्याचा प्रकार (अनेक निवडा)",
-        "Quantity of Dry Fodder": "कोरड्या चाऱ्याचे प्रमाण (किलो/दिवस)",
-        "Pellet Feed": "गोळी खाद्य",
-        "Pellet Feed Brand": "गोळी खाद्य ब्रँड (अनेक निवडा)",
-        "Quantity of Pellet Feed": "गोळी खाद्यचे प्रमाण (किलो/दिवस)",
-        "Mineral Mixture": "खनिज मिश्रण",
-        "Mineral Mixture Brand": "खनिज मिश्रण ब्रँड",
-        "Quantity of Mineral Mixture": "खनिज मिश्रणाचे प्रमाण (ग्राम/दिवस)",
-        "Silage": "सायलेज",
-        "Source and Price of Silage": "सायलेजचा स्त्रोत आणि किंमत",
-        "Quantity of Silage": "सायलेजचे प्रमाण (किलो/दिवस)",
-        "Source of Water": "पाण्याचा स्त्रोत (अनेक निवडा)",
-        "Name": "सर्वेक्षकाचे नाव",
-        "Date of Visit": "भेटीची तारीख",
-        "Submit": "सादर करा",
-        "Yes": "होय",
-        "No": "नाही",
-        "Download CSV": "CSV डाउनलोड करा",
-        'Auto-saved!': 'स्वयं-जतन केले! आपण रिफ्रेश केले किंवा तात्पुरते इंटरनेट गमावले तरीही आपण फॉर्म भरणे सुरू ठेवू शकता.',
-        'Other (Specify)': 'इतर (निर्दिष्ट करा)',
-        'Other Farmer Name': 'इतर शेतकऱ्याचे नाव (निर्दिष्ट करा)',
-        'Other VLCC Name': 'इतर वीएलसीसी नाव (निर्दिष्ट करा)',
-        'Other Pellet Brand': 'इतर गोळी खाद्य ब्रँड (निर्दिष्ट करा)',
-        'Other Mineral Brand': 'इतर खनिज ब्रँड (निर्दिष्ट करा)',
-        'Other Water Source': 'इतर पाण्याचा स्त्रोत (निर्दिष्ट करा)',
-        'Other Surveyor Name': 'इतर सर्वेक्षकचे नाव (निर्दिष्ट करा)',
-    }
-}
-
-
-# --- Heritage Specific Data (Combined for simplicity) ---
-VLCC_NAMES = [
-"3025-K.V.PALLE", "3026-KOTHA PALLE", "3028-BONAMVARIPALLE", "3029-BOMMAICHERUVUPALLI", "3030-BADDALAVARIPALLI", "3033-CHINNAGOTTIGALLU", "3034-VODDIPALLE", "3036-MUDUPULAVEMULA", "3037-BAYYAREDDYGARIPALLE", "3038-DODDIPALLE", "3040-MARAMREDDYGARIPALLE", "3041-GUTTAPALEM", "3042-CHERUVUMUNDARAPALLI", "3044-VARAMPATIVARIPALLE",
-"3045-ROMPICHERLA", "3046-BANDAKINDAPALLE", "3047-MARASANIVARIPALLI",
-"3024-DEVALAVARIPALLE", "3002-KHAMBAMMITTAPALLE", "3004-MARRIMAKULAPALLE", "3005-NAGARIMADUGUVARIPALLE", "3006-KOORAPARTHIVARIPALLE", "3008-IRRIVANDLAPALLE", "3009-PATHEGADA (U.I)", "3011-PULICHERLA", "3013-GUDAREVUPALLE", "3014-ENUMALAVARIPALLE", "3015-MUNTHAVANDLAPALLE", "3016-REGALLU",
-"3018-REDDIVARIPALLE", "3019-MAJJIGAVANDLAPALLE", "3020-VENKATADASARAPALLE", "3021-BURRAVANDLAPALLE", "3022-KODEKAMBAMVARIPALLI", "3023-SEENAPPAGARIPALLE", "3071-KOTAKADAPALLE", "3072-KOTAKADAPALLE", "3074-PODALAKUNTALAPALLE", "3075-SOMALA", "3076-SOMALA", "3077-SOMALA", "3078-CHINNAGOTTIGALLU", "3079-MATLOLLPALLAI",
-"3080-POLIKIMAKULAPALLE", "3081-K.GOLLAPALLE", "3082-CHERUKUVARIPALLE", "3083-SODUM", "3084-PILER", "3085-CHERUKUVARIPALLE", "3086-SOMALA", "3087-SODUM", "3088-YERRAVARIPALEM",
-"3089-GUDAREVUPALLE", "3090-SOMALA", "3091-PUTTAVARIPALLE", "3092-VAGALLA", "3048-R.KUMMARA PALLE", "3049-HANUMANTHARAYUNIPETA", "3050-CHENCHAMAREDDIGARIPALLE", "3051-BODUMALLUVARIPALLE", "3052-BANDAKINDAPALLE", "3055-NAKKALADINNEVODDIPALLE", "3057-KUKKALODDU",
-"3059-GUNDLAKADAPALLI", "3070-PEDDAPANJANI", "3069-PEDDAPALLI", "3068-KADIRAKUNTA", "3067-KOTALA", "3066-VLLIGATLA(U.I)", "3060-BALIREDDIGARIPALLE", "3061-SODUM", "3062-GONGIVARIPALLE", "3064-SRINADHAPURAM", "3063-GANGUVARIPALLE", "1664-DEVALAMPETA", "1651-YERRAGUNTLAVARIPALLE", "1740-KALIKIRI", "1718-KOTHA PALLE",
-"1542-HARIJANAWADA", "1937-KAMMAPALLE", "1993-T.SANDRAVARIPALLE", "1959-MANCHOORIVARIPALLE", "1812-GANGIREDDIGARIPALLE", "1781-ROMPICHERLA", "1773-SREERAMULAVADDIPALLE", "1770-THATIGUNTAPALEM", "1868-ROMPICHERLA", "1824-YERRAGUNTLAVARIPALLE", "0884-KOTHAPALLE", "0881-ROMPICHERLA", "0880-MUREVANDLAPALLE", "0878-KALIKIRI", "0876-DIGUVAJUPALLI",
-"0874-KONDAREDDIGARIPALLE", "0871-ROMPICHERLA", "0868-NAGARIMADUGUVARIPALLE", "0863-KHAMBAMMITTAPALLE", "0906-REDDIVARIPALLE", "0900-GOLLAPALLE", "0895-PEDDAMALLELA", "0893-PEDDIREDDIGARIPALLE", "0888-BANDARALAVARIPALLE", "0887-ELLAMPALLE", "0830-REGALLU", "0826-MUNIREDDIGARIPALLE", "0824-PILER",
-"0859-KRIHSNAREDDIGARIPALLE", "0851-GYARAMPALLE", "0848-ELLAREDDIGARIPALLE", "0846-KURAVAPALLE", "0842-PEDDAMALLELA", "0839-BANDAMVARIPALLE", "1058-CHERUKUVARIPALLE", "1057-CHERUKUVARIPALLE", "1052-NANJAMPETA", "1017-KHAMBAMVARIPALLE", "1003-PUTTAVANDLAPALLE THANDA", "1272-USTIKAYALAPENTA",
-"1240-MITTAPALLE", "0916-AGRAHARAM", "0915-CHALLAVARIPALLE", "0982-KUCHAMVARIPALLE", "2388-SAGGAMVARI ENDLU", "2380-PILER",
-"2374-PILER", "2437-MARRIMAKULAPALLE", "2421-MATLOLLPALLAI", "2314-KUMMARAPALLE", "2338-SETTIPALLEVANDLAPALLE", "2500-KAMMAPALLE", "2530-AVULAPEDDIREDDIGARIPALL", "2528-MARAMREDDIGARIPALLE", "2526-AVULAPEDDIREDDIGARIPALL", "2463-BOMMAIAHGARIPALLE", "2444-ROMPICHERLA", "2440-BASIREDDIGARIPALLE",
-"2013-THOTIMALAPALLE", "2083-RAJUVARIPALLI H/W", "2045-RAJUVARIPALLI", "2288-RAJUVARIPALLI", "2272-THATIGUNTAPALEM", "2186-KANTAMVARIPALLE", "2183-REGALLU", "2178-SANKENIGUTTAPALLE", "2173-MUNELLAPALLE", "2160-V.K.THURPUPALLE", "2228-GAJULAVARIPALLI", "0296-BESTAPALLE",
-"0335-MATLOLLPALLAI", "0326-LOKAVARIPALLE", "0256-VOOTUPALLE", "0245-BETAPALLE", "0237-BATTUVARIPALLE", "0417-ROMPICHERLA", "0414-BODIPATIVARIPALLE", "0441-BODIPATIVARIPALLE", "0440-VARANASIVARIPALLE",
-"0360-CHICHILIVARIPALLE", "0357-AKKISANIVARIPALLE", "0394-SETTIPALLEVANDLAPALLE", "0072-VAGALLA",
-"0056-LEMATIVARIPALLE", "0108-KONDAREDDIGARIPALLE","0016-ROMPICHERLA",
-"0030-MELLAVARIPALLE", "0197-BASIREDDIGARIPALLE", "0173-MORAVAPALLE",
-"0221-KURABAPALLE", "0130-PATHAKURVAPALLE", "0165-AGRAHARAM",
-"0151-BONAMVARIPALLE", "0649-PILER", "0645-NADIMPALLE",
-"0643-SAVVALAVARIPALLE", "0636-KURAPATHIVARIPALLE", "0689-VANKAVODDIPALLE",
-"0688-BADDALAVARIPALLI H.W.","0685-NAGARIMADUGUVARIPALLE", "0668-KANDUR",
-"0663-DEVALAVARIPALLE", "0585-SRIVARAMPURAM", "0575-RAMREDDIGARIPALLE",
-"0572-LOKAVARIPALLE", "0613-NAGAVANDLAPALLI", "0611-BODIPATIVARIPALLE",
-"0610-ROMPICHERLA", "0604-NAGAVANDLAPALLI", "0782-CHICHILIVARIPALLE",
-"0770-DEVALAVARIPALLE", "0767-PEDDAGOTTIGALLU", "0764-K.V.PALLE",
-"0762-JAGADAMVARIPALLE", "0753-BOLLINANIVARIPALLI", "0813-ROMPICHERLA",
-"0811-ALAKAMVARIPALLE", "0809-KOTAKADAPALLE", "0794-PEDDAGOTTIGALLU",
-"0793-DIGUVAJUPALLI", "0789-SODUM", "0788-BURUJUPALLE",
-"0786-PEDDAGOTTIGALLU CROSS", "0719-NADIMPALLE", "0718-PEDDAGOTTIGALLU",
-"0714-BODIPATIVARIPALLE", "0709-REDDIVARIPALLE", "0700-RAMIREDDIGARIPALLE",
-"0721-SODUM", "0747-KURAVAPALLE", "0745-ETUKURIVARIPALLE",
-"0743-ROMPICHERLA", "0736-VOOTUPALLE", "0732-ROMPICHERLA",
-"0727-DUSSAVANDLA PALLI", "0726-SAVVALAVARIPALLE", "0508-MUREVANDLAPALLE",
-"0490-MATAMPALLE", "0551-TALUPULA", "0512-BONAMVARIPALLE",
-"0473-KURAVAPALLE", "0477-VARANASIVARIPALLE"
-]
-
-
-# Extracted Farmer Names and Member Codes (Combined for simplicity)
-FARMER_DATA = {
-    "0005": "GUBBALA ANAMMA", "0003": "G.REDDY SEKHAR", "0012":"V. Devaki", "0008": "D. PRASAD REDDY", "0006":"G.Ratnamma", "0013": "M.GANGULU", "0014": "K VARADHA NAIDU", "0007": "INDRAVATHI RAMADEVI", "0017": "B SAMPURNA", "0015": "J.GANGULU", "0002": "KRISHNAMA NAIDU", "0021": "M.S.CHOWDARY", "0029": "DASARI VENKATAIAH", "0030": "K.M.KANTHAMMA", "0036": "D.BALAKRISHNA", "0037": "C.SURYA PRAKASH", "0039": "D.CHANDRAMMA", "0041": "G.NARASIMHA NAIDU", "0043": "REDDI RAMADEVI", "0044": "D.CHANDRAMMA", "0045": "S.PEDDAIAH", "0046": "D.PEDDAIAH", "0047": "K.K.KADIRAMMA", "0001": "M.NARAYANAMMA", "0004": "C.M.NARAYANA", "0005": "D.MALLAIAH", "0008": "J.RAMADEVI", "0009": "G.SWARNAMMA", "0011": "J.ESWARAMMA", "0016": "P REDDY PRASAD", "0018": "D.DEVAKI RAMADEVI", "0019": "P.SATYAMMA", "0020": "B.SAMPURNA", "0022": "REDDISEKHAR", "0023": "V.SUBRAMANYAM", "0071": "V.REDDY RANI", "0072": "B.GANGULU", "0074": "K.YASHODHA", "0075": "D.RAMADEVI", "0076": "H.RAMADEVI", "0077": "R.RAMADEVI", "0078": "B.RANI", "0079": "K.VENKATAIAH", "0080": "P.SREERAM REDDY", "0081": "M.RAMADEVI", "0082": "M.PENCHALAMAIAH", "0083": "M.M.RATHNAMMA", "0084": "N.GANGULU", "0085": "N.RAMALINGAM", "0086": "N.RAMADEVI", "0087": "V.CHANDRAIAH", "0088": "N.SRINIVASULU", "0089": "M.RAMADEVI", "0090": "B.MURALI", "0091": "S.CHANDRAIAH", "0092": "S.SABEEN TAJ", "0048": "P.LAKSHMAMMA", "0049": "V.RANI", "0050": "K.PEDDAMMA", "0051": "C.VENKATA SUBBA REDDY", "0052": "S.NAGARJUNA", "0055": "E.CHANDRAIAH", "0057": "S.KASAMMA", "0059": "K.NARASIMHA", "0070": "K.NARAYANA", "0069": "K.NARASIMHULU", "0068": "K.RAJAMMA", "0067": "P.CHANDRAIAH", "0066": "M.RAJAMMA", "0060": "P.BHARATHAMMA", "0061": "V.VENKATA RAMANA", "0062": "P.BHARATHAMMA", "0064": "V.PADMAVATHI", "0063": "V.PADMAVATHI", "1664": "G.RAMADEVI", "1651": "P.GIRI BABU", "1740": "G.SUBRAMANYAM", "1718": "M.BABU", "1542": "S.BABU", "1937": "SREENIVASULU", "1993": "J.CHANDRAMMA", "1959": "A.CHANDRAMMA", "1812": "S.BHARATHI", "1781": "A.RAMADEVI", "1773": "P.SYAMALAMMA", "1770": "M.DEVAMMA", "1868": "T.LAKSHMINARI", "1824": "P.BHARATHAMMA", "0884": "M.DEVAMMA", "0881": "M.DEVASENEV", "0880": "M.LAKSHMINARIMMA", "0878": "M.LAKSHMINARIMMA", "0876": "N.NAGARATHNAM", "0874": "N.VENKATARAMANA", "0871": "C.RAMADEVI", "0868": "M.LAKSHMINARIMMA", "0863": "G.PEDDAIAH", "0906": "K.GANGAMMA", "0900": "R.SATYAMMA", "0895": "V.PADMAVATHI", "0893": "G.BALAKRISHNA", "0888": "C.RAMADEVI", "0887": "K.GANGAMMA", "0830": "K.ESWARAMMA", "0826": "G.NARASIMHULU", "0824": "M.VENKATAIAH", "0859": "G.NARASIMHULU", "0851": "K.KRISHNA REDDY", "0848": "G.CHANDRAIAH", "0846": "V.GANGAMMA", "0842": "K.SWARNAMMA", "0839": "B.SATYAMMA", "1058": "P.RAMADEVI", "1057": "K.RAMANAIAH", "1052": "P.RAMADEVI", "1017": "N.NARAYANAMMA", "1003": "N.PEDDI REDDY", "1272": "G.PEDDI REDDY", "1240": "K.PEDDI REDDY", "0916": "M.KRISHNAMA NAIDU", "0915": "S.BALAKRISHNA REDDY", "0982": "C.MUNIREDDY", "2388": "G.PEDDI REDDY", "2380": "K.MUNIREDDY", "2374": "N.RAJAGOPAL", "2437": "M.ADILAKSHMI", "2421": "M.MUNIREDDY", "2314": "K.CHANDRAIAH", "2338": "A.CHANDRAMMA", "2500": "T.VENKATAIAH", "2530": "A.RAMADEVI", "2528": "M.SUBRAMANYAM", "2526": "A.GANGAMMA", "2463": "B.BUMMAIAHGARIPALLE", "2444": "C.RAMADEVI", "2440": "B.SWARNAMMA", "2013": "THOTIMALAPALLE", "2083": "RAJUVARIPALLI H/W", "2045": "RAJUVARIPALLI", "2288": "RAJUVARIPALLI", "2272": "THATIGUNTAPALEM", "2186": "KANTAMVARIPALLE", "2183": "REGALLU", "2178": "SANKENIGUTTAPALLE", "2173": "MUNELLAPALLE", "2160": "V.K.THURPUPALLE", "2228": "GAJULAVARIPALLI", "0296": "BESTAPALLE", "0335": "MATLOLLPALLAI", "0326": "LOKAVARIPALLE", "0256": "VOOTUPALLE", "0245": "BETAPALLE", "0237": "BATTUVARIPALLE", "0417": "ROMPICHERLA", "0414": "BODIPATIVARIPALLE", "0441": "BODIPATIVARIPALLE", "0440": "VARANASIVARIPALLE", "0360": "CHICHILIVARIPALLE", "0357": "AKKISANIVARIPALLE", "0394": "SETTIPALLEVANDLAPALLE", "0072": "VAGALLA", "0056": "LEMATIVARIPALLE", "0108": "KONDAREDDIGARIPALLE", "0016": "ROMPICHERLA", "0030": "MELLAVARIPALLE", "0197": "BASIREDDIGARIPALLE", "0173": "MORAVAPALLE", "0221": "KURABAPALLE", "0130": "PATHAKURVAPALLE", "0165": "AGRAHARAM", "0151": "BONAMVARIPALLE", "0649": "PILER", "0645": "NADIMPALLE", "0643": "SAVVALAVARIPALLE", "0636": "KURAPATHIVARIPALLE", "0689": "VANKAVODDIPALLE", "0688": "BADDALAVARIPALLI H.W.", "0685": "NAGARIMADUGUVARIPALLE", "0668": "KANDUR", "0663": "DEVALAVARIPALLE", "0585": "SRIVARAMPURAM", "0575": "RAMREDDIGARIPALLE", "0572": "LOKAVARIPALLE", "0613": "NAGAVANDLAPALLI", "0611": "BODIPATIVARIPALLE", "0610": "ROMPICHERLA", "0604": "NAGAVANDLAPALLI", "0782": "CHICHILIVARIPALLE", "0770": "DEVALAVARIPALLE", "0767": "PEDDAGOTTIGALLU", "0764": "K.V.PALLE", "0762": "JAGADAMVARIPALLE", "0753": "BOLLINANIVARIPALLI", "0813": "ROMPICHERLA", "0811": "ALAKAMVARIPALLE", "0809": "KOTAKADAPALLE", "0794": "PEDDAGOTTIGALLU", "0793": "DIGUVAJUPALLI", "0789": "SODUM", "0788": "BURUJUPALLE", "0786": "PEDDAGOTTIGALLU CROSS", "0719": "NADIMPALLE", "0718": "PEDDAGOTTIGALLU", "0714": "BODIPATIVARIPALLE", "0709": "REDDIVARIPALLE", "0700": "RAMIREDDIGARIPALLE", "0721": "SODUM", "0747": "KURAVAPALLE", "0745": "ETUKURIVARIPALLE", "0743": "ROMPICHERLA", "0736": "VOOTUPALLE", "0732": "ROMPICHERLA", "0727": "DUSSAVANDLA PALLI", "0726": "SAVVALAVARIPALLE", "0508": "MUREVANDLAPALLE", "0490": "MATAMPALLE", "0551": "TALUPULA", "0512": "BONAMVARIPALLE", "0473": "KURAVAPALLE", "0477": "VARANASIVARIPALLE"
-}
-
-
-# Create lists for dropdowns
-FARMER_CODES = sorted(list(FARMER_DATA.keys()))
-FARMER_NAMES_RAW = sorted(list(FARMER_DATA.values()))
-FARMER_NAMES_WITH_OTHER = sorted(FARMER_NAMES_RAW + ["Other (Specify)"])
-
-GREEN_FODDER_OPTIONS = ["Napier", "Maize", "Sorghum"]
-DRY_FODDER_OPTIONS = ["Paddy Straw", "Maize Straw", "Ragi Straw", "Ground Nut Crop Residues"]
-PELLET_FEED_BRANDS_RAW = ["Heritage Milk Rich", "Heritage Milk Joy", "Heritage Power Plus", "Kamadhenu", "Godrej", "Sreeja", "Vallabha-Panchamruth", "Vallabha-Subham Pusti"]
-PELLET_FEED_BRANDS = sorted(PELLET_FEED_BRANDS_RAW + ["Other (Specify)"])
-MINERAL_MIXTURE_BRANDS_RAW = ["Herita Vit", "Herita Min"]
-MINERAL_MIXTURE_BRANDS = sorted(MINERAL_MIXTURE_BRANDS_RAW + ["Other (Specify)"])
-WATER_SOURCE_OPTIONS = ["Panchayat", "Borewell", "Water Streams", "Other (Specify)"]
-SURVEYOR_NAMES_RAW = ["Shiva Shankaraiah", "Reddisekhar", "Balakrishna", "Somasekhar", "Mahesh Kumar", "Dr Swaran Raj Nayak", "Ram Prasad", "K Balaji"]
-SURVEYOR_NAMES = sorted(SURVEYOR_NAMES_RAW + ["Other (Specify)"])
-
-VLCC_NAMES_WITH_OTHER = sorted(VLCC_NAMES + ["Other (Specify)"])
-# -----------------------------
-
-# Define initial_values_defaults at the global scope, before any functions use it
-INITIAL_STATE_KEYS = [
-    'lang_select', 'vlcc_name', 'vlcc_name_specify', 'hpc_code', 'types', 
-    'farmer_name', 'other_farmer_name_specify', 'farmer_code', 'gender', 
-    'cows', 'cattle_in_milk', 'calves', 'desi_cows', 'crossbreed_cows', 
-    'buffalo', 'milk_production', 'green_fodder', 'green_fodder_types', 
-    'green_fodder_qty', 'dry_fodder', 'dry_fodder_types', 'dry_fodder_qty', 
-    'pellet_feed', 'pellet_feed_brands', 'pellet_feed_brands_specify', 
-    'mineral_mixture', 'mineral_brand', 'mineral_brand_specify', 'mineral_qty', 
-    'silage', 'silage_source', 'silage_qty', 'water_sources', 
-    'water_sources_specify', 'surveyor_name', 'surveyor_name_specify', 'visit_date'
-]
-
-initial_values_defaults = {
-    'lang_select': "English",
-    'vlcc_name': VLCC_NAMES_WITH_OTHER[0] if VLCC_NAMES_WITH_OTHER else None,
-    'vlcc_name_specify': '', 
-    'hpc_code': '',
-    'types': "HPC",
-    'farmer_name': FARMER_NAMES_WITH_OTHER[0] if FARMER_NAMES_WITH_OTHER else None,
-    'other_farmer_name_specify': '', 
-    'farmer_code': FARMER_CODES[0] if FARMER_CODES else None,
-    'gender': "Male",
-    'cows': 0,
-    'cattle_in_milk': 0,
-    'calves': 0,
-    'desi_cows': 0,
-    'crossbreed_cows': 0,
-    'buffalo': 0,
-    'milk_production': 0.0,
-    'green_fodder': "Yes",
-    'green_fodder_types': [],
-    'green_fodder_qty': 0.0,
-    'dry_fodder': "Yes",
-    'dry_fodder_types': [],
-    'dry_fodder_qty': 0.0,
-    'pellet_feed': "Yes",
-    'pellet_feed_brands': [],
-    'pellet_feed_brands_specify': '', 
-    'mineral_mixture': "Yes",
-    'mineral_brand': MINERAL_MIXTURE_BRANDS[0] if MINERAL_MIXTURE_BRANDS else None,
-    'mineral_brand_specify': '', 
-    'mineral_qty': 0.0,
-    'silage': "Yes",
-    'silage_source': '',
-    'silage_qty': 0.0,
-    'water_sources': [],
-    'water_sources_specify': '', 
-    'surveyor_name': SURVEYOR_NAMES[0] if SURVEYOR_NAMES else None,
-    'surveyor_name_specify': '', 
-    'visit_date': datetime.date.today()
-}
-
-# Function to save current form data to a draft file
-def save_draft():
-    draft_filename = os.path.join(DRAFT_DIR, "current_draft.json")
-
-    # Use the comprehensive list of keys
-    draft_data = {key: st.session_state[key] for key in INITIAL_STATE_KEYS if key in st.session_state}
-
-    if 'visit_date' in draft_data and isinstance(draft_data['visit_date'], datetime.date):
-        draft_data['visit_date'] = draft_data['visit_date'].isoformat()
-
-    try:
-        with open(draft_filename, 'w') as f:
-            json.dump(draft_data, f, indent=4)
-        st.session_state.last_saved_time_persistent = datetime.datetime.now().strftime("%H:%M:%S")
-    except Exception as e:
-        # Avoid showing error in the main thread during auto-save
-        print(f"Error saving draft: {e}") 
-
-# Function to load draft data into session state
-def load_draft():
-    draft_filename = os.path.join(DRAFT_DIR, "current_draft.json")
-    if os.path.exists(draft_filename):
+# --- CACHING FIX: Load data only once ---
+@st.cache_data
+def load_existing_data():
+    """Loads existing data from CSV, using caching for performance."""
+    data_list = []
+    if os.path.exists(BMC_VISIT_DATA_FILE):
         try:
-            with open(draft_filename, 'r') as f:
-                loaded_data = json.load(f)
-
-            # Defensive loading: Iterate over defined keys to avoid crashes
-            for key in INITIAL_STATE_KEYS:
-                value = loaded_data.get(key)
-                if value is not None:
-                    if key == 'visit_date' and isinstance(value, str):
-                        try:
-                            st.session_state[key] = datetime.date.fromisoformat(value)
-                        except ValueError:
-                            st.session_state[key] = initial_values_defaults.get(key, datetime.date.today())
-                    elif key in ['green_fodder_types', 'dry_fodder_types', 'pellet_feed_brands', 'water_sources']:
-                        st.session_state[key] = list(value) if isinstance(value, list) else []
-                    else:
-                        st.session_state[key] = value
-                elif key not in st.session_state:
-                    # If key wasn't in the draft, use default
-                    st.session_state[key] = initial_values_defaults.get(key)
-
-
-            # Recalculate and set correct language-dependent defaults (critical for translations)
-            current_labels = dict_translations.get(st.session_state.get('lang_select', 'English'), dict_translations['English'])
-            
-            for key, options in [
-                ('types', [current_labels['HPC'], current_labels['MCC']]),
-                ('gender', [current_labels['Male'], current_labels['Female']]),
-                ('green_fodder', [current_labels['Yes'], current_labels['No']]),
-                ('dry_fodder', [current_labels['Yes'], current_labels['No']]),
-                ('pellet_feed', [current_labels['Yes'], current_labels['No']]),
-                ('mineral_mixture', [current_labels['Yes'], current_labels['No']]),
-                ('silage', [current_labels['Yes'], current_labels['No']])
-            ]:
-                if key in st.session_state and st.session_state[key] not in options:
-                    st.session_state[key] = options[0] # Default to the first option if the translated value is wrong
-
-            st.toast("Draft loaded successfully!")
-            return True
+            # Note: We enforce pandas not to guess data types for faster loading
+            df_existing = pd.read_csv(BMC_VISIT_DATA_FILE, dtype=str)
+            data_list.extend(df_existing.to_dict('records'))
         except Exception as e:
-            st.error(f"Error loading draft: {e}. Starting new draft.")
-            return False
-    return False
+            st.warning(f"Warning: Could not load existing BMC data file. Starting fresh. Error: {e}")
+    return data_list
 
-# Initialize session state with default values, or load from draft
-if st.session_state.get('app_initialized_flag', False) is False:
-    st.session_state.app_initialized_flag = True
-
-    # Use a specific key for last saved time (for persistent display)
-    if 'last_saved_time_persistent' not in st.session_state:
-        st.session_state.last_saved_time_persistent = None
-
-    loaded_a_draft = load_draft()
-
-    if not loaded_a_draft:
-        for key, default_value in initial_values_defaults.items():
-            if key not in st.session_state:
-                st.session_state[key] = default_value
-
-# Language Selection
-initial_lang_options = ("English", "Hindi", "Marathi")
-initial_lang_index = initial_lang_options.index(st.session_state.lang_select) if st.session_state.lang_select in initial_lang_options else 0
-lang = st.selectbox(
-    "Language / भाषा / भाषा",
-    initial_lang_options,
-    index=initial_lang_index,
-    key="lang_select",
-)
-labels = dict_translations.get(lang, dict_translations['English'])
-
-st.title(labels['Farmer Profile'])
-
-if st.session_state.last_saved_time_persistent:
-    st.info(f"{labels['Auto-saved!']} Last saved: {st.session_state.last_saved_time_persistent}")
-else:
-    st.info("No auto-saved draft found, or draft cleared. Start filling the form!")
-
-
-# Form Start
-with st.form("survey_form"):
-    st.header(labels['Farmer Profile'])
-
-    # --- VLCC Name (with Other Specify) ---
-    vlcc_name_default_idx = VLCC_NAMES_WITH_OTHER.index(st.session_state.vlcc_name) if st.session_state.vlcc_name in VLCC_NAMES_WITH_OTHER else 0
-    
-    vlcc_name = st.selectbox(
-        labels['VLCC Name'], VLCC_NAMES_WITH_OTHER,
-        index=vlcc_name_default_idx,
-        key="vlcc_name",
-        disabled=(not VLCC_NAMES_WITH_OTHER)
-    )
-
-    # Conditional text input for Other VLCC Name
-    if st.session_state.vlcc_name == labels['Other (Specify)']:
-        st.text_input(
-            labels['Other VLCC Name'],
-            value=st.session_state.vlcc_name_specify,
-            key="vlcc_name_specify"
-        )
-    # Clear specify field if the option changes away from 'Other (Specify)'
-    elif 'vlcc_name_specify' in st.session_state:
-        st.session_state.vlcc_name_specify = ''
-
-
-    # HPC/MCC Code
-    hpc_code = st.text_input(
-        labels['HPC/MCC Code'],
-        value=st.session_state.hpc_code,
-        key="hpc_code"
-    )
-
-    # Types
-    types_options = (labels['HPC'], labels['MCC'])
-    types_default_idx = types_options.index(st.session_state.types) if st.session_state.types in types_options else 0
-    types = st.selectbox(
-        labels['Types'], types_options,
-        index=types_default_idx,
-        key="types"
-    )
-
-    # --- Farmer Name (with Other Specify) ---
-    farmer_name_default_idx = FARMER_NAMES_WITH_OTHER.index(st.session_state.farmer_name) if st.session_state.farmer_name in FARMER_NAMES_WITH_OTHER else 0
-
-    farmer_name = st.selectbox(
-        labels['Farmer Name'], options=FARMER_NAMES_WITH_OTHER,
-        index=farmer_name_default_idx,
-        key="farmer_name",
-        disabled=(not FARMER_NAMES_WITH_OTHER)
-    )
-
-    # Conditional text input for "Other Farmer Name"
-    if st.session_state.farmer_name == labels['Other (Specify)']:
-        st.text_input(
-            labels['Other Farmer Name'],
-            value=st.session_state.other_farmer_name_specify,
-            key="other_farmer_name_specify"
-        )
-    elif 'other_farmer_name_specify' in st.session_state:
-        st.session_state.other_farmer_name_specify = ''
-
-
-    # --- Farmer Code ---
-    farmer_code_default_idx = FARMER_CODES.index(st.session_state.farmer_code) if st.session_state.farmer_code in FARMER_CODES else 0
-
-    farmer_code = st.selectbox(
-        labels['Farmer Code'], options=FARMER_CODES,
-        index=farmer_code_default_idx,
-        key="farmer_code",
-        disabled=(not FARMER_CODES)
-    )
-
-    # Gender
-    gender_options = (labels['Male'], labels['Female'])
-    gender_default_idx = gender_options.index(st.session_state.gender) if st.session_state.gender in gender_options else 0
-    gender = st.selectbox(
-        labels['Gender'], gender_options,
-        index=gender_default_idx,
-        key="gender"
-    )
-
-    st.header(labels['Farm Details'])
-    # Farm Detail Inputs
-    cows = st.number_input(labels['Number of Cows'], min_value=0, value=int(st.session_state.cows), key="cows")
-    cattle_in_milk = st.number_input(labels['No. of Cattle in Milk'], min_value=0, value=int(st.session_state.cattle_in_milk), key="cattle_in_milk")
-    calves = st.number_input(labels['No. of Calves/Heifers'], min_value=0, value=int(st.session_state.calves), key="calves")
-    desi_cows = st.number_input(labels['No. of Desi cows'], min_value=0, value=int(st.session_state.desi_cows), key="desi_cows")
-    crossbreed_cows = st.number_input(labels['No. of Cross breed cows'], min_value=0, value=int(st.session_state.crossbreed_cows), key="crossbreed_cows")
-    buffalo = st.number_input(labels['No. of Buffalo'], min_value=0, value=int(st.session_state.buffalo), key="buffalo")
-    milk_production = st.number_input(labels['Milk Production'], min_value=0.0, value=float(st.session_state.milk_production), key="milk_production")
-
-    st.header(labels['Specific Questions'])
-    # Green Fodder
-    green_fodder_options = (labels['Yes'], labels['No'])
-    green_fodder_default_idx = green_fodder_options.index(st.session_state.green_fodder) if st.session_state.green_fodder in green_fodder_options else 0
-    green_fodder = st.selectbox(labels['Green Fodder'], green_fodder_options, index=green_fodder_default_idx, key="green_fodder")
-    green_fodder_types = st.multiselect(labels['Type of Green Fodder'], GREEN_FODDER_OPTIONS, default=st.session_state.green_fodder_types, key="green_fodder_types")
-    green_fodder_qty = st.number_input(labels['Quantity of Green Fodder'], min_value=0.0, value=float(st.session_state.green_fodder_qty), key="green_fodder_qty")
-    
-    # Dry Fodder
-    dry_fodder_options = (labels['Yes'], labels['No'])
-    dry_fodder_default_idx = dry_fodder_options.index(st.session_state.dry_fodder) if st.session_state.dry_fodder in dry_fodder_options else 0
-    dry_fodder = st.selectbox(labels['Dry Fodder'], dry_fodder_options, index=dry_fodder_default_idx, key="dry_fodder")
-    dry_fodder_types = st.multiselect(labels['Type of Dry Fodder'], DRY_FODDER_OPTIONS, default=st.session_state.dry_fodder_types, key="dry_fodder_types")
-    dry_fodder_qty = st.number_input(labels['Quantity of Dry Fodder'], min_value=0.0, value=float(st.session_state.dry_fodder_qty), key="dry_fodder_qty")
-
-    # Pellet Feed
-    pellet_feed_options = (labels['Yes'], labels['No'])
-    pellet_feed_default_idx = pellet_feed_options.index(st.session_state.pellet_feed) if st.session_state.pellet_feed in pellet_feed_options else 0
-    pellet_feed = st.selectbox(labels['Pellet Feed'], pellet_feed_options, index=pellet_feed_default_idx, key="pellet_feed")
-    
-    # Pellet Feed Brand (Multiselect with Other Specify)
-    pellet_feed_brands = st.multiselect(labels['Pellet Feed Brand'], PELLET_FEED_BRANDS, default=st.session_state.pellet_feed_brands, key="pellet_feed_brands")
-    if labels['Other (Specify)'] in st.session_state.pellet_feed_brands:
-        st.text_input(
-            labels['Other Pellet Brand'],
-            value=st.session_state.pellet_feed_brands_specify,
-            key="pellet_feed_brands_specify"
-        )
-    elif 'pellet_feed_brands_specify' in st.session_state:
-        st.session_state.pellet_feed_brands_specify = ''
+# --- Translation Dictionary ---
+translations = {
+    'en': {
+        'page_title': "🚚 Ksheersagar - BMC Visit Data Entry",
+        'page_header': "Please fill out the details for the BMC visit below.",
+        'language_select': "Select Language",
+        'admin_access_header': "Admin Access",
+        'admin_username_prompt': "Enter Admin Username to View Data:",
+        'admin_invalid_warning': "Invalid Admin Username.",
+        'general_info_header': "General BMC Visit Information",
+        'bmc_code_label': "BMC Code:",
+        'start_date_label': "SCHEDULED START DATE:",
+        'organization_label': "Organization:",
+        'bmc_name_label': "BMC Name:",
+        'other_bmc_name_label': "If Others, Specify BMC Name:",
+        'activity_created_by_label': "ACTIVITY CREATED BY:",
+        'state_label': "State:",
+        'district_label': "District:",
+        'sub_district_label': "Sub District:",
+        'other_district_label': "If Others, Specify District:",
+        'other_sub_district_label': "If Others, Specify Sub District:",
+        'collecting_village_label': "Collecting Village (No.):", 
+        'village_label': "Village:",
         
-    pellet_feed_qty = st.number_input(labels['Quantity of Pellet Feed'], min_value=0.0, value=float(st.session_state.pellet_feed_qty), key="pellet_feed_qty")
+        'bcf_details_header': "BCF (Bulk Milk Cooler Farmer) Details",
+        'bcf_name_label': "BCF Name:",
+        'bcf_gender_label': "BCF Gender:",
+        'education_label': "Education:",
+        'other_education_label': "If Others, Specify Education:",
+        'bcf_mobile_label': "BCF Mobile Number:",
+        'operating_staff_label': "Operating Staff (No.):",
+        'distance_from_ho_label': "Distance From HO (KM):",
+        
+        # Farmer Metrics (Updated)
+        'total_farmers_label': "Total Registered Farmer (No.):",
+        'total_women_farmers_label': "No. of Women Farmers (Total Registered):",
+        'total_men_farmers_label': "No. of Men Farmers (Total Registered):", # NEW
+        'active_farmers_label': "Active Farmer (No.):",
+        'active_women_farmers_label': "No. of Women Farmers (Active Farmers):",
+        'active_men_farmers_label': "No. of Men Farmers (Active Farmers):", # NEW
+        
+        'capacity_header': "Capacity & Collection Details",
+        'total_tank_capacity_label': "Total Tank Capacity:",
+        'tank_1_capacity_label': "Total Capacity (Tank 1):",
+        'tank_2_capacity_label': "Total Capacity (Tank 2):",
+        'tank_3_capacity_label': "Total Capacity (Tank 3):",
+        'tank_4_capacity_label': "Total Capacity (Tank 4):",
+        'segregation_tank_space_label': "Space available for Segregation Tank:",
+        'milk_segregated_label': "MILK SEGREGATED (LPD):",
+        'morning_collection_time_label': "MORNING MILK COLLECTION END TIME (e.g., 9.3 for 9:30 AM):",
+        'morning_milk_lpd_label': "MORNING MILK (LPD):",
+        'morning_farmers_label': "No. of Farmers (Morning Milk Collected):",
+        'evening_collection_time_label': "EVENING MILK COLLECTION END TIME (e.g., 9 for 9:00 PM):",
+        'evening_milk_lpd_label': "EVENING MILK (LPD):",
+        'evening_farmers_label': "No. of Farmers (Evening Milk Collected):",
 
-    # Mineral Mixture
-    mineral_mixture_options = (labels['Yes'], labels['No'])
-    mineral_mixture_default_idx = mineral_mixture_options.index(st.session_state.mineral_mixture) if st.session_state.mineral_mixture in mineral_mixture_options else 0
-    mineral_mixture = st.selectbox(labels['Mineral Mixture'], mineral_mixture_options, index=mineral_mixture_default_idx, key="mineral_mixture")
-    
-    # Mineral Mixture Brand (Selectbox with Other Specify)
-    mineral_brand_default_idx = MINERAL_MIXTURE_BRANDS.index(st.session_state.mineral_brand) if st.session_state.mineral_brand in MINERAL_MIXTURE_BRANDS else 0
-    
-    mineral_brand = st.selectbox(labels['Mineral Mixture Brand'], MINERAL_MIXTURE_BRANDS, index=mineral_brand_default_idx, key="mineral_brand", disabled=(not MINERAL_MIXTURE_BRANDS))
+        'quality_payment_header': "Milk Quality & Payment",
+        'fat_label': "FAT:",
+        'snf_label': "SNF:",
+        'payment_cycle_label': "FARMER PAYMENT CYCLE (DAYS):",
+        'direct_pouring_label': "Direct Farmer pouring (No.):",
+        'inward_vehicle_route_label': "Inward Vehicle Route (No.):",
+        'inward_route_farmer_label': "Inward Route Farmer (No.):",
+        'inward_route_milk_label': "Inward Route Milk (LPD):",
+        
+        'infra_compliance_header': "Infrastructure & Compliance",
+        'overall_infra_label': "Overall Infrastructure:",
+        'remark_infra_label': "Remark (Infrastructure):",
+        'bmc_cleaning_label': "BMC Cleaning & Hygiene:",
+        'air_curtain_label': "Air curtain:",
+        'fly_catcher_label': "Fly Catcher:",
+        'wash_basin_label': "Wash Basin:",
+        'opening_window_door_label': "Opening (Window/Door):",
+        'intact_floor_label': "Intact Floor in BMC Premise:",
+        'digitize_system_label': "Digitize System:",
+        'fssai_licence_label': "FSSAI Licence:",
+        'remark_fssai_label': "Remark (FSSAI):",
+        'wg_scale_licence_label': "Wg Scale Licence:",
+        'sops_label': "SOP's:",
+        'sop_available_label': "Is SOP Available:",
+        'hot_water_available_label': "Is Hot Water Available:",
+        'notice_board_available_label': "Is Notice Board Available:",
+        'awareness_poster_label': "Awareness Poster:",
+        'other_awareness_poster_label': "If Others, Specify Awareness Poster:",
+        'stirrer_label': "Stirrer/Ekomilk/Indifoss:",
+        'remark_stirrer_label': "Remark (Stirrer/Ekomilk/Indifoss):",
+        'sampler_label': "Sampler/Dipper/Plunger:",
+        'remark_sampler_label': "Remark (Sampler/Dipper/Plunger):",
+        'milk_temp_check_label': "Milk Temp Check:",
+        'remark_milk_temp_label': "Remark (Milk Temp):",
+        'cleaning_chemicals_label': "Cleaning Chemicals:",
+        'remark_cleaning_chemicals_label': "Remark (Cleaning Chemicals):",
+        'hot_water_source_label': "Hot Water Source:",
+        'remark_hot_water_label': "Remark (Hot Water Source):",
+        'strainer_label': "Strainer/Nylon cloth available:",
+        'sample_bottle_label': "Sample Bottle:",
 
-    # Conditional text input for Other Mineral Brand
-    if st.session_state.mineral_brand == labels['Other (Specify)']:
-        st.text_input(
-            labels['Other Mineral Brand'],
-            value=st.session_state.mineral_brand_specify,
-            key="mineral_brand_specify"
-        )
-    elif 'mineral_brand_specify' in st.session_state:
-        st.session_state.mineral_brand_specify = ''
+        'payment_header': "Payment",
+        'payment_schedule_label': "Payment Schedule:",
+        'payment_method_label': "Payment Method:",
+        
+        'farmer_competitor_header': "Farmer & Competitor Details",
+        'animal_welfare_farm_label': "Animal Welfare Farm (No.):",
+        'farmer_use_cattle_feed_label': "FARMER USE (compliant CATTLE FEED):",
+        'cattle_feed_bag_sale_label': "Compliant Cattle Feed bag sale (month):",
+        'cattle_feed_brand_label': "Cattle Feed Brand Name:",
+        'other_cattle_feed_brand_label': "If Others, Specify Cattle Feed Brand Name:",
+        'farmer_use_mineral_mixture_label': "FARMER USE (MINERAL MIXTURE) Quantity:",
+        'mineral_mixture_brand_label': "MINERAL MIXTURE BRAND NAME:",
+        'farmer_use_evm_rtu_label': "FARMER USE (EVM RTU) Quantity:",
+        'evm_rtu_label': "EVM RTU:",
+        'biogas_installed_label': "BIOGAS INSTALLED:",
+        'bank_linkage_label': "ANY BANK LINKAGE:",
+        'competitor_details_subheader': "Competitor Details",
+        'competitor1_name_label': "COMPETITOR 1 NAME:",
+        'competitor1_milk_label': "COMPETITOR 1 MILK (LPD):",
+        'competitor2_name_label': "Competitor 2 Name:",
+        'competitor2_milk_label': "Competitor 2 MILK (LPD):",
+        'competitor3_name_label': "Competitor 3 Name:",
+        'competitor3_milk_label': "Competitor 3 MILK (LPD):",
+        'competitor4_name_label': "Competitor 4 Name:",
+        'competitor4_milk_label': "Competitor 4 MILK (LPD):",
+        
+        'photo_upload_header': "BMC Photos",
+        'photo_overall_label': "Photo 1: Overall BMC Structure",
+        'photo_platform_label': "Photo 2: Platform/Entry Area",
+        'photo_inside_label': "Photo 3: BMC Cooling Area (Inside)",
+        'submit_button': "Submit BMC Visit Data",
+        'yes': "YES",
+        'no': "NO",
+        'others': "OTHERS",
+        'options_gender': ["MALE", "FEMALE"],
+        'options_education': ["10th pass", "12th pass", "Graduation", "Post graduation", "OTHERS"], 
+        'options_quality': ["Poor", "Fair", "Good", "Best"],
+        'options_payment_schedule': ["Every 10th day in a month", "Twice a month", "Once a month", "No specific schedule"],
+        'options_payment_method': ["Cash", "Bank Transfer", "Both"], 
+        'options_awareness_poster': ["afm", "ab", "cmp", "OTHERS"]
+    },
+    'mr': {
+        'page_title': "🚚 क्षीरसागर - BMC भेट डेटा एंट्री",
+        'page_header': "कृपया खालील BMC भेटीसाठी तपशील भरा.",
+        'language_select': "भाषा निवडा",
+        'admin_access_header': "प्रशासक प्रवेश",
+        'admin_username_prompt': "डेटा पाहण्यासाठी प्रशासक वापरकर्तानाव प्रविष्ट करा:",
+        'admin_invalid_warning': "अवैध प्रशासक वापरकर्तानाव.",
+        'general_info_header': "सर्वसाधारण BMC भेट माहिती",
+        'bmc_code_label': "BMC कोड:",
+        'start_date_label': "नियोजित प्रारंभ तारीख:",
+        'organization_label': "संस्था:",
+        'bmc_name_label': "BMC नाव:",
+        'other_bmc_name_label': "इतर असल्यास, BMC नाव नमूद करा:",
+        'activity_created_by_label': "ऍक्टिव्हिटी कोणी तयार केली:",
+        'state_label': "राज्य:",
+        'district_label': "जिल्हा:",
+        'sub_district_label': "उप-जिल्हा:",
+        'other_district_label': "इतर असल्यास, जिल्हा नमूद करा:",
+        'other_sub_district_label': "इतर असल्यास, उप-जिल्हा नमूद करा:",
+        'collecting_village_label': "संकलन गाव (संख्या):",
+        'village_label': "गाव:",
+        
+        'bcf_details_header': "BCF (बल्क मिल्क कूलर शेतकरी) तपशील",
+        'bcf_name_label': "BCF नाव:",
+        'bcf_gender_label': "BCF लिंग:",
+        'education_label': "शिक्षण:",
+        'other_education_label': "इतर असल्यास, शिक्षण नमूद करा:",
+        'bcf_mobile_label': "BCF मोबाईल नंबर:",
+        'operating_staff_label': "कार्यरत कर्मचारी (संख्या):",
+        'distance_from_ho_label': "HO पासून अंतर (किमी):",
+        
+        # Farmer Metrics (Updated)
+        'total_farmers_label': "एकूण नोंदणीकृत शेतकरी (संख्या):",
+        'total_women_farmers_label': "महिला शेतकरी (एकूण नोंदणीकृत):",
+        'total_men_farmers_label': "पुरुष शेतकरी (एकूण नोंदणीकृत):", # NEW
+        'active_farmers_label': "सक्रिय शेतकरी (संख्या):",
+        'active_women_farmers_label': "महिला शेतकरी (सक्रिय शेतकरी):",
+        'active_men_farmers_label': "पुरुष शेतकरी (सक्रिय शेतकरी):", # NEW
+        
+        'capacity_header': "क्षमता आणि संकलन तपशील",
+        'total_tank_capacity_label': "एकूण टाकी क्षमता:",
+        'tank_1_capacity_label': "एकूण क्षमता (टाकी 1):",
+        'tank_2_capacity_label': "एकूण क्षमता (टाकी 2):",
+        'tank_3_capacity_label': "एकूण क्षमता (टाकी 3):",
+        'tank_4_capacity_label': "एकूण क्षमता (टाकी 4):",
+        'segregation_tank_space_label': "विलगीकरण टाकीसाठी जागा उपलब्ध आहे:",
+        'milk_segregated_label': "दूध वेगळे केले (LPD):",
+        'morning_collection_time_label': "सकाळच्या दूध संकलनाची शेवटची वेळ (उदा. 9.3 म्हणजे 9:30 AM):",
+        'morning_milk_lpd_label': "सकाळचे दूध (LPD):",
+        'morning_farmers_label': "शेतकऱ्यांची संख्या (सकाळचे दूध संकलन):",
+        'evening_collection_time_label': "संध्याकाळच्या दूध संकलनाची शेवटची वेळ (उदा. 9 म्हणजे 9:00 PM):",
+        'evening_milk_lpd_label': "संध्याकाळचे दूध (LPD):",
+        'evening_farmers_label': "शेतकऱ्यांची संख्या (संध्याकाळचे दूध संकलन):",
 
-    mineral_qty = st.number_input(labels['Quantity of Mineral Mixture'], min_value=0.0, value=float(st.session_state.mineral_qty), key="mineral_qty")
+        'quality_payment_header': "दुधाची गुणवत्ता आणि पेमेंट",
+        'fat_label': "FAT:",
+        'snf_label': "SNF:",
+        'payment_cycle_label': "शेतकरी पेमेंट सायकल (दिवस):",
+        'direct_pouring_label': "थेट शेतकरी ओतणे (संख्या):",
+        'inward_vehicle_route_label': "येणारे वाहन मार्ग (संख्या):",
+        'inward_route_farmer_label': "येणारे मार्ग शेतकरी (संख्या):",
+        'inward_route_milk_label': "येणारे मार्ग दूध (LPD):",
+        
+        'infra_compliance_header': "पायाभूत सुविधा आणि अनुपालन",
+        'overall_infra_label': "एकूण पायाभूत सुविधा:",
+        'remark_infra_label': "टीप (पायाभूत सुविधा):",
+        'bmc_cleaning_label': "BMC स्वच्छता आणि आरोग्य:",
+        'air_curtain_label': "एअर पडदा:",
+        'fly_catcher_label': "माशी पकडणारा:",
+        'wash_basin_label': "वॉश बेसिन:",
+        'opening_window_door_label': "उघडणे (खिडकी/दार):",
+        'intact_floor_label': "BMC परिसरात अखंड मजला:",
+        'digitize_system_label': "डिजिटायझ प्रणाली:",
+        'fssai_licence_label': "FSSAI परवाना:",
+        'remark_fssai_label': "टीप (FSSAI):",
+        'wg_scale_licence_label': "वजन काटा परवाना:",
+        'sops_label': "SOP's:",
+        'sop_available_label': "SOP उपलब्ध आहे का:",
+        'hot_water_available_label': "गरम पाणी उपलब्ध आहे का:",
+        'notice_board_available_label': "नोटीस बोर्ड उपलब्ध आहे का:",
+        'awareness_poster_label': "जागरूकता पोस्टर:",
+        'other_awareness_poster_label': "इतर असल्यास, जागरूकता पोस्टर नमूद करा:",
+        'stirrer_label': "Stirrer/Ekomilk/Indifoss:",
+        'remark_stirrer_label': "टीप (Stirrer/Ekomilk/Indifoss):",
+        'sampler_label': "Sampler/Dipper/Plunger:",
+        'remark_sampler_label': "टीप (Sampler/Dipper/Plunger):",
+        'milk_temp_check_label': "दुधाचे तापमान तपासणे:",
+        'remark_milk_temp_label': "टीप (Milk Temp):",
+        'cleaning_chemicals_label': "स्वच्छता रसायने:",
+        'remark_cleaning_chemicals_label': "टीप (Cleaning Chemicals):",
+        'hot_water_source_label': "गरम पाण्याचा स्रोत:",
+        'remark_hot_water_label': "टीप (Hot Water Source):",
+        'strainer_label': "गाळणी/नायलॉन कापड उपलब्ध:",
+        'sample_bottle_label': "नमुना बाटली:",
 
-    # Silage
-    silage_options = (labels['Yes'], labels['No'])
-    silage_default_idx = silage_options.index(st.session_state.silage) if st.session_state.silage in silage_options else 0
-    silage = st.selectbox(labels['Silage'], silage_options, index=silage_default_idx, key="silage")
-    silage_source = st.text_input(labels['Source and Price of Silage'], value=st.session_state.silage_source, key="silage_source")
-    silage_qty = st.number_input(labels['Quantity of Silage'], min_value=0.0, value=float(st.session_state.silage_qty), key="silage_qty")
-
-    # --- Source of Water (Multiselect with Other Specify) ---
-    water_sources = st.multiselect(labels['Source of Water'], WATER_SOURCE_OPTIONS, default=st.session_state.water_sources, key="water_sources")
-    
-    # Conditional text input for Other Water Source
-    if labels['Other (Specify)'] in st.session_state.water_sources:
-        st.text_input(
-            labels['Other Water Source'],
-            value=st.session_state.water_sources_specify,
-            key="water_sources_specify"
-        )
-    elif 'water_sources_specify' in st.session_state:
-        st.session_state.water_sources_specify = ''
-
-    # --- Name of Surveyor (Selectbox with Other Specify) ---
-    surveyor_name_default_idx = SURVEYOR_NAMES.index(st.session_state.surveyor_name) if st.session_state.surveyor_name in SURVEYOR_NAMES else 0
-
-    surveyor_name = st.selectbox(labels['Name'], SURVEYOR_NAMES, index=surveyor_name_default_idx, key="surveyor_name", disabled=(not SURVEYOR_NAMES))
-    
-    # Conditional text input for Other Surveyor Name
-    if st.session_state.surveyor_name == labels['Other (Specify)']:
-        st.text_input(
-            labels['Other Surveyor Name'],
-            value=st.session_state.surveyor_name_specify,
-            key="surveyor_name_specify"
-        )
-    elif 'surveyor_name_specify' in st.session_state:
-        st.session_state.surveyor_name_specify = ''
-
-
-    # Date of Visit
-    visit_date = st.date_input(labels['Date of Visit'], value=st.session_state.visit_date, key="visit_date")
-
-    # Photo Upload
-    st.subheader("Upload Farm Photo")
-    st.info("Note: Uploaded photos are not auto-saved across sessions/reloads. Please re-upload if you refresh the page before final submission.")
-    farm_photo = st.file_uploader("Choose a farm photo (JPG/PNG)", type=["jpg", "jpeg", "png"], key="farm_photo_uploader")
-
-    # The submit button
-    submit_button = st.form_submit_button(labels['Submit'])
-
-# Auto-save logic: this runs on every rerun (after any widget interaction)
-# We use a simple hash of the values to check for changes
-if st.session_state.app_initialized_flag:
-    # 1. Collect current values
-    current_form_values = {key: st.session_state.get(key, initial_values_defaults.get(key)) for key in INITIAL_STATE_KEYS}
-    
-    if isinstance(current_form_values.get('visit_date'), datetime.date):
-        current_form_values['visit_date'] = current_form_values['visit_date'].isoformat()
-    
-    # 2. Get saved draft data
-    draft_filename = os.path.join(DRAFT_DIR, "current_draft.json")
-    last_saved_draft_data = {}
-    if os.path.exists(draft_filename):
-        try:
-            with open(draft_filename, 'r') as f:
-                last_saved_draft_data = json.load(f)
-        except Exception:
-            last_saved_draft_data = {}
-
-    # 3. Save draft only if there's a difference
-    if current_form_values != last_saved_draft_data:
-        save_draft()
-
-
-# Process submission (this block runs after the form is submitted via submit_button)
-if submit_button:
-    now = datetime.datetime.now()
-
-    # --- Determine Final Values for Submission (Simplified) ---
-    other_specify_label = dict_translations.get(st.session_state.lang_select, dict_translations['English'])['Other (Specify)']
-
-    # Helper for single-select/text-input combos
-    def resolve_single_select_other(select_key, specify_key):
-        if st.session_state[select_key] == other_specify_label:
-            return st.session_state[specify_key]
-        return st.session_state[select_key]
-    
-    # Helper for multi-select/text-input combos
-    def resolve_multiselect_other(multiselect_key, specify_key):
-        processed_list = list(st.session_state[multiselect_key])
-        if other_specify_label in processed_list and st.session_state[specify_key]:
-            processed_list.remove(other_specify_label)
-            processed_list.append(f"Other: {st.session_state[specify_key]}")
-        return ", ".join(processed_list)
-
-    final_vlcc_name = resolve_single_select_other('vlcc_name', 'vlcc_name_specify')
-    final_farmer_name = resolve_single_select_other('farmer_name', 'other_farmer_name_specify')
-    final_surveyor_name = resolve_single_select_other('surveyor_name', 'surveyor_name_specify')
-    final_mineral_brand = resolve_single_select_other('mineral_brand', 'mineral_brand_specify')
-    
-    pellet_brands_str = resolve_multiselect_other('pellet_feed_brands', 'pellet_feed_brands_specify')
-    water_sources_str = resolve_multiselect_other('water_sources', 'water_sources_specify')
-
-
-    # Collect all data directly from st.session_state
-    data = {
-        'Timestamp': now.isoformat(),
-        'Language': st.session_state.lang_select,
-        'VLCC Name': final_vlcc_name,
-        'HPC/MCC Code': st.session_state.hpc_code,
-        'Types': st.session_state.types,
-        'Farmer Name': final_farmer_name,
-        'Farmer Code': st.session_state.farmer_code,
-        'Gender': st.session_state.gender,
-        'Number of Cows': st.session_state.cows,
-        'No. of Cattle in Milk': st.session_state.cattle_in_milk,
-        'No. of Calves/Heifers': st.session_state.calves,
-        'No. of Desi cows': st.session_state.desi_cows,
-        'No. of Cross breed cows': st.session_state.crossbreed_cows,
-        'No. of Buffalo': st.session_state.buffalo,
-        'Milk Production (liters/day)': st.session_state.milk_production,
-        'Green Fodder': st.session_state.green_fodder,
-        'Type of Green Fodder': ", ".join(st.session_state.green_fodder_types),
-        'Quantity of Green Fodder (Kg/day)': st.session_state.green_fodder_qty,
-        'Dry Fodder': st.session_state.dry_fodder,
-        'Type of Dry Fodder': ", ".join(st.session_state.dry_fodder_types),
-        'Quantity of Dry Fodder (Kg/day)': st.session_state.dry_fodder_qty,
-        'Pellet Feed': st.session_state.pellet_feed,
-        'Pellet Feed Brand': pellet_brands_str,
-        'Quantity of Pellet Feed (Kg/day)': st.session_state.pellet_feed_qty,
-        'Mineral Mixture': st.session_state.mineral_mixture,
-        'Mineral Mixture Brand': final_mineral_brand,
-        'Quantity of Mineral Mixture (gm/day)': st.session_state.mineral_qty,
-        'Silage': st.session_state.silage,
-        'Source and Price of Silage': st.session_state.silage_source,
-        'Quantity of Silage (Kg/day)': st.session_state.silage_qty,
-        'Source of Water': water_sources_str,
-        'Surveyor Name': final_surveyor_name,
-        'Date of Visit': st.session_state.visit_date.isoformat()
+        'payment_header': "पेमेंट",
+        'payment_schedule_label': "पेमेंट वेळापत्रक:",
+        'payment_method_label': "पेमेंट पद्धत:",
+        
+        'farmer_competitor_header': "शेतकरी आणि स्पर्धक तपशील",
+        'animal_welfare_farm_label': "पशु कल्याण फार्म (संख्या):",
+        'farmer_use_cattle_feed_label': "शेतकरी वापर (compliant CATTLE FEED):",
+        'cattle_feed_bag_sale_label': "Compliant Cattle Feed बॅग विक्री (महिना):",
+        'cattle_feed_brand_label': "Cattle Feed ब्रँड नाव:",
+        'other_cattle_feed_brand_label': "इतर असल्यास, Cattle Feed ब्रँड नाव नमूद करा:",
+        'farmer_use_mineral_mixture_label': "शेतकरी वापर (MINERAL MIXTURE) प्रमाण:",
+        'mineral_mixture_brand_label': "MINERAL MIXTURE ब्रँड नाव:",
+        'farmer_use_evm_rtu_label': "शेतकरी वापर (EVM RTU) प्रमाण:",
+        'evm_rtu_label': "EVM RTU:",
+        'biogas_installed_label': "बायोगॅस स्थापित:",
+        'bank_linkage_label': "कोणतेही बँक लिंकेज:",
+        'competitor_details_subheader': "स्पर्धक तपशील",
+        'competitor1_name_label': "स्पर्धक 1 नाव:",
+        'competitor1_milk_label': "स्पर्धक 1 दूध (LPD):",
+        'competitor2_name_label': "स्पर्धक 2 नाव:",
+        'competitor2_milk_label': "स्पर्धक 2 दूध (LPD):",
+        'competitor3_name_label': "स्पर्धक 3 नाव:",
+        'competitor3_milk_label': "स्पर्धक 3 दूध (LPD):",
+        'competitor4_name_label': "स्पर्धक 4 नाव:",
+        'competitor4_milk_label': "स्पर्धक 4 दूध (LPD):",
+        
+        'photo_upload_header': "BMC फोटो",
+        'photo_overall_label': "फोटो 1: एकूण BMC रचना",
+        'photo_platform_label': "फोटो 2: प्लॅटफॉर्म/प्रवेश क्षेत्र",
+        'photo_inside_label': "फोटो 3: BMC कूलिंग क्षेत्र (आत)",
+        'submit_button': "BMC भेट डेटा सबमिट करा",
+        'yes': "होय",
+        'no': "नाही",
+        'others': "इतर",
+        'options_gender': ["पुरुष", "महिला"],
+        'options_education': ["10वी पास", "12वी पास", "पदवी", "पदव्युत्तर", "इतर"],
+        'options_quality': ["खराब", "ठीक", "चांगली", "उत्तम"],
+        'options_payment_schedule': ["महिन्यातून प्रत्येक 10 व्या दिवशी", "महिन्यातून दोनदा", "महिन्यातून एकदा", "विशिष्ट वेळापत्रक नाही"],
+        'options_payment_method': ["रोख", "बँक ट्रान्सफर", "दोन्ही"],
+        'options_awareness_poster': ["एएफएम", "एबी", "सीएमपी", "इतर"]
     }
+}
 
-    if farm_photo is not None:
-        photo_path = os.path.join(SAVE_DIR, f"farm_photo_{now.strftime('%Y%m%d_%H%M%S')}_{farm_photo.name}")
-        with open(photo_path, "wb") as f:
-            f.write(farm_photo.getbuffer())
-        st.success("Farm photo uploaded successfully!")
-        data['Farm Photo Filename'] = photo_path
-    else:
-        data['Farm Photo Filename'] = "No photo uploaded"
+# --- Function to get translated text ---
+def t(key):
+    return translations[st.session_state.language].get(key, key)
 
+# --- INLINED LOGIC HELPER FUNCTION (For clean UI code) ---
+def render_other_specify_input(select_option, input_label_key, input_key):
+    """Renders the 'If Others, Specify' textbox if the select widget value is 'OTHERS'."""
+    other_specify_input = None
+    if (isinstance(select_option, str) and select_option == t('others')) or \
+       (isinstance(select_option, list) and t('others') in select_option):
+        other_specify_input = st.text_input(t(input_label_key), key=input_key)
+    return other_specify_input
 
-    df = pd.DataFrame([data])
-    filename = f"survey_{now.strftime('%Y%m%d_%H%M%S')}.csv"
-    df.to_csv(os.path.join(SAVE_DIR, filename), index=False, encoding='utf-8')
-    st.success("📈 Survey Submitted and Saved!")
+st.set_page_config(layout="centered", page_title="Ksheersagar - BMC Visit")
 
-    # Clear session state data and the draft file after successful submission to clear the form
-    for key in INITIAL_STATE_KEYS:
-        if key in initial_values_defaults:
-            st.session_state[key] = initial_values_defaults[key]
-    
-    st.session_state.last_saved_time_persistent = None
+# --- Language Selection (persists across pages) ---
+if 'language' not in st.session_state:
+    st.session_state.language = 'en'
 
-    # Delete the persistent draft file
-    draft_filename = os.path.join(DRAFT_DIR, "current_draft.json")
-    if os.path.exists(draft_filename):
-        os.remove(draft_filename)
-        st.info("Draft cleared.")
+st.sidebar.header(translations['en']['language_select'] + " / " + translations['mr']['language_select'])
+lang_options = ["English", "Marathi"]
+current_lang_capitalized = st.session_state.language.capitalize()
+lang_index = lang_options.index(current_lang_capitalized) if current_lang_capitalized in lang_options else 0
 
+selected_lang_display = st.sidebar.radio("Language", lang_options, index=lang_index, key="lang_radio_bmc")
 
-    with st.expander("🔍 Click to Review Your Submission"):
-        for section, keys in {
-            "📄 Farmer Profile": [
-                'VLCC Name', 'HPC/MCC Code', 'Types', 'Farmer Name', 'Farmer Code', 'Gender'
-            ],
-            "🐄 Farm Details": [
-                'Number of Cows', 'No. of Cattle in Milk', 'No. of Calves/Heifers',
-                'No. of Desi cows', 'No. of Cross breed cows', 'No. of Buffalo', 'Milk Production (liters/day)'
-            ],
-            "🌿 Feed Details": [
-                'Green Fodder', 'Type of Green Fodder', 'Quantity of Green Fodder (Kg/day)',
-                'Dry Fodder', 'Type of Dry Fodder', 'Quantity of Dry Fodder (Kg/day)',
-                'Pellet Feed', 'Pellet Feed Brand', 'Quantity of Pellet Feed (Kg/day)',
-                'Mineral Mixture', 'Mineral Mixture Brand', 'Quantity of Mineral Mixture (gm/day)',
-                'Silage', 'Source and Price of Silage', 'Quantity of Silage (Kg/day)'
-            ],
-            "😀 Water & Survey": [
-                'Source of Water', 'Surveyor Name', 'Date of Visit', 'Language', 'Farm Photo Filename'
-            ]
-        }.items():
-            st.subheader(section)
-            for k in keys:
-                st.markdown(f"**{k}**: {data.get(k)}")
-st.divider()
-st.header("🔐 Admin Real-Time Access")
-
-# Allowed Emails
-ALLOWED_EMAILS = ["shifalis@tns.org", "rmukherjee@tns.org","rsomanchi@tns.org", "mkaushal@tns.org"]
-admin_email = st.text_input("Enter your Admin Email to unlock extra features:")
-
-if admin_email in ALLOWED_EMAILS:
-    st.success("✅ Admin access granted! Real-time view enabled.")
-    # Add image access for admin
-    if st.checkbox("🖼️ View and Download Uploaded Images"):
-        # List all image files in the SAVE_DIR folder
-        # Files are saved in SAVE_DIR, not DRAFT_DIR
-        image_files = [f for f in os.listdir(SAVE_DIR) if f.lower().endswith(('.jpg', '.jpeg', '.png')) and not f.startswith('farm_photo')]
-        # Also check for files saved with the standard naming convention
-        image_files.extend([f for f in os.listdir(SAVE_DIR) if f.startswith('farm_photo') and f.lower().endswith(('.jpg', '.jpeg', '.png'))])
-        
-        if image_files:
-            # Deduplicate the list
-            image_files = list(set(image_files))
-
-            for img_file in image_files:
-                img_path = os.path.join(SAVE_DIR, img_file)
-
-                # Display image
-                st.image(img_path, caption=img_file, use_column_width=True)
-
-                # Provide download button for the image
-                with open(img_path, "rb") as img:
-                    mime_type = "image/jpeg" if img_file.lower().endswith(('.jpg', '.jpeg')) else "image/png"
-                    st.download_button(
-                        label=f"⬇️ Download {img_file}",
-                        data=img,
-                        file_name=img_file,
-                        mime=mime_type
-                    )
-        else:
-            st.warning("⚠️ No images found.")
+if selected_lang_display == "English":
+    st.session_state.language = 'en'
 else:
-    if admin_email:
-        st.error("❌ Not an authorized admin.")
+    st.session_state.language = 'mr'
 
-if st.checkbox("📄 View Past Submissions"):
-    files = [f for f in os.listdir(SAVE_DIR) if f.endswith('.csv')]
-    if files:
-        all_data = pd.concat([pd.read_csv(os.path.join(SAVE_DIR, f)) for f in files], ignore_index=True)
-        st.dataframe(all_data)
+# --- Data Loading and Initialization ---
+# Load data ONCE at the start using the cached function
+if 'bmc_visit_data' not in st.session_state:
+    st.session_state.bmc_visit_data = load_existing_data()
 
-        csv = all_data.to_csv(index=False).encode('utf-8')
-        st.download_button(
-            label="⬇️ Download All Responses",
-            data=csv,
-            file_name='all_survey_responses.csv',
-            mime='text/csv',
-            key='public_csv_download'
-        )
-    else:
-        st.warning("⚠️ No submissions found yet.")
+# Define static lists (for data consistency)
+GOVIND_BMC_NAMES = ["VIGHNAHARTA VIDNI COOLER", "NIRAI DUDH SANKALAN KEND.PANCABIGA", "PAWAR DAIRY ASU", "AJAY DUDH", "JAY HANUMAN BMC NAIKBOMWADI", "SHREE GANESH SASTEWADI BMC", "GOVIND DUDH SANKALAN KENDRA HOL", "JITOBA BULK COOLER JINTI", "JAY MHALLAR DUDH KALAJ", "WAGHESHWARI SASWAD", "BHAIRAVNATH DUDH HINGANGAON", "GOVIND DUDH SANKALAN KENDRA SASWAD", "SHREENATH MILK SANKALAN", "RAJMUDRA DUDH WATHARPHATA BMC", "ROKDESHWAR MILK SANKALAN", "BHAIRAVNATH MANDAVKHADAK COOLER", "SAYALI, MUNJAWADI", "JAY HANUMAN BARAD", "SHIVSHANKAR DUDH BARAD", "CHANDRABHAGA MILK SANKALAN", "KARCHE SAMPAT", "DURGADEVI DUDH ZIRAPVASTI COOLER", "JANAI DUDH SANKALAN KENDRA BMC", "GOKUL DUDH MATHACHIWADI", "GOVIND MAHILA SHVETKRANTI MILK SANKALAN", "VAJUBAI MILK SANKALAN", "SHRIRAM DUDH SANKALAN & SHIT.BHUINJ", "YASHODHAN MILK & MILK PROD. PACWAD", "OM BHAKTI DUDH WAI COW", "MAYURESHWAR DAIRY", "YOGESHWARI MILK SANKALAN", "JAY BHAVANI ANBHULEWADI", "MAHALAXMI MILK", "SHREENATH MILK", "MAHALAXMI DUDH MOHI", "SANCHALIT SUDARSHAN MILK", "MAULI DUDH SANKALAN KENDR.BHALAWADI", "SUPRIYA MILK", "JAGDAMBA DUDH BHATKI", "SHRI GANESH DUDH SAK VARKUTE MASWAD", "DAHIWADI DOCK", "SHREE JAYHARI RANAND PHALTAN COOLER", "SHIVAM DUDH BUDH", "GOMATA DUDH SANKALAN KEND.CHILEWADI", "REVANSIDDHA MILK SANKALAN", "VENKATESH AGRO PROCESSING CO.", "SHIVRAJ DUDH SANKALAN KENDRA", "SHIRAM DUDH PIMPRE DHAIGUDEMALA", "VANGNA DUDH HIVRE COW MILK", "GOWARDHAN MILK COLLECTION", "SHRI DATT DOODH DAIRY ANPATWADI", "JYOTIRLING DUDH SANKALAN KENDRA BORJAIWADI", "SHREE DATT MILK DAIRY AZADPUR", "SHIVKRUPA BMC", "SANT BHAGWANBABA AKOLE", "HINDAVI DAIRY FARM KHADAKI DAUND", "SHIVTEJ DUDH PAWARWASTI BORIBEL", "JAY HANUMAN DUDH VITTHALNAGAR", "BHAIRAVNATH DEVULGOAN RAJE", "A.S.DAIRY FARM", "VENKATESH AGRO PROCESSING CO.", "AKASH DUDH SANKALAN KENDRA", "BHAIRAVNATH MILK SANKALAN", "GOVIND SADASHIVNAGAR", "GOVIND WANIMALA", "GOVIND MILK SANKALAN", "LOKRAJ MILK SANKALAN", "SHAMBHU MAHADEV PHONDSHIRAS", "VISHNU NARAYAN DUDH", "JYOTIRLING DOODH SANKALAN EKSHIV"]
+SDDPL_BMC_NAMES = ["SHELKEWASTI", "HAKEWASTI", "KUSEGAON", "NYAWASTI", "NANGAON-2", "PARGAON-1", "PARGAON-2", "PIMPALGAON", "YAWAT", "CHANDANWADI", "DALIMB", "NANDUR", "DELAWADI", "KANGAON", "BETWADI", "KHADKI", "ROTI", "SONAWADI", "GOPALWADI", "HOLEWASTI", "MIRADE", "JAWALI", "VIDANI", "BARAD", "GUNWARE", "SOMANTHALI", "CHAUDHARWADI", "SANGAVI-MOHITEWASTI", "RAUTVASTI VIDANI", "PHADTARWADI", "KAPASHI", "MALEWADI", "SAKHARWADI", "RAVADI", "NIMBLAK", "ASU", "TAMKHADA", "HANUMANTWADI", "KHATAKEVASTI", "SATHEPHATA", "GANEGAONDUMALA", "VADGAON RASAI", "RANJANGAON SANDAS", "BHAMBURDE", "INAMGAON6", "NAGARGAON PHATA", "AJNUJ", "INAMGAON5", "PHARATEWADI", "KURULII", "SHINDODI", "GOLEGAON", "NAGARGAON", "NIMONE", "AMBALE 3", "KARDE", "KANHUR MESAI", "MAHADEVWADI", "NIMGAON MHALUNGI", "DHANORE", "TALEGAON DHAMDHERE", "MANDAVGAN PHARATA", "GUNAT", "KASHTI", "GHADAGEMALA", "INAMGAON3", "WANGDHARI", "URALGAONI"]
+ALL_BMC_NAMES = sorted(list(set(GOVIND_BMC_NAMES + SDDPL_BMC_NAMES)))
+CATTLE_FEED_BRAND_OPTIONS = ["Royal Bypro and classic", "Govind Classic Biopro", "Govind Royle Biopro", "SDDPL Samruddhi", "SDDPL Samruddhi Plus", "SDDPL Samruddhi Gold", "SDDPL Shakti", t('others')]
+
+# Initialize placeholder for Geolocation data (removed feature)
+bmc_location = "N/A (Geolocation Feature Removed for Optimization)" 
+
+# --- UI START ---
+st.title(t('page_title'))
+st.write(t('page_header'))
+
+with st.form(key='bmc_visit_form'):
+    
+    # --- PHOTO UPLOAD SECTION ---
+    st.header(t('photo_upload_header'))
+    
+    col_photo1, col_photo2, col_photo3 = st.columns(3)
+    with col_photo1:
+        photo_overall = st.file_uploader(t('photo_overall_label'), type=['jpg', 'jpeg', 'png'], key="photo_overall_upload")
+    with col_photo2:
+        photo_platform = st.file_uploader(t('photo_platform_label'), type=['jpg', 'jpeg', 'png'], key="photo_platform_upload")
+    with col_photo3:
+        photo_inside = st.file_uploader(t('photo_inside_label'), type=['jpg', 'jpeg', 'png'], key="photo_inside_upload")
+
+    st.markdown("---")
+    
+    # --- General Info ---
+    st.header(t('general_info_header'))
+    col1, col2 = st.columns(2)
+    
+    # --- COL 1: BMC Info ---
+    with col1:
+        bmc_code = st.text_input(t('bmc_code_label'))
+        scheduled_start_date = st.date_input(t('start_date_label'), value=dt_date(2025, 5, 7))
+        organization = st.selectbox(t('organization_label'), ["Govind Milk", "SDDPL"], index=0)
+        
+        # 'Others' Logic for BMC Name (Inlined)
+        bmc_name_option = st.selectbox(t('bmc_name_label'), ["SELECT"] + ALL_BMC_NAMES + [t('others')], index=0)
+        other_bmc_name = render_other_specify_input(bmc_name_option, 'other_bmc_name_label', "other_bmc_name_input")
+        actual_bmc_name = other_bmc_name if bmc_name_option == t('others') else bmc_name_option
+        
+        # 2. Replace Nilesh with Dr. Shyam
+        activity_created_by = st.selectbox(t('activity_created_by_label'), ["Dr. Shyam", "Dr Sachin", "bhusan", "subhrat", "aniket", "ritesh"], index=0)
+
+    # --- COL 2: Location Info ---
+    with col2:
+        state = st.text_input(t('state_label'), "Maharashtra", disabled=True)
+        
+        # 'Others' Logic for District (Inlined)
+        district_option = st.selectbox(t('district_label'), ["Satara", "Pune", "Ahmednagar", "Solapur", t('others')], index=0)
+        other_district_input = render_other_specify_input(district_option, 'other_district_label', "other_district_input")
+        actual_district = other_district_input if district_option == t('others') else district_option
+
+        # 'Others' Logic for Sub District (Inlined)
+        sub_district_option = st.selectbox(t('sub_district_label'), ["Phaltan", "malshiras", "Baramati", "Indapur", "Daund", "Purander", "Pachgani", "Man", "Khatav", "Koregaon", "Khandala", "Shirur", t('others')], index=0)
+        other_sub_district_input = render_other_specify_input(sub_district_option, 'other_sub_district_label', "other_sub_district_input")
+        actual_sub_district = other_sub_district_input if sub_district_option == t('others') else sub_district_option
+        
+        # Collecting Village (Numeric)
+        collecting_village = st.number_input(t('collecting_village_label'), min_value=0, value=15)
+        
+        village = st.text_input(t('village_label'), "HOL")
+
+    # --- BCF Details ---
+    st.header(t('bcf_details_header'))
+    
+    # Combined inputs for better display
+    col_farmer1, col_farmer2 = st.columns(2)
+
+    with col_farmer1:
+        bcf_name = st.text_input(t('bcf_name_label'), "Sachin Shahuraje Bhosale")
+        bcf_gender = st.selectbox(t('bcf_gender_label'), t('options_gender'), index=0)
+        
+        # 'Others' Logic for Education (Inlined)
+        education = st.selectbox(t('education_label'), t('options_education'), index=2)
+        other_education = render_other_specify_input(education, 'other_education_label', "other_education_input")
+        actual_education = other_education if education == t('others') else education
+        
+        bcf_mobile_number = st.text_input(t('bcf_mobile_label'), "9096807277")
+
+    with col_farmer2:
+        operating_staff_no = st.number_input(t('operating_staff_label'), min_value=0, value=2)
+        distance_from_ho_km = st.number_input(t('distance_from_ho_label'), min_value=0, value=25)
+
+    st.subheader("Farmer Counts")
+    col_counts1, col_counts2 = st.columns(2)
+
+    with col_counts1:
+        st.markdown("**Total Registered Farmers**")
+        total_registered_farmer_no = st.number_input(t('total_farmers_label'), min_value=0, value=93, key="total_reg")
+        # No. of Men Farmers (Total Registered) - NEW
+        total_men_farmer_no = st.number_input(t('total_men_farmers_label'), min_value=0, value=78, key="total_men")
+        # No. of Women Farmers (Total Registered)
+        total_women_farmer_no = st.number_input(t('total_women_farmers_label'), min_value=0, value=15, key="total_women")
+    
+    with col_counts2:
+        st.markdown("**Active Farmers**")
+        active_farmer_no = st.number_input(t('active_farmers_label'), min_value=0, value=65, key="active_reg")
+        # No. of Men Farmers (Active Farmers) - NEW
+        active_men_farmer_no = st.number_input(t('active_men_farmers_label'), min_value=0, value=55, key="active_men")
+        # No. of Women Farmers (Active Farmers)
+        active_women_farmer_no = st.number_input(t('active_women_farmers_label'), min_value=0, value=10, key="active_women")
+
+    # --- Capacity & Collection ---
+    st.header(t('capacity_header'))
+    col5, col6 = st.columns(2)
+    with col5:
+        total_tank_capacity = st.number_input(t('total_tank_capacity_label'), min_value=0, value=2500)
+        total_capacity_tank1 = st.number_input(t('tank_1_capacity_label'), min_value=0, value=2000)
+        total_capacity_tank2 = st.number_input(t('tank_2_capacity_label'), min_value=0, value=500)
+        total_capacity_tank3 = st.number_input(t('tank_3_capacity_label'), min_value=0, value=0)
+        total_capacity_tank4 = st.number_input(t('tank_4_capacity_label'), min_value=0, value=0)
+        space_segregation_tank = st.text_input(t('segregation_tank_space_label'), "500 lit segregation tank available")
+    with col6:
+        milk_segregated_lpd = st.number_input(t('milk_segregated_label'), min_value=0, value=320)
+        morning_collection_time_label = st.number_input(t('morning_collection_time_label'), min_value=0.0, value=9.3, step=0.1)
+        morning_milk_lpd = st.number_input(t('morning_milk_lpd_label'), min_value=0, value=1250)
+        morning_farmers_no = st.number_input(t('morning_farmers_label'), min_value=0, value=40)
+        evening_collection_time_label = st.number_input(t('evening_collection_time_label'), min_value=0.0, value=9.0, step=0.1)
+        evening_milk_lpd = st.number_input(t('evening_milk_lpd_label'), min_value=0, value=1100)
+        evening_farmers_no = st.number_input(t('evening_farmers_label'), min_value=0, value=25)
+    
+    # --- Infrastructure & Compliance ---
+    st.header(t('infra_compliance_header'))
+    overall_infrastructure = st.selectbox(t('overall_infra_label'), t('options_quality'), index=2)
+    remark_infra = st.text_area(t('remark_infra_label'), "Good infrastructure, seprate room for cattle feed")
+    bmc_cleaning_hygiene = st.selectbox(t('bmc_cleaning_label'), t('options_quality'), index=2)
+
+    col_infra1, col_infra2, col_infra3, col_infra4 = st.columns(4)
+    yes_no_options = [t('yes'), t('no')]
+    with col_infra1:
+        air_curtain = st.radio(t('air_curtain_label'), yes_no_options, index=0, key="air_curtain_bmc")
+        fly_catcher = st.radio(t('fly_catcher_label'), yes_no_options, index=0, key="fly_catcher_bmc")
+    with col_infra2:
+        wash_basin = st.radio(t('wash_basin_label'), yes_no_options, index=0, key="wash_basin_bmc")
+        opening_window_door = st.radio(t('opening_window_door_label'), yes_no_options, index=0, key="opening_window_door_bmc")
+    with col_infra3:
+        intact_floor = st.radio(t('intact_floor_label'), yes_no_options, index=0, key="intact_floor_bmc")
+        digitize_system = st.radio(t('digitize_system_label'), yes_no_options, index=0, key="digitize_system_bmc")
+    with col_infra4:
+        fssai_licence = st.radio(t('fssai_licence_label'), yes_no_options, index=0, key="fssai_licence_bmc")
+        wg_scale_licence = st.radio(t('wg_scale_licence_label'), yes_no_options, index=1, key="wg_scale_licence_bmc")
+
+    # New Yes/No Questions and Awareness Poster
+    col_new_infra1, col_new_infra2, col_new_infra3, col_new_infra4 = st.columns(4)
+    with col_new_infra1:
+        sop_available = st.radio(t('sop_available_label'), yes_no_options, index=0, key="sop_available_bmc")
+    with col_new_infra2:
+        hot_water_available = st.radio(t('hot_water_available_label'), yes_no_options, index=0, key="hot_water_available_bmc")
+    with col_new_infra3:
+        notice_board_available = st.radio(t('notice_board_available_label'), yes_no_options, index=0, key="notice_board_available_bmc")
+    with col_new_infra4:
+        # Awareness Poster Multiselect with 'Others' logic (Inlined)
+        awareness_poster = st.multiselect(t('awareness_poster_label'), t('options_awareness_poster'), default=[t('options_awareness_poster')[0]])
+        other_awareness_poster = render_other_specify_input(awareness_poster, 'other_awareness_poster_label', "other_awareness_poster_input")
+
+
+    # --- Payment Section ---
+    st.header(t('payment_header'))
+    col_pay1, col_pay2 = st.columns(2)
+    with col_pay1:
+        payment_schedule = st.radio(t('payment_schedule_label'), t('options_payment_schedule'), index=0, key="payment_schedule_bmc")
+    with col_pay2:
+        payment_method = st.multiselect(t('payment_method_label'), t('options_payment_method'), default=[t('options_payment_method')[0]])
+
+
+    # --- Farmer & Competitor Details ---
+    st.header(t('farmer_competitor_header'))
+    col9, col10 = st.columns(2)
+    with col9:
+        animal_welfare_farm_no = st.number_input(t('animal_welfare_farm_label'), min_value=0, value=9)
+        farmer_use_cattle_feed = st.number_input(t('farmer_use_cattle_feed_label'), min_value=0, value=58)
+        cattle_feed_bag_sale_month = st.number_input(t('cattle_feed_bag_sale_label'), min_value=0, value=250)
+        
+        # Cattle Feed Brand Multiselect with 'Others' logic (Inlined)
+        cattle_feed_brand_name = st.multiselect(t('cattle_feed_brand_label'), CATTLE_FEED_BRAND_OPTIONS, default=["Royal Bypro and classic"])
+        other_cattle_feed_brand_name = render_other_specify_input(cattle_feed_brand_name, 'other_cattle_feed_brand_label', "other_cattle_feed_brand_name_input")
+        
+        farmer_use_mineral_mixture_qty = st.number_input(t('farmer_use_mineral_mixture_label'), min_value=0, value=14)
+        mineral_mixture_brand_name = st.text_input(t('mineral_mixture_brand_label'), "Govind Chileted")
+        farmer_use_evm_rtu_qty = st.number_input(t('farmer_use_evm_rtu_label'), min_value=0, value=0)
+        evm_rtu = st.text_input(t('evm_rtu_label'), "NA")
+        biogas_installed = st.number_input(t('biogas_installed_label'), min_value=0, value=8)
+        any_bank_linkage = st.text_input(t('bank_linkage_label'), "No")
+    with col10:
+        st.subheader(t('competitor_details_subheader'))
+        competitor1_name = st.text_input(t('competitor1_name_label'), "Heritage")
+        competitor1_milk_lpd = st.number_input(t('competitor1_milk_label'), min_value=0, value=1300, key="comp1_milk_lpd")
+        competitor2_name = st.text_input(t('competitor2_name_label'), "Amul")
+        competitor2_milk_lpd = st.number_input(t('competitor2_milk_label'), min_value=0, value=2500, key="comp2_milk_lpd")
+        competitor3_name = st.text_input(t('competitor3_name_label'), "Dynamix")
+        competitor3_milk_lpd = st.number_input(t('competitor3_milk_label'), min_value=0, value=1100, key="comp3_milk_lpd")
+        competitor4_name = st.text_input(t('competitor4_name_label'))
+        competitor4_milk_lpd = st.number_input(t('competitor4_milk_label'), min_value=0, value=0, key="comp4_milk_lpd")
+
+    st.markdown("---")
+    # FINAL SUBMIT BUTTON
+    submit_button = st.form_submit_button(label=t('submit_button'))
+
+    if submit_button:
+        # Convert translated answers back to English for data consistency
+        yes_en, no_en = translations['en']['yes'], translations['en']['no']
+        
+        submitted_data = {
+            # --- New Fields ---
+            "Geolocation (Lat, Long)": bmc_location, # Saves the N/A placeholder
+            "Photo 1 (Overall BMC)": photo_overall.name if 'photo_overall' in locals() and photo_overall else "N/A",
+            "Photo 2 (Platform)": photo_platform.name if 'photo_platform' in locals() and photo_platform else "N/A",
+            "Photo 3 (Inside BMC)": photo_inside.name if 'photo_inside' in locals() and photo_inside else "N/A",
+            
+            # --- General Info ---
+            "BMC Code": bmc_code,
+            "SCHEDULED START DATE": scheduled_start_date.isoformat() if scheduled_start_date else None,
+            "BMC Name": actual_bmc_name,
+            "Other BMC Name": other_bmc_name,
+            "ACTIVITY CREATED BY": activity_created_by,
+            "Organization": organization,
+            "State": state,
+            "District": actual_district,
+            "Other District": other_district_input,
+            "Sub District": actual_sub_district,
+            "Other Sub District": other_sub_district_input,
+            "Collecting Village": collecting_village, 
+            "Village": village,
+            
+            # --- BCF Details ---
+            "BCF Name": bcf_name,
+            "BCF Gender": translations['en']['options_gender'][t('options_gender').index(bcf_gender)],
+            "Education": actual_education,
+            "Other Education": other_education,
+            "BCF Mobile Number": bcf_mobile_number,
+            "Operating Staff (No.)": operating_staff_no,
+            "Distance From HO (KM)": distance_from_ho_km,
+            
+            # Farmer Counts (Data Capture)
+            "Total Registered Farmer (No.)": total_registered_farmer_no,
+            "No. of Women Farmers (Total Registered)": total_women_farmer_no, 
+            "No. of Men Farmers (Total Registered)": total_men_farmer_no, # NEW
+            "Active Farmer (No.)": active_farmer_no,
+            "No. of Women Farmers (Active Farmers)": active_women_farmer_no, 
+            "No. of Men Farmers (Active Farmers)": active_men_farmer_no, # NEW
+            
+            # --- Capacity & Collection ---
+            "Total Tank Capacity": total_tank_capacity,
+            "Total Capacity (Tank 1)": total_capacity_tank1,
+            "Total Capacity (Tank 2)": total_capacity_tank2,
+            "Total Capacity (Tank 3)": total_capacity_tank3,
+            "Total Capacity (Tank 4)": total_capacity_tank4,
+            "Space available for Segregation Tank": space_segregation_tank,
+            "MILK SEGREGATED (LPD)": milk_segregated_lpd,
+            "MORNING MILK COLLECTION END TIME": morning_collection_time_label,
+            "MORNING MILK (LPD)": morning_milk_lpd,
+            "No. of Farmers (Morning Milk Collected)": morning_farmers_no, 
+            "EVENING MILK COLLECTION END TIME": evening_collection_time_label,
+            "EVENING MILK (LPD)": evening_milk_lpd,
+            "No. of Farmers (Evening Milk Collected)": evening_farmers_no, 
+            
+            # --- Infrastructure & Compliance ---
+            "Overall Infrastructure": overall_infrastructure,
+            "Remark (Infrastructure)": remark_infra,
+            "BMC Cleaning & Hygiene": bmc_cleaning_hygiene,
+            "Air curtain": yes_en if air_curtain == t('yes') else no_en,
+            "Fly Catcher": yes_en if fly_catcher == t('yes') else no_en,
+            "Wash Basin": yes_en if wash_basin == t('yes') else no_en,
+            "Opening(Window/Door)": yes_en if opening_window_door == t('yes') else no_en,
+            "Intact Floor in BMC Premise": yes_en if intact_floor == t('yes') else no_en,
+            "Digitize System": yes_en if digitize_system == t('yes') else no_en,
+            "FSSAI Licence": yes_en if fssai_licence == t('yes') else no_en,
+            "Wg Scale Licence": yes_en if wg_scale_licence == t('yes') else no_en,
+            
+            # New Yes/No Questions Data
+            "Is SOP Available": yes_en if sop_available == t('yes') else no_en,
+            "Is Hot Water Available": yes_en if hot_water_available == t('yes') else no_en,
+            "Is Notice Board Available": yes_en if notice_board_available == t('yes') else no_en,
+            
+            # Awareness Poster Data
+            "Awareness Poster": ', '.join(awareness_poster),
+            "Other Awareness Poster": other_awareness_poster,
+
+            # --- Payment Section ---
+            "Payment Schedule": payment_schedule,
+            "Payment Method": ', '.join(payment_method),
+            
+            # --- Farmer & Competitor Details ---
+            "Animal Welfare Farm (No.)": animal_welfare_farm_no,
+            "FARMER USE (compliant CATTLE FEED)": farmer_use_cattle_feed,
+            "Compliant Cattle Feed bag sale (month)": cattle_feed_bag_sale_month,
+            "Cattle Feed Brand Name": ', '.join(cattle_feed_brand_name),
+            "Other Cattle Feed Brand Name": other_cattle_feed_brand_name,
+            "FARMER USE (MINERAL MIXTURE) Quantity": farmer_use_mineral_mixture_qty,
+            "MINERAL MIXTURE BRAND NAME": mineral_mixture_brand_name,
+            "FARMER USE (EVM RTU) Quantity": farmer_use_evm_rtu_qty,
+            "EVM RTU": evm_rtu,
+            "BIOGAS INSTALLED": biogas_installed,
+            "ANY BANK LINKAGE": any_bank_linkage,
+            "COMPETITOR 1 NAME": competitor1_name,
+            "COMPETITOR 1 MILK (LPD)": competitor1_milk_lpd,
+            "Competitor 2 Name": competitor2_name,
+            "Competitor 2 MILK (LPD)": competitor2_milk_lpd,
+            "Competitor 3 Name": competitor3_name,
+            "Competitor 3 MILK (LPD)": competitor3_milk_lpd,
+            "Competitor 4 Name": competitor4_name,
+            "Competitor 4 MILK (LPD)": competitor4_milk_lpd,
+        }
+        
+        st.session_state.bmc_visit_data.append(submitted_data)
+        
+        df_new_entry = pd.DataFrame([submitted_data])
+        if not os.path.exists(BMC_VISIT_DATA_FILE):
+             df_new_entry.to_csv(BMC_VISIT_DATA_FILE, index=False)
+        else:
+             df_new_entry.to_csv(BMC_VISIT_DATA_FILE, mode='a', index=False, header=False)
+        
+        st.success("BMC Visit data submitted and saved!")
+
+# --- Data Viewing and Admin Section ---
+st.header("Real-time View & Download")
+if st.session_state.bmc_visit_data:
+    st.subheader("All Submitted BMC Visit Entries:")
+    df_bmc_visit_all = pd.DataFrame(st.session_state.bmc_visit_data).astype(str)
+    st.dataframe(df_bmc_visit_all, use_container_width=True)
+    csv_bmc_visit_all = df_bmc_visit_all.to_csv(index=False).encode('utf-8')
+    st.download_button(
+        label="Download All BMC Visit Data as CSV",
+        data=csv_bmc_visit_all,
+        file_name="all_bmc_visit_data.csv",
+        mime="text/csv",
+    )
+else:
+    st.info("No BMC Visit data submitted yet.")
