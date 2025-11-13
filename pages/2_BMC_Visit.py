@@ -17,25 +17,29 @@ translations = {
         'start_date_label': "SCHEDULED START DATE:",
         'organization_label': "Organization:",
         'bmc_name_label': "BMC Name:",
-        'other_bmc_name_label': "Other BMC Name (Specify):",
+        'other_bmc_name_label': "If Others, Specify BMC Name:", # UPDATED for "Others" logic
         'activity_created_by_label': "ACTIVITY CREATED BY:",
         'state_label': "State:",
         'district_label': "District:",
         'sub_district_label': "Sub District:",
-        'other_district_label': "Other District (Specify):",
-        'other_sub_district_label': "Other Sub District (Specify):",
-        'collecting_village_label': "Collecting Village:",
+        'other_district_label': "If Others, Specify District:", # UPDATED for "Others" logic
+        'other_sub_district_label': "If Others, Specify Sub District:", # UPDATED for "Others" logic
+        'collecting_village_label': "Collecting Village (No.):", # UPDATED to indicate numeric
         'village_label': "Village:",
+        
         'bcf_details_header': "BCF (Bulk Milk Cooler Farmer) Details",
         'bcf_name_label': "BCF Name:",
         'bcf_gender_label': "BCF Gender:",
         'education_label': "Education:",
-        'other_education_label': "Other Education (Specify):",
+        'other_education_label': "If Others, Specify Education:", # UPDATED for "Others" logic
         'bcf_mobile_label': "BCF Mobile Number:",
         'operating_staff_label': "Operating Staff (No.):",
         'distance_from_ho_label': "Distance From HO (KM):",
         'total_farmers_label': "Total Registered Farmer (No.):",
+        'total_women_farmers_label': "No. of Women Farmers (Total Registered):", # NEW
         'active_farmers_label': "Active Farmer (No.):",
+        'active_women_farmers_label': "No. of Women Farmers (Active Farmers):", # NEW
+        
         'capacity_header': "Capacity & Collection Details",
         'total_tank_capacity_label': "Total Tank Capacity:",
         'tank_1_capacity_label': "Total Capacity (Tank 1):",
@@ -46,9 +50,12 @@ translations = {
         'milk_segregated_label': "MILK SEGREGATED (LPD):",
         'morning_collection_time_label': "MORNING MILK COLLECTION END TIME (e.g., 9.3 for 9:30 AM):",
         'morning_milk_lpd_label': "MORNING MILK (LPD):",
+        'morning_farmers_label': "No. of Farmers (Morning Milk Collected):", # NEW
         'evening_collection_time_label': "EVENING MILK COLLECTION END TIME (e.g., 9 for 9:00 PM):",
         'evening_milk_lpd_label': "EVENING MILK (LPD):",
-        'quality_payment_header': "Milk Quality & Payment",
+        'evening_farmers_label': "No. of Farmers (Evening Milk Collected):", # NEW
+
+        'quality_payment_header': "Milk Quality & Payment", # Will keep but the questions are moved
         'fat_label': "FAT:",
         'snf_label': "SNF:",
         'payment_cycle_label': "FARMER PAYMENT CYCLE (DAYS):",
@@ -56,6 +63,7 @@ translations = {
         'inward_vehicle_route_label': "Inward Vehicle Route (No.):",
         'inward_route_farmer_label': "Inward Route Farmer (No.):",
         'inward_route_milk_label': "Inward Route Milk (LPD):",
+        
         'infra_compliance_header': "Infrastructure & Compliance",
         'overall_infra_label': "Overall Infrastructure:",
         'remark_infra_label': "Remark (Infrastructure):",
@@ -70,6 +78,10 @@ translations = {
         'remark_fssai_label': "Remark (FSSAI):",
         'wg_scale_licence_label': "Wg Scale Licence:",
         'sops_label': "SOP's:",
+        'sop_available_label': "Is SOP Available:", # NEW Yes/No
+        'hot_water_available_label': "Is Hot Water Available:", # NEW Yes/No
+        'notice_board_available_label': "Is Notice Board Available:", # NEW Yes/No
+        'awareness_poster_label': "Awareness Poster:", # NEW Multiselect
         'stirrer_label': "Stirrer/Ekomilk/Indifoss:",
         'remark_stirrer_label': "Remark (Stirrer/Ekomilk/Indifoss):",
         'sampler_label': "Sampler/Dipper/Plunger:",
@@ -82,12 +94,17 @@ translations = {
         'remark_hot_water_label': "Remark (Hot Water Source):",
         'strainer_label': "Strainer/Nylon cloth available:",
         'sample_bottle_label': "Sample Bottle:",
+
+        'payment_header': "Payment", # NEW SECTION
+        'payment_schedule_label': "Payment Schedule:", # NEW
+        'payment_method_label': "Payment Method:", # NEW
+        
         'farmer_competitor_header': "Farmer & Competitor Details",
         'animal_welfare_farm_label': "Animal Welfare Farm (No.):",
         'farmer_use_cattle_feed_label': "FARMER USE (compliant CATTLE FEED):",
         'cattle_feed_bag_sale_label': "Compliant Cattle Feed bag sale (month):",
         'cattle_feed_brand_label': "Cattle Feed Brand Name:",
-        'other_cattle_feed_brand_label': "Other Cattle Feed Brand Name (Specify):",
+        'other_cattle_feed_brand_label': "If Others, Specify Cattle Feed Brand Name:", # UPDATED for "Others" logic
         'farmer_use_mineral_mixture_label': "FARMER USE (MINERAL MIXTURE) Quantity:",
         'mineral_mixture_brand_label': "MINERAL MIXTURE BRAND NAME:",
         'farmer_use_evm_rtu_label': "FARMER USE (EVM RTU) Quantity:",
@@ -106,9 +123,13 @@ translations = {
         'submit_button': "Submit BMC Visit Data",
         'yes': "YES",
         'no': "NO",
+        'others': "OTHERS",
         'options_gender': ["MALE", "FEMALE"],
-        'options_education': ["10th pass", "12th pass", "Graduation", "Post graduation", "Others (Specify)"],
-        'options_quality': ["Poor", "Fair", "Good", "Best"]
+        'options_education': ["10th pass", "12th pass", "Graduation", "Post graduation", "OTHERS"], # Renamed "Others (Specify)" to "OTHERS"
+        'options_quality': ["Poor", "Fair", "Good", "Best"],
+        'options_payment_schedule': ["Every 10th day in a month", "Twice a month", "Once a month", "No specific schedule"], # NEW
+        'options_payment_method': ["Cash", "Bank Transfer", "Both"], # NEW
+        'options_awareness_poster': ["afm", "ab", "cmp", "OTHERS"] # NEW
     },
     'mr': {
         'page_title': "🚚 क्षीरसागर - BMC भेट डेटा एंट्री",
@@ -122,25 +143,29 @@ translations = {
         'start_date_label': "नियोजित प्रारंभ तारीख:",
         'organization_label': "संस्था:",
         'bmc_name_label': "BMC नाव:",
-        'other_bmc_name_label': "इतर BMC नाव (नमूद करा):",
+        'other_bmc_name_label': "इतर असल्यास, BMC नाव नमूद करा:",
         'activity_created_by_label': "ऍक्टिव्हिटी कोणी तयार केली:",
         'state_label': "राज्य:",
         'district_label': "जिल्हा:",
         'sub_district_label': "उप-जिल्हा:",
-        'other_district_label': "इतर जिल्हा (नमूद करा):",
-        'other_sub_district_label': "इतर उप-जिल्हा (नमूद करा):",
-        'collecting_village_label': "संकलन गाव:",
+        'other_district_label': "इतर असल्यास, जिल्हा नमूद करा:",
+        'other_sub_district_label': "इतर असल्यास, उप-जिल्हा नमूद करा:",
+        'collecting_village_label': "संकलन गाव (संख्या):",
         'village_label': "गाव:",
+        
         'bcf_details_header': "BCF (बल्क मिल्क कूलर शेतकरी) तपशील",
         'bcf_name_label': "BCF नाव:",
         'bcf_gender_label': "BCF लिंग:",
         'education_label': "शिक्षण:",
-        'other_education_label': "इतर शिक्षण (नमूद करा):",
+        'other_education_label': "इतर असल्यास, शिक्षण नमूद करा:",
         'bcf_mobile_label': "BCF मोबाईल नंबर:",
         'operating_staff_label': "कार्यरत कर्मचारी (संख्या):",
         'distance_from_ho_label': "HO पासून अंतर (किमी):",
         'total_farmers_label': "एकूण नोंदणीकृत शेतकरी (संख्या):",
+        'total_women_farmers_label': "महिला शेतकरी (एकूण नोंदणीकृत):", # NEW
         'active_farmers_label': "सक्रिय शेतकरी (संख्या):",
+        'active_women_farmers_label': "महिला शेतकरी (सक्रिय शेतकरी):", # NEW
+        
         'capacity_header': "क्षमता आणि संकलन तपशील",
         'total_tank_capacity_label': "एकूण टाकी क्षमता:",
         'tank_1_capacity_label': "एकूण क्षमता (टाकी 1):",
@@ -151,8 +176,11 @@ translations = {
         'milk_segregated_label': "दूध वेगळे केले (LPD):",
         'morning_collection_time_label': "सकाळच्या दूध संकलनाची शेवटची वेळ (उदा. 9.3 म्हणजे 9:30 AM):",
         'morning_milk_lpd_label': "सकाळचे दूध (LPD):",
+        'morning_farmers_label': "शेतकऱ्यांची संख्या (सकाळचे दूध संकलन):", # NEW
         'evening_collection_time_label': "संध्याकाळच्या दूध संकलनाची शेवटची वेळ (उदा. 9 म्हणजे 9:00 PM):",
         'evening_milk_lpd_label': "संध्याकाळचे दूध (LPD):",
+        'evening_farmers_label': "शेतकऱ्यांची संख्या (संध्याकाळचे दूध संकलन):", # NEW
+
         'quality_payment_header': "दुधाची गुणवत्ता आणि पेमेंट",
         'fat_label': "FAT:",
         'snf_label': "SNF:",
@@ -161,6 +189,7 @@ translations = {
         'inward_vehicle_route_label': "येणारे वाहन मार्ग (संख्या):",
         'inward_route_farmer_label': "येणारे मार्ग शेतकरी (संख्या):",
         'inward_route_milk_label': "येणारे मार्ग दूध (LPD):",
+        
         'infra_compliance_header': "पायाभूत सुविधा आणि अनुपालन",
         'overall_infra_label': "एकूण पायाभूत सुविधा:",
         'remark_infra_label': "टीप (पायाभूत सुविधा):",
@@ -175,6 +204,10 @@ translations = {
         'remark_fssai_label': "टीप (FSSAI):",
         'wg_scale_licence_label': "वजन काटा परवाना:",
         'sops_label': "SOP's:",
+        'sop_available_label': "SOP उपलब्ध आहे का:", # NEW Yes/No
+        'hot_water_available_label': "गरम पाणी उपलब्ध आहे का:", # NEW Yes/No
+        'notice_board_available_label': "नोटीस बोर्ड उपलब्ध आहे का:", # NEW Yes/No
+        'awareness_poster_label': "जागरूकता पोस्टर:", # NEW Multiselect
         'stirrer_label': "Stirrer/Ekomilk/Indifoss:",
         'remark_stirrer_label': "टीप (Stirrer/Ekomilk/Indifoss):",
         'sampler_label': "Sampler/Dipper/Plunger:",
@@ -187,12 +220,17 @@ translations = {
         'remark_hot_water_label': "टीप (Hot Water Source):",
         'strainer_label': "गाळणी/नायलॉन कापड उपलब्ध:",
         'sample_bottle_label': "नमुना बाटली:",
+
+        'payment_header': "पेमेंट", # NEW SECTION
+        'payment_schedule_label': "पेमेंट वेळापत्रक:", # NEW
+        'payment_method_label': "पेमेंट पद्धत:", # NEW
+        
         'farmer_competitor_header': "शेतकरी आणि स्पर्धक तपशील",
         'animal_welfare_farm_label': "पशु कल्याण फार्म (संख्या):",
         'farmer_use_cattle_feed_label': "शेतकरी वापर (compliant CATTLE FEED):",
         'cattle_feed_bag_sale_label': "Compliant Cattle Feed बॅग विक्री (महिना):",
         'cattle_feed_brand_label': "Cattle Feed ब्रँड नाव:",
-        'other_cattle_feed_brand_label': "इतर Cattle Feed ब्रँड नाव (नमूद करा):",
+        'other_cattle_feed_brand_label': "इतर असल्यास, Cattle Feed ब्रँड नाव नमूद करा:",
         'farmer_use_mineral_mixture_label': "शेतकरी वापर (MINERAL MIXTURE) प्रमाण:",
         'mineral_mixture_brand_label': "MINERAL MIXTURE ब्रँड नाव:",
         'farmer_use_evm_rtu_label': "शेतकरी वापर (EVM RTU) प्रमाण:",
@@ -211,9 +249,13 @@ translations = {
         'submit_button': "BMC भेट डेटा सबमिट करा",
         'yes': "होय",
         'no': "नाही",
+        'others': "इतर",
         'options_gender': ["पुरुष", "महिला"],
-        'options_education': ["10वी पास", "12वी पास", "पदवी", "पदव्युत्तर", "इतर (नमूद करा)"],
-        'options_quality': ["खराब", "ठीक", "चांगली", "उत्तम"]
+        'options_education': ["10वी पास", "12वी पास", "पदवी", "पदव्युत्तर", "इतर"],
+        'options_quality': ["खराब", "ठीक", "चांगली", "उत्तम"],
+        'options_payment_schedule': ["महिन्यातून प्रत्येक 10 व्या दिवशी", "महिन्यातून दोनदा", "महिन्यातून एकदा", "विशिष्ट वेळापत्रक नाही"], # NEW
+        'options_payment_method': ["रोख", "बँक ट्रान्सफर", "दोन्ही"], # NEW
+        'options_awareness_poster': ["एएफएम", "एबी", "सीएमपी", "इतर"] # NEW
     }
 }
 
@@ -221,6 +263,24 @@ translations = {
 def t(key):
     # Fallback to English key if translation is missing
     return translations[st.session_state.language].get(key, key)
+
+# --- Function to handle 'Others' follow-up text input ---
+def text_input_for_others(select_widget_value, options_list, label_key, input_key):
+    """
+    Displays a text input field if the select_widget_value is the 'Others' option.
+    Returns the value of the text input or None.
+    """
+    other_value = None
+    others_option = t('others')
+    
+    # Check if the 'Others' option is selected (for single select)
+    if select_widget_value == others_option:
+        other_value = st.text_input(t(label_key), key=input_key)
+    # Check if the 'Others' option is in the selected list (for multi-select)
+    elif isinstance(select_widget_value, list) and others_option in select_widget_value:
+        other_value = st.text_input(t(label_key), key=input_key)
+        
+    return other_value
 
 st.set_page_config(layout="centered", page_title="Ksheersagar - BMC Visit")
 
@@ -251,15 +311,15 @@ if 'bmc_visit_data' not in st.session_state:
         except Exception as e:
             st.error(f"Error loading existing BMC data: {e}")
 
-# --- UI START ---
-st.title(t('page_title'))
-st.write(t('page_header'))
-
 # Define static lists (for data consistency)
 GOVIND_BMC_NAMES = ["VIGHNAHARTA VIDNI COOLER", "NIRAI DUDH SANKALAN KEND.PANCABIGA", "PAWAR DAIRY ASU", "AJAY DUDH", "JAY HANUMAN BMC NAIKBOMWADI", "SHREE GANESH SASTEWADI BMC", "GOVIND DUDH SANKALAN KENDRA HOL", "JITOBA BULK COOLER JINTI", "JAY MHALLAR DUDH KALAJ", "WAGHESHWARI SASWAD", "BHAIRAVNATH DUDH HINGANGAON", "GOVIND DUDH SANKALAN KENDRA SASWAD", "SHREENATH MILK SANKALAN", "RAJMUDRA DUDH WATHARPHATA BMC", "ROKDESHWAR MILK SANKALAN", "BHAIRAVNATH MANDAVKHADAK COOLER", "SAYALI, MUNJAWADI", "JAY HANUMAN BARAD", "SHIVSHANKAR DUDH BARAD", "CHANDRABHAGA MILK SANKALAN", "KARCHE SAMPAT", "DURGADEVI DUDH ZIRAPVASTI COOLER", "JANAI DUDH SANKALAN KENDRA BMC", "GOKUL DUDH MATHACHIWADI", "GOVIND MAHILA SHVETKRANTI MILK SANKALAN", "VAJUBAI MILK SANKALAN", "SHRIRAM DUDH SANKALAN & SHIT.BHUINJ", "YASHODHAN MILK & MILK PROD. PACWAD", "OM BHAKTI DUDH WAI COW", "MAYURESHWAR DAIRY", "YOGESHWARI MILK SANKALAN", "JAY BHAVANI ANBHULEWADI", "MAHALAXMI MILK", "SHREENATH MILK", "MAHALAXMI DUDH MOHI", "SANCHALIT SUDARSHAN MILK", "MAULI DUDH SANKALAN KENDR.BHALAWADI", "SUPRIYA MILK", "JAGDAMBA DUDH BHATKI", "SHRI GANESH DUDH SAK VARKUTE MASWAD", "DAHIWADI DOCK", "SHREE JAYHARI RANAND PHALTAN COOLER", "SHIVAM DUDH BUDH", "GOMATA DUDH SANKALAN KEND.CHILEWADI", "REVANSIDDHA MILK SANKALAN", "VENKATESH AGRO PROCESSING CO.", "SHIVRAJ DUDH SANKALAN KENDRA", "SHIRAM DUDH PIMPRE DHAIGUDEMALA", "VANGNA DUDH HIVRE COW MILK", "GOWARDHAN MILK COLLECTION", "SHRI DATT DOODH DAIRY ANPATWADI", "JYOTIRLING DUDH SANKALAN KENDRA BORJAIWADI", "SHREE DATT MILK DAIRY AZADPUR", "SHIVKRUPA BMC", "SANT BHAGWANBABA AKOLE", "HINDAVI DAIRY FARM KHADAKI DAUND", "SHIVTEJ DUDH PAWARWASTI BORIBEL", "JAY HANUMAN DUDH VITTHALNAGAR", "BHAIRAVNATH DEVULGOAN RAJE", "A.S.DAIRY FARM", "VENKATESH AGRO PROCESSING CO.", "AKASH DUDH SANKALAN KENDRA", "BHAIRAVNATH MILK SANKALAN", "GOVIND SADASHIVNAGAR", "GOVIND WANIMALA", "GOVIND MILK SANKALAN", "LOKRAJ MILK SANKALAN", "SHAMBHU MAHADEV PHONDSHIRAS", "VISHNU NARAYAN DUDH", "JYOTIRLING DOODH SANKALAN EKSHIV"]
 SDDPL_BMC_NAMES = ["SHELKEWASTI", "HAKEWASTI", "KUSEGAON", "NYAWASTI", "NANGAON-2", "PARGAON-1", "PARGAON-2", "PIMPALGAON", "YAWAT", "CHANDANWADI", "DALIMB", "NANDUR", "DELAWADI", "KANGAON", "BETWADI", "KHADKI", "ROTI", "SONAWADI", "GOPALWADI", "HOLEWASTI", "MIRADE", "JAWALI", "VIDANI", "BARAD", "GUNWARE", "SOMANTHALI", "CHAUDHARWADI", "SANGAVI-MOHITEWASTI", "RAUTVASTI VIDANI", "PHADTARWADI", "KAPASHI", "MALEWADI", "SAKHARWADI", "RAVADI", "NIMBLAK", "ASU", "TAMKHADA", "HANUMANTWADI", "KHATAKEVASTI", "SATHEPHATA", "GANEGAONDUMALA", "VADGAON RASAI", "RANJANGAON SANDAS", "BHAMBURDE", "INAMGAON6", "NAGARGAON PHATA", "AJNUJ", "INAMGAON5", "PHARATEWADI", "KURULII", "SHINDODI", "GOLEGAON", "NAGARGAON", "NIMONE", "AMBALE 3", "KARDE", "KANHUR MESAI", "MAHADEVWADI", "NIMGAON MHALUNGI", "DHANORE", "TALEGAON DHAMDHERE", "MANDAVGAN PHARATA", "GUNAT", "KASHTI", "GHADAGEMALA", "INAMGAON3", "WANGDHARI", "URALGAONI"]
 ALL_BMC_NAMES = sorted(list(set(GOVIND_BMC_NAMES + SDDPL_BMC_NAMES)))
-CATTLE_FEED_BRAND_OPTIONS = ["Royal Bypro and classic", "Govind Classic Biopro", "Govind Royle Biopro", "SDDPL Samruddhi", "SDDPL Samruddhi Plus", "SDDPL Samruddhi Gold", "SDDPL Shakti", "Others"]
+CATTLE_FEED_BRAND_OPTIONS = ["Royal Bypro and classic", "Govind Classic Biopro", "Govind Royle Biopro", "SDDPL Samruddhi", "SDDPL Samruddhi Plus", "SDDPL Samruddhi Gold", "SDDPL Shakti", t('others')]
+
+# --- UI START ---
+st.title(t('page_title'))
+st.write(t('page_header'))
 
 with st.form(key='bmc_visit_form'):
     st.header(t('general_info_header'))
@@ -268,44 +328,53 @@ with st.form(key='bmc_visit_form'):
         bmc_code = st.text_input(t('bmc_code_label'))
         scheduled_start_date = st.date_input(t('start_date_label'), value=dt_date(2025, 5, 7))
         organization = st.selectbox(t('organization_label'), ["Govind Milk", "SDDPL"], index=0)
-        bmc_name_option = st.selectbox(t('bmc_name_label'), ["SELECT"] + ALL_BMC_NAMES + ["OTHERS"], index=0)
-        other_bmc_name = None
-        if bmc_name_option == "OTHERS":
-            other_bmc_name = st.text_input(t('other_bmc_name_label'), key="other_bmc_name_input")
+        
+        # 1. 'Others' Logic for BMC Name
+        bmc_name_option = st.selectbox(t('bmc_name_label'), ["SELECT"] + ALL_BMC_NAMES + [t('others')], index=0)
+        other_bmc_name = text_input_for_others(bmc_name_option, ALL_BMC_NAMES, 'other_bmc_name_label', "other_bmc_name_input")
+        actual_bmc_name = other_bmc_name if bmc_name_option == t('others') else bmc_name_option
+        
         activity_created_by = st.selectbox(t('activity_created_by_label'), ["Nilesh", "Dr Sachin", "bhusan", "subhrat", "aniket", "ritesh"], index=0)
 
     with col2:
         state = st.text_input(t('state_label'), "Maharashtra", disabled=True)
-        district_option = st.selectbox(t('district_label'), ["Satara", "Pune", "Ahmednagar", "Solapur", "OTHERS"], index=0)
-        sub_district_option = st.selectbox(t('sub_district_label'), ["Phaltan", "malshiras", "Baramati", "Indapur", "Daund", "Purander", "Pachgani", "Man", "Khatav", "Koregaon", "Khandala", "Shirur", "OTHERS"], index=0)
-        collecting_village = st.text_input(t('collecting_village_label'), "Hol")
+        # 1. 'Others' Logic for District
+        district_option = st.selectbox(t('district_label'), ["Satara", "Pune", "Ahmednagar", "Solapur", t('others')], index=0)
+        other_district_input = text_input_for_others(district_option, [], 'other_district_label', "other_district_input")
+        actual_district = other_district_input if district_option == t('others') else district_option
+
+        # 1. 'Others' Logic for Sub District
+        sub_district_option = st.selectbox(t('sub_district_label'), ["Phaltan", "malshiras", "Baramati", "Indapur", "Daund", "Purander", "Pachgani", "Man", "Khatav", "Koregaon", "Khandala", "Shirur", t('others')], index=0)
+        other_sub_district_input = text_input_for_others(sub_district_option, [], 'other_sub_district_label', "other_sub_district_input")
+        actual_sub_district = other_sub_district_input if sub_district_option == t('others') else sub_district_option
+        
+        # 3. Collecting Village to Numeric
+        collecting_village = st.number_input(t('collecting_village_label'), min_value=0, value=15)
+        
         village = st.text_input(t('village_label'), "HOL")
-
-    other_district_input = None
-    if district_option == "OTHERS":
-        other_district_input = st.text_input(t('other_district_label'))
-    actual_district = other_district_input if district_option == "OTHERS" else district_option
-
-    other_sub_district_input = None
-    if sub_district_option == "OTHERS":
-        other_sub_district_input = st.text_input(t('other_sub_district_label'))
-    actual_sub_district = other_sub_district_input if sub_district_option == "OTHERS" else sub_district_option
 
     st.header(t('bcf_details_header'))
     col3, col4 = st.columns(2)
     with col3:
         bcf_name = st.text_input(t('bcf_name_label'), "Sachin Shahuraje Bhosale")
         bcf_gender = st.selectbox(t('bcf_gender_label'), t('options_gender'), index=0)
+        
+        # 1. 'Others' Logic for Education
         education = st.selectbox(t('education_label'), t('options_education'), index=2)
-        other_education = None
-        if education == t('options_education')[-1]: # "Others (Specify)"
-            other_education = st.text_input(t('other_education_label'))
+        other_education = text_input_for_others(education, t('options_education'), 'other_education_label', "other_education_input")
+        actual_education = other_education if education == t('others') else education
+        
         bcf_mobile_number = st.text_input(t('bcf_mobile_label'), "9096807277")
+        
     with col4:
         operating_staff_no = st.number_input(t('operating_staff_label'), min_value=0, value=2)
         distance_from_ho_km = st.number_input(t('distance_from_ho_label'), min_value=0, value=25)
         total_registered_farmer_no = st.number_input(t('total_farmers_label'), min_value=0, value=93)
+        # 4. No. of Women Farmers (Total Registered)
+        total_women_farmer_no = st.number_input(t('total_women_farmers_label'), min_value=0, value=15)
         active_farmer_no = st.number_input(t('active_farmers_label'), min_value=0, value=65)
+        # 4. No. of Women Farmers (Active Farmers)
+        active_women_farmer_no = st.number_input(t('active_women_farmers_label'), min_value=0, value=10)
 
     st.header(t('capacity_header'))
     col5, col6 = st.columns(2)
@@ -318,10 +387,14 @@ with st.form(key='bmc_visit_form'):
         space_segregation_tank = st.text_input(t('segregation_tank_space_label'), "500 lit segregation tank available")
     with col6:
         milk_segregated_lpd = st.number_input(t('milk_segregated_label'), min_value=0, value=320)
-        morning_milk_collection_end_time = st.number_input(t('morning_collection_time_label'), min_value=0.0, value=9.3, step=0.1)
+        morning_collection_time_label = st.number_input(t('morning_collection_time_label'), min_value=0.0, value=9.3, step=0.1)
         morning_milk_lpd = st.number_input(t('morning_milk_lpd_label'), min_value=0, value=1250)
-        evening_milk_collection_end_time = st.number_input(t('evening_collection_time_label'), min_value=0.0, value=9.0, step=0.1)
+        # 5. Farmers in Morning Collection
+        morning_farmers_no = st.number_input(t('morning_farmers_label'), min_value=0, value=40)
+        evening_collection_time_label = st.number_input(t('evening_collection_time_label'), min_value=0.0, value=9.0, step=0.1)
         evening_milk_lpd = st.number_input(t('evening_milk_lpd_label'), min_value=0, value=1100)
+        # 5. Farmers in Evening Collection
+        evening_farmers_no = st.number_input(t('evening_farmers_label'), min_value=0, value=25)
     
     st.header(t('infra_compliance_header'))
     overall_infrastructure = st.selectbox(t('overall_infra_label'), t('options_quality'), index=2)
@@ -343,18 +416,44 @@ with st.form(key='bmc_visit_form'):
         fssai_licence = st.radio(t('fssai_licence_label'), yes_no_options, index=0, key="fssai_licence_bmc")
         wg_scale_licence = st.radio(t('wg_scale_licence_label'), yes_no_options, index=1, key="wg_scale_licence_bmc")
 
-    # ... continue with other fields ...
+    # 2. New Yes/No Questions
+    col_new_infra1, col_new_infra2, col_new_infra3, col_new_infra4 = st.columns(4)
+    with col_new_infra1:
+        sop_available = st.radio(t('sop_available_label'), yes_no_options, index=0, key="sop_available_bmc")
+    with col_new_infra2:
+        hot_water_available = st.radio(t('hot_water_available_label'), yes_no_options, index=0, key="hot_water_available_bmc")
+    with col_new_infra3:
+        notice_board_available = st.radio(t('notice_board_available_label'), yes_no_options, index=0, key="notice_board_available_bmc")
+    with col_new_infra4:
+        # 6. Awareness Poster Multiselect
+        awareness_poster = st.multiselect(t('awareness_poster_label'), t('options_awareness_poster'), default=[t('options_awareness_poster')[0]])
+        # 1. 'Others' Logic for Awareness Poster
+        other_awareness_poster = text_input_for_others(awareness_poster, t('options_awareness_poster'), 'other_cattle_feed_brand_label', "other_awareness_poster_input")
+
+
+    # ... continue with other fields ... (Keeping the original structure for remaining fields)
+    st.markdown("---")
     
+    # 7. NEW Payment Section
+    st.header(t('payment_header'))
+    col_pay1, col_pay2 = st.columns(2)
+    with col_pay1:
+        payment_schedule = st.radio(t('payment_schedule_label'), t('options_payment_schedule'), index=0, key="payment_schedule_bmc")
+    with col_pay2:
+        payment_method = st.multiselect(t('payment_method_label'), t('options_payment_method'), default=[t('options_payment_method')[0]])
+
+
     st.header(t('farmer_competitor_header'))
     col9, col10 = st.columns(2)
     with col9:
         animal_welfare_farm_no = st.number_input(t('animal_welfare_farm_label'), min_value=0, value=9)
         farmer_use_cattle_feed = st.number_input(t('farmer_use_cattle_feed_label'), min_value=0, value=58)
         cattle_feed_bag_sale_month = st.number_input(t('cattle_feed_bag_sale_label'), min_value=0, value=250)
+        
+        # 1. 'Others' Logic for Cattle Feed Brand
         cattle_feed_brand_name = st.multiselect(t('cattle_feed_brand_label'), CATTLE_FEED_BRAND_OPTIONS, default=["Royal Bypro and classic"])
-        other_cattle_feed_brand_name = None
-        if "Others" in cattle_feed_brand_name:
-            other_cattle_feed_brand_name = st.text_input(t('other_cattle_feed_brand_label'))
+        other_cattle_feed_brand_name = text_input_for_others(cattle_feed_brand_name, CATTLE_FEED_BRAND_OPTIONS, 'other_cattle_feed_brand_label', "other_cattle_feed_brand_name_input")
+        
         farmer_use_mineral_mixture_qty = st.number_input(t('farmer_use_mineral_mixture_label'), min_value=0, value=14)
         mineral_mixture_brand_name = st.text_input(t('mineral_mixture_brand_label'), "Govind Chileted")
         farmer_use_evm_rtu_qty = st.number_input(t('farmer_use_evm_rtu_label'), min_value=0, value=0)
@@ -364,13 +463,13 @@ with st.form(key='bmc_visit_form'):
     with col10:
         st.subheader(t('competitor_details_subheader'))
         competitor1_name = st.text_input(t('competitor1_name_label'), "Heritage")
-        competitor1_milk_lpd = st.number_input(t('competitor1_milk_label'), min_value=0, value=1300)
+        competitor1_milk_lpd = st.number_input(t('competitor1_milk_label'), min_value=0, value=1300, key="comp1_milk_lpd")
         competitor2_name = st.text_input(t('competitor2_name_label'), "Amul")
-        competitor2_milk_lpd = st.number_input(t('competitor2_milk_label'), min_value=0, value=2500)
+        competitor2_milk_lpd = st.number_input(t('competitor2_milk_label'), min_value=0, value=2500, key="comp2_milk_lpd")
         competitor3_name = st.text_input(t('competitor3_name_label'), "Dynamix")
-        competitor3_milk_lpd = st.number_input(t('competitor3_milk_label'), min_value=0, value=1100)
+        competitor3_milk_lpd = st.number_input(t('competitor3_milk_label'), min_value=0, value=1100, key="comp3_milk_lpd")
         competitor4_name = st.text_input(t('competitor4_name_label'))
-        competitor4_milk_lpd = st.number_input(t('competitor4_milk_label'), min_value=0, value=0)
+        competitor4_milk_lpd = st.number_input(t('competitor4_milk_label'), min_value=0, value=0, key="comp4_milk_lpd")
 
     st.markdown("---")
     submit_button = st.form_submit_button(label=t('submit_button'))
@@ -382,25 +481,44 @@ with st.form(key='bmc_visit_form'):
         submitted_data = {
             "BMC Code": bmc_code,
             "SCHEDULED START DATE": scheduled_start_date.isoformat() if scheduled_start_date else None,
-            "BMC Name": bmc_name_option,
+            "BMC Name": actual_bmc_name,
             "Other BMC Name": other_bmc_name,
             "ACTIVITY CREATED BY": activity_created_by,
             "Organization": organization,
             "State": state,
             "District": actual_district,
             "Sub District": actual_sub_district,
-            "Collecting Village": collecting_village,
+            "Collecting Village": collecting_village, # Numeric
             "Village": village,
             "BCF Name": bcf_name,
             "BCF Gender": translations['en']['options_gender'][t('options_gender').index(bcf_gender)],
-            "Education": education,
+            "Education": actual_education,
             "Other Education": other_education,
             "BCF Mobile Number": bcf_mobile_number,
             "Operating Staff (No.)": operating_staff_no,
             "Distance From HO (KM)": distance_from_ho_km,
             "Total Registered Farmer (No.)": total_registered_farmer_no,
+            "No. of Women Farmers (Total Registered)": total_women_farmer_no, # NEW
             "Active Farmer (No.)": active_farmer_no,
-            # ... Add all other fields to the dictionary
+            "No. of Women Farmers (Active Farmers)": active_women_farmer_no, # NEW
+            
+            "Total Tank Capacity": total_tank_capacity,
+            "Total Capacity (Tank 1)": total_capacity_tank1,
+            "Total Capacity (Tank 2)": total_capacity_tank2,
+            "Total Capacity (Tank 3)": total_capacity_tank3,
+            "Total Capacity (Tank 4)": total_capacity_tank4,
+            "Space available for Segregation Tank": space_segregation_tank,
+            "MILK SEGREGATED (LPD)": milk_segregated_lpd,
+            "MORNING MILK COLLECTION END TIME": morning_collection_time_label,
+            "MORNING MILK (LPD)": morning_milk_lpd,
+            "No. of Farmers (Morning Milk Collected)": morning_farmers_no, # NEW
+            "EVENING MILK COLLECTION END TIME": evening_collection_time_label,
+            "EVENING MILK (LPD)": evening_milk_lpd,
+            "No. of Farmers (Evening Milk Collected)": evening_farmers_no, # NEW
+
+            "Overall Infrastructure": overall_infrastructure,
+            "Remark (Infrastructure)": remark_infra,
+            "BMC Cleaning & Hygiene": bmc_cleaning_hygiene,
             "Air curtain": yes_en if air_curtain == t('yes') else no_en,
             "Fly Catcher": yes_en if fly_catcher == t('yes') else no_en,
             "Wash Basin": yes_en if wash_basin == t('yes') else no_en,
@@ -409,8 +527,53 @@ with st.form(key='bmc_visit_form'):
             "Digitize System": yes_en if digitize_system == t('yes') else no_en,
             "FSSAI Licence": yes_en if fssai_licence == t('yes') else no_en,
             "Wg Scale Licence": yes_en if wg_scale_licence == t('yes') else no_en,
-            # ... and so on for all radio buttons
+            
+            # 2. New Yes/No Questions Data
+            "Is SOP Available": yes_en if sop_available == t('yes') else no_en,
+            "Is Hot Water Available": yes_en if hot_water_available == t('yes') else no_en,
+            "Is Notice Board Available": yes_en if notice_board_available == t('yes') else no_en,
+            
+            # 6. Awareness Poster Data
+            "Awareness Poster": ', '.join(awareness_poster),
+            "Other Awareness Poster": other_awareness_poster,
+
+            # 7. Payment Section Data
+            "Payment Schedule": payment_schedule,
+            "Payment Method": ', '.join(payment_method),
+            
+            # Remaining Infrastructure/Compliance Fields (Placeholder logic - update required to map all original fields)
+            # You'll need to map all the original fields like sops_label, stirrer_label, etc. here for a complete data frame.
+            
+            "FAT": st.session_state.get("fat_input", "N/A"), # Assuming you'll add these next
+            "SNF": st.session_state.get("snf_input", "N/A"),
+            "FARMER PAYMENT CYCLE (DAYS)": st.session_state.get("payment_cycle_input", "N/A"),
+            "Direct Farmer pouring (No.)": st.session_state.get("direct_pouring_input", "N/A"),
+            "Inward Vehicle Route (No.)": st.session_state.get("inward_vehicle_route_input", "N/A"),
+            "Inward Route Farmer (No.)": st.session_state.get("inward_route_farmer_input", "N/A"),
+            "Inward Route Milk (LPD)": st.session_state.get("inward_route_milk_input", "N/A"),
+
+
+            "Animal Welfare Farm (No.)": animal_welfare_farm_no,
+            "FARMER USE (compliant CATTLE FEED)": farmer_use_cattle_feed,
+            "Compliant Cattle Feed bag sale (month)": cattle_feed_bag_sale_month,
+            "Cattle Feed Brand Name": ', '.join(cattle_feed_brand_name),
+            "Other Cattle Feed Brand Name": other_cattle_feed_brand_name,
+            "FARMER USE (MINERAL MIXTURE) Quantity": farmer_use_mineral_mixture_qty,
+            "MINERAL MIXTURE BRAND NAME": mineral_mixture_brand_name,
+            "FARMER USE (EVM RTU) Quantity": farmer_use_evm_rtu_qty,
+            "EVM RTU": evm_rtu,
+            "BIOGAS INSTALLED": biogas_installed,
+            "ANY BANK LINKAGE": any_bank_linkage,
+            "COMPETITOR 1 NAME": competitor1_name,
+            "COMPETITOR 1 MILK (LPD)": competitor1_milk_lpd,
+            "Competitor 2 Name": competitor2_name,
+            "Competitor 2 MILK (LPD)": competitor2_milk_lpd,
+            "Competitor 3 Name": competitor3_name,
+            "Competitor 3 MILK (LPD)": competitor3_milk_lpd,
+            "Competitor 4 Name": competitor4_name,
+            "Competitor 4 MILK (LPD)": competitor4_milk_lpd,
         }
+        
         st.session_state.bmc_visit_data.append(submitted_data)
         
         df_new_entry = pd.DataFrame([submitted_data])
