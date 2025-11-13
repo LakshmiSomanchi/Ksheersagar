@@ -299,12 +299,13 @@ translations = {
 def t(key):
     return translations[st.session_state.language].get(key, key)
 
-# --- HELPER FUNCTION FOR CONDITIONAL UI (Final Robust Fix) ---
-def render_select_with_specify(container, label_key, options_list, select_key, specify_label_key):
+# --- INLINED LOGIC HELPER FUNCTION (Final, simple, always editable text input) ---
+def render_select_with_specify_permanent(container, label_key, options_list, select_key, specify_label_key):
     """
-    Renders a select widget and a conditional 'specify' text input 
-    in a clean two-column layout. This implementation ensures the text input 
-    is fully editable when visible, without relying on disabling placeholders.
+    Renders a select widget and a PERMANENT, editable specify text input 
+    in a clean two-column layout. The text input remains active regardless of selection.
+    
+    Returns: (select_output, specify_output)
     """
     
     col_select, col_specify = container.columns([0.5, 0.5])
@@ -312,12 +313,12 @@ def render_select_with_specify(container, label_key, options_list, select_key, s
     is_multi = isinstance(options_list, list) and options_list[0] in translations['en']['options_awareness_poster'] 
     specify_key = f"{select_key}_specify"
     
-    # 1. Initialize specify state
+    # Initialize specify state
     if specify_key not in st.session_state:
         st.session_state[specify_key] = ""
     
     with col_select:
-        # 2. Render the Select Widget
+        # 1. Render the Select Widget
         if is_multi:
             select_output = st.multiselect(
                 t(label_key),
@@ -333,36 +334,15 @@ def render_select_with_specify(container, label_key, options_list, select_key, s
                 index=0
             )
 
-    specify_output = ""
-    is_others_selected = (isinstance(select_output, str) and select_output == t('others')) or \
-                         (isinstance(select_output, list) and t('others') in select_output)
-    
     with col_specify:
-        # 3. Conditional Rendering of Specify Input
-        if is_others_selected:
-            # Render the *editable* text input, linked to session state
-            specify_output = st.text_input(
-                t(specify_label_key), 
-                value=st.session_state[specify_key], 
-                key=specify_key, # This key is used for editing
-                label_visibility="visible"
-            )
-        else:
-            # If 'Others' is deselected, clear the state immediately (this forces a rerun)
-            if st.session_state[specify_key] != "":
-                st.session_state[specify_key] = "" 
-            
-            # Render a plain input with a dummy key, ensuring it's never the *same* widget key
-            # as the editable box, which prevents the lock conflict.
-            st.text_input(
-                t(specify_label_key), 
-                value="", 
-                disabled=True, 
-                key=f"{select_key}_dummy_ph", 
-                label_visibility="visible"
-            )
-            specify_output = "" 
-
+        # 2. Render the *permanent and editable* text input
+        # Note: We must display the label, even if 'Others' isn't selected.
+        specify_output = st.text_input(
+            t(specify_label_key), 
+            key=specify_key, 
+            label_visibility="visible"
+        )
+    
     return select_output, specify_output
 
 
@@ -419,8 +399,8 @@ with st.form(key='bmc_visit_form'):
     # --- General Info ---
     st.header(t('general_info_header'))
     
-    # BMC Name (Using render_select_with_specify)
-    bmc_name_option, other_bmc_name = render_select_with_specify(
+    # BMC Name (Using render_select_with_specify_permanent)
+    bmc_name_option, other_bmc_name = render_select_with_specify_permanent(
         st, 
         'bmc_name_label', 
         ["SELECT"] + ALL_BMC_NAMES + [t('others')], 
@@ -441,10 +421,11 @@ with st.form(key='bmc_visit_form'):
         activity_created_by = st.selectbox(t('activity_created_by_label'), ["Dr. Shyam", "Dr Sachin", "bhusan", "subhrat", "aniket", "ritesh"], index=0)
 
     with col2:
-        state = st.text_input(t('state_label'), "Maharashtra", disabled=True)
+        # State (UNLOCKED)
+        state = st.text_input(t('state_label'), "Maharashtra", disabled=False)
         
-        # District (Using render_select_with_specify)
-        district_option, other_district_input = render_select_with_specify(
+        # District (Using render_select_with_specify_permanent)
+        district_option, other_district_input = render_select_with_specify_permanent(
             st, 
             'district_label', 
             ["Satara", "Pune", "Ahmednagar", "Solapur", t('others')], 
@@ -453,8 +434,8 @@ with st.form(key='bmc_visit_form'):
         )
         actual_district = other_district_input if district_option == t('others') else district_option
 
-        # Sub District (Using render_select_with_specify)
-        sub_district_option, other_sub_district_input = render_select_with_specify(
+        # Sub District (Using render_select_with_specify_permanent)
+        sub_district_option, other_sub_district_input = render_select_with_specify_permanent(
             st, 
             'sub_district_label', 
             ["Phaltan", "malshiras", "Baramati", "Indapur", "Daund", "Purander", "Pachgani", "Man", "Khatav", "Koregaon", "Khandala", "Shirur", t('others')], 
@@ -477,8 +458,8 @@ with st.form(key='bmc_visit_form'):
         bcf_name = st.text_input(t('bcf_name_label'), "Sachin Shahuraje Bhosale")
         bcf_gender = st.selectbox(t('bcf_gender_label'), t('options_gender'), index=0)
         
-        # Education (Using render_select_with_specify)
-        education, other_education = render_select_with_specify(
+        # Education (Using render_select_with_specify_permanent)
+        education, other_education = render_select_with_specify_permanent(
             st, 
             'education_label', 
             t('options_education'), 
@@ -557,8 +538,8 @@ with st.form(key='bmc_visit_form'):
     with col_new_infra3:
         notice_board_available = st.radio(t('notice_board_available_label'), yes_no_options, index=0, key="notice_board_available_bmc")
     with col_new_infra4:
-        # Awareness Poster (Using render_select_with_specify)
-        awareness_poster, other_awareness_poster = render_select_with_specify(
+        # Awareness Poster (Using render_select_with_specify_permanent)
+        awareness_poster, other_awareness_poster = render_select_with_specify_permanent(
             st, 
             'awareness_poster_label', 
             t('options_awareness_poster'), 
@@ -584,8 +565,8 @@ with st.form(key='bmc_visit_form'):
         farmer_use_cattle_feed = st.number_input(t('farmer_use_cattle_feed_label'), min_value=0, value=58)
         cattle_feed_bag_sale_month = st.number_input(t('cattle_feed_bag_sale_label'), min_value=0, value=250)
         
-        # Cattle Feed Brand (Using render_select_with_specify)
-        cattle_feed_brand_name, other_cattle_feed_brand_name = render_select_with_specify(
+        # Cattle Feed Brand (Using render_select_with_specify_permanent)
+        cattle_feed_brand_name, other_cattle_feed_brand_name = render_select_with_specify_permanent(
             st, 
             'cattle_feed_brand_label', 
             CATTLE_FEED_BRAND_OPTIONS, 
