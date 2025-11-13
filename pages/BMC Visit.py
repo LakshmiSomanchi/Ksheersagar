@@ -53,13 +53,13 @@ translations = {
         'operating_staff_label': "Operating Staff (No.):",
         'distance_from_ho_label': "Distance From HO (KM):",
         
-        # Farmer Metrics (Updated)
+        # Farmer Metrics
         'total_farmers_label': "Total Registered Farmer (No.):",
         'total_women_farmers_label': "No. of Women Farmers (Total Registered):",
-        'total_men_farmers_label': "No. of Men Farmers (Total Registered):", # NEW
+        'total_men_farmers_label': "No. of Men Farmers (Total Registered):",
         'active_farmers_label': "Active Farmer (No.):",
         'active_women_farmers_label': "No. of Women Farmers (Active Farmers):",
-        'active_men_farmers_label': "No. of Men Farmers (Active Farmers):", # NEW
+        'active_men_farmers_label': "No. of Men Farmers (Active Farmers):",
         
         'capacity_header': "Capacity & Collection Details",
         'total_tank_capacity_label': "Total Tank Capacity:",
@@ -189,13 +189,13 @@ translations = {
         'operating_staff_label': "कार्यरत कर्मचारी (संख्या):",
         'distance_from_ho_label': "HO पासून अंतर (किमी):",
         
-        # Farmer Metrics (Updated)
+        # Farmer Metrics
         'total_farmers_label': "एकूण नोंदणीकृत शेतकरी (संख्या):",
         'total_women_farmers_label': "महिला शेतकरी (एकूण नोंदणीकृत):",
-        'total_men_farmers_label': "पुरुष शेतकरी (एकूण नोंदणीकृत):", # NEW
+        'total_men_farmers_label': "पुरुष शेतकरी (एकूण नोंदणीकृत):",
         'active_farmers_label': "सक्रिय शेतकरी (संख्या):",
         'active_women_farmers_label': "महिला शेतकरी (सक्रिय शेतकरी):",
-        'active_men_farmers_label': "पुरुष शेतकरी (सक्रिय शेतकरी):", # NEW
+        'active_men_farmers_label': "पुरुष शेतकरी (सक्रिय शेतकरी):",
         
         'capacity_header': "क्षमता आणि संकलन तपशील",
         'total_tank_capacity_label': "एकूण टाकी क्षमता:",
@@ -300,14 +300,19 @@ translations = {
 def t(key):
     return translations[st.session_state.language].get(key, key)
 
-# --- INLINED LOGIC HELPER FUNCTION (For clean UI code) ---
+# --- INLINED LOGIC HELPER FUNCTION (For clean UI code and rendering the specify box) ---
 def render_other_specify_input(select_option, input_label_key, input_key):
     """Renders the 'If Others, Specify' textbox if the select widget value is 'OTHERS'."""
     other_specify_input = None
-    if (isinstance(select_option, str) and select_option == t('others')) or \
-       (isinstance(select_option, list) and t('others') in select_option):
+    # Check if the selection is 'OTHERS' (for single select) or contains 'OTHERS' (for multi-select)
+    is_others_selected = (isinstance(select_option, str) and select_option == t('others')) or \
+                         (isinstance(select_option, list) and t('others') in select_option)
+
+    if is_others_selected:
+        # Use a temporary key to prevent caching conflicts, and retrieve the value at submission time
         other_specify_input = st.text_input(t(input_label_key), key=input_key)
     return other_specify_input
+
 
 st.set_page_config(layout="centered", page_title="Ksheersagar - BMC Visit")
 
@@ -370,24 +375,24 @@ with st.form(key='bmc_visit_form'):
         scheduled_start_date = st.date_input(t('start_date_label'), value=dt_date(2025, 5, 7))
         organization = st.selectbox(t('organization_label'), ["Govind Milk", "SDDPL"], index=0)
         
-        # 'Others' Logic for BMC Name (Inlined)
+        # 1. BMC Name 'Others' Logic (Rendering)
         bmc_name_option = st.selectbox(t('bmc_name_label'), ["SELECT"] + ALL_BMC_NAMES + [t('others')], index=0)
         other_bmc_name = render_other_specify_input(bmc_name_option, 'other_bmc_name_label', "other_bmc_name_input")
         actual_bmc_name = other_bmc_name if bmc_name_option == t('others') else bmc_name_option
         
-        # 2. Replace Nilesh with Dr. Shyam
+        # 2. Replaced "Nilesh" with "Dr. Shyam"
         activity_created_by = st.selectbox(t('activity_created_by_label'), ["Dr. Shyam", "Dr Sachin", "bhusan", "subhrat", "aniket", "ritesh"], index=0)
 
     # --- COL 2: Location Info ---
     with col2:
         state = st.text_input(t('state_label'), "Maharashtra", disabled=True)
         
-        # 'Others' Logic for District (Inlined)
+        # 1. District 'Others' Logic (Rendering)
         district_option = st.selectbox(t('district_label'), ["Satara", "Pune", "Ahmednagar", "Solapur", t('others')], index=0)
         other_district_input = render_other_specify_input(district_option, 'other_district_label', "other_district_input")
         actual_district = other_district_input if district_option == t('others') else district_option
 
-        # 'Others' Logic for Sub District (Inlined)
+        # 1. Sub District 'Others' Logic (Rendering)
         sub_district_option = st.selectbox(t('sub_district_label'), ["Phaltan", "malshiras", "Baramati", "Indapur", "Daund", "Purander", "Pachgani", "Man", "Khatav", "Koregaon", "Khandala", "Shirur", t('others')], index=0)
         other_sub_district_input = render_other_specify_input(sub_district_option, 'other_sub_district_label', "other_sub_district_input")
         actual_sub_district = other_sub_district_input if sub_district_option == t('others') else sub_district_option
@@ -407,7 +412,7 @@ with st.form(key='bmc_visit_form'):
         bcf_name = st.text_input(t('bcf_name_label'), "Sachin Shahuraje Bhosale")
         bcf_gender = st.selectbox(t('bcf_gender_label'), t('options_gender'), index=0)
         
-        # 'Others' Logic for Education (Inlined)
+        # 1. Education 'Others' Logic (Rendering)
         education = st.selectbox(t('education_label'), t('options_education'), index=2)
         other_education = render_other_specify_input(education, 'other_education_label', "other_education_input")
         actual_education = other_education if education == t('others') else education
@@ -424,7 +429,7 @@ with st.form(key='bmc_visit_form'):
     with col_counts1:
         st.markdown("**Total Registered Farmers**")
         total_registered_farmer_no = st.number_input(t('total_farmers_label'), min_value=0, value=93, key="total_reg")
-        # No. of Men Farmers (Total Registered) - NEW
+        # 3. No. of Men Farmers (Total Registered) - NEW
         total_men_farmer_no = st.number_input(t('total_men_farmers_label'), min_value=0, value=78, key="total_men")
         # No. of Women Farmers (Total Registered)
         total_women_farmer_no = st.number_input(t('total_women_farmers_label'), min_value=0, value=15, key="total_women")
@@ -432,7 +437,7 @@ with st.form(key='bmc_visit_form'):
     with col_counts2:
         st.markdown("**Active Farmers**")
         active_farmer_no = st.number_input(t('active_farmers_label'), min_value=0, value=65, key="active_reg")
-        # No. of Men Farmers (Active Farmers) - NEW
+        # 3. No. of Men Farmers (Active Farmers) - NEW
         active_men_farmer_no = st.number_input(t('active_men_farmers_label'), min_value=0, value=55, key="active_men")
         # No. of Women Farmers (Active Farmers)
         active_women_farmer_no = st.number_input(t('active_women_farmers_label'), min_value=0, value=10, key="active_women")
@@ -486,7 +491,7 @@ with st.form(key='bmc_visit_form'):
     with col_new_infra3:
         notice_board_available = st.radio(t('notice_board_available_label'), yes_no_options, index=0, key="notice_board_available_bmc")
     with col_new_infra4:
-        # Awareness Poster Multiselect with 'Others' logic (Inlined)
+        # 1. Awareness Poster 'Others' Logic (Rendering)
         awareness_poster = st.multiselect(t('awareness_poster_label'), t('options_awareness_poster'), default=[t('options_awareness_poster')[0]])
         other_awareness_poster = render_other_specify_input(awareness_poster, 'other_awareness_poster_label', "other_awareness_poster_input")
 
@@ -508,7 +513,7 @@ with st.form(key='bmc_visit_form'):
         farmer_use_cattle_feed = st.number_input(t('farmer_use_cattle_feed_label'), min_value=0, value=58)
         cattle_feed_bag_sale_month = st.number_input(t('cattle_feed_bag_sale_label'), min_value=0, value=250)
         
-        # Cattle Feed Brand Multiselect with 'Others' logic (Inlined)
+        # 1. Cattle Feed Brand 'Others' Logic (Rendering)
         cattle_feed_brand_name = st.multiselect(t('cattle_feed_brand_label'), CATTLE_FEED_BRAND_OPTIONS, default=["Royal Bypro and classic"])
         other_cattle_feed_brand_name = render_other_specify_input(cattle_feed_brand_name, 'other_cattle_feed_brand_label', "other_cattle_feed_brand_name_input")
         
@@ -534,12 +539,15 @@ with st.form(key='bmc_visit_form'):
     submit_button = st.form_submit_button(label=t('submit_button'))
 
     if submit_button:
+        # Data submission logic follows
+        # (Assuming photo upload check is currently commented out for troubleshooting load time)
+        
         # Convert translated answers back to English for data consistency
         yes_en, no_en = translations['en']['yes'], translations['en']['no']
         
         submitted_data = {
             # --- New Fields ---
-            "Geolocation (Lat, Long)": bmc_location, # Saves the N/A placeholder
+            "Geolocation (Lat, Long)": bmc_location,
             "Photo 1 (Overall BMC)": photo_overall.name if 'photo_overall' in locals() and photo_overall else "N/A",
             "Photo 2 (Platform)": photo_platform.name if 'photo_platform' in locals() and photo_platform else "N/A",
             "Photo 3 (Inside BMC)": photo_inside.name if 'photo_inside' in locals() and photo_inside else "N/A",
@@ -571,10 +579,10 @@ with st.form(key='bmc_visit_form'):
             # Farmer Counts (Data Capture)
             "Total Registered Farmer (No.)": total_registered_farmer_no,
             "No. of Women Farmers (Total Registered)": total_women_farmer_no, 
-            "No. of Men Farmers (Total Registered)": total_men_farmer_no, # NEW
+            "No. of Men Farmers (Total Registered)": total_men_farmer_no, 
             "Active Farmer (No.)": active_farmer_no,
             "No. of Women Farmers (Active Farmers)": active_women_farmer_no, 
-            "No. of Men Farmers (Active Farmers)": active_men_farmer_no, # NEW
+            "No. of Men Farmers (Active Farmers)": active_men_farmer_no, 
             
             # --- Capacity & Collection ---
             "Total Tank Capacity": total_tank_capacity,
