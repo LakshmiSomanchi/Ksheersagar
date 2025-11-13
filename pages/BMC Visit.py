@@ -303,7 +303,7 @@ def t(key):
 def render_select_with_specify(container, label_key, options_list, select_key, specify_label_key):
     """
     Renders a select widget and a conditional 'specify' text input 
-    in a clean two-column layout, ensuring the specify box is editable when visible.
+    in a clean two-column layout. Ensures the specify box is ALWAYS editable when visible.
     
     Returns: (select_output, specify_output)
     """
@@ -313,8 +313,12 @@ def render_select_with_specify(container, label_key, options_list, select_key, s
     is_multi = isinstance(options_list, list) and options_list[0] in translations['en']['options_awareness_poster'] 
     specify_key = f"{select_key}_specify"
     
+    # 1. Initialize specify state if it doesn't exist (to prevent KeyErrors in assignment)
+    if specify_key not in st.session_state:
+        st.session_state[specify_key] = ""
+    
     with col_select:
-        # 1. Render the Select Widget
+        # 2. Render the Select Widget
         if is_multi:
             select_output = st.multiselect(
                 t(label_key),
@@ -330,37 +334,34 @@ def render_select_with_specify(container, label_key, options_list, select_key, s
                 index=0
             )
 
-    specify_output = None
+    specify_output = ""
     is_others_selected = (isinstance(select_output, str) and select_output == t('others')) or \
                          (isinstance(select_output, list) and t('others') in select_output)
     
     with col_specify:
-        # 2. Conditional Rendering of Specify Input
+        # 3. Conditional Rendering of Specify Input
         if is_others_selected:
-            # Render the *editable* text input
-            specify_output = st.text_input(
+            # Render the *editable* text input, linked to session state
+            st.text_input(
                 t(specify_label_key), 
                 key=specify_key, 
                 label_visibility="visible"
             )
+            specify_output = st.session_state.get(specify_key, "")
         else:
-            # Use a dummy input field to maintain vertical spacing and clear state
-            # We use a unique key for the placeholder to avoid input conflicts
-            placeholder_key = f"{select_key}_ph"
+            # If 'Others' is deselected, immediately clear the state
+            if st.session_state[specify_key] != "":
+                st.session_state[specify_key] = "" 
             
-            # Clear the specify state if it exists and 'Others' is not selected
-            if specify_key in st.session_state:
-                st.session_state[specify_key] = ""
-                
-            # Render the placeholder (non-editable, disabled, just for alignment)
+            # Render a visible, disabled input as a placeholder for alignment
             st.text_input(
                 t(specify_label_key), 
                 value="", 
                 disabled=True, 
-                key=placeholder_key,
+                key=f"{select_key}_ph", # Use placeholder key
                 label_visibility="visible"
             )
-            specify_output = "" # Ensure output is an empty string if not used
+            specify_output = "" 
 
     return select_output, specify_output
 
@@ -702,7 +703,7 @@ with st.form(key='bmc_visit_form'):
             "Compliant Cattle Feed bag sale (month)": cattle_feed_bag_sale_month,
             "Cattle Feed Brand Name": ', '.join(cattle_feed_brand_name),
             "Other Cattle Feed Brand Name": other_cattle_feed_brand_name,
-            "FARMER USE (MINERAL MIXTURE) Quantity": farmer_use_mineral_mixture_qty,
+            "FARMER USE (MINERAL MIXTURE) Quantity": farmer_use_mineral_mixture_label,
             "MINERAL MIXTURE BRAND NAME": mineral_mixture_brand_name,
             "FARMER USE (EVM RTU) Quantity": farmer_use_evm_rtu_qty,
             "EVM RTU": evm_rtu,
