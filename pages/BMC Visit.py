@@ -302,18 +302,15 @@ def t(key):
     return translations[st.session_state.language].get(key, key)
 
 # --- HELPER FUNCTION FOR CONDITIONAL UI (Permanent Specify Field) ---
-# NOTE: This function now renders the permanent text input beside the select box.
-def render_select_with_specify_permanent(container, label_key, options_list, select_key, specify_label_key):
+def render_select_with_specify_permanent(container, label_key, options_list, select_key, specify_label_key, is_multi=False):
     """
     Renders a select widget and a PERMANENT, editable specify text input 
-    in a clean two-column layout. 
+    in a clean two-column layout.
     
     Returns: (select_output, specify_output)
     """
     
     col_select, col_specify = container.columns([0.5, 0.5])
-    
-    is_multi = isinstance(options_list, list) and options_list[0] in translations['en']['options_awareness_poster'] 
     specify_key = f"{select_key}_specify"
     
     # Initialize specify state
@@ -347,6 +344,7 @@ def render_select_with_specify_permanent(container, label_key, options_list, sel
         )
     
     return select_output, specify_output
+
 
 st.set_page_config(layout="centered", page_title="Ksheersagar - BMC Visit")
 
@@ -482,7 +480,7 @@ with st.form(key='bmc_visit_form'):
         district_option, other_district_input = render_select_with_specify_permanent(
             st, 
             'district_label', 
-            ["Satara", "Pune", "Ahmednagar", "Solapur", "Aurangabad", t('others')], 
+            ["Satara", "Pune", "Ahmednagar", "Solapur", t('others')], 
             'district_select',
             'other_district_label'
         )
@@ -681,8 +679,8 @@ with st.form(key='bmc_visit_form'):
             "Sub District": actual_sub_district,
             "Other Sub District": other_sub_district_input,
             "Collecting Village": collecting_village, 
-            "Village": village_option, # Capture selected village option
-            "Other Village": other_village_name, # Capture specified village name
+            "Village": village_option, 
+            "Other Village": other_village_name, 
             
             # --- BCF Details ---
             "BCF Name": bcf_name,
@@ -748,7 +746,7 @@ with st.form(key='bmc_visit_form'):
             "Compliant Cattle Feed bag sale (month)": cattle_feed_bag_sale_month,
             "Cattle Feed Brand Name": ', '.join(cattle_feed_brand_name),
             "Other Cattle Feed Brand Name": other_cattle_feed_brand_name,
-            "FARMER USE (MINERAL MIXTURE) Quantity": farmer_use_mineral_mixture_label,
+            "FARMER USE (MINERAL MIXTURE) Quantity": farmer_use_mineral_mixture_qty, 
             "MINERAL MIXTURE BRAND NAME": mineral_mixture_brand_name,
             "FARMER USE (EVM RTU) Quantity": farmer_use_evm_rtu_qty,
             "EVM RTU": evm_rtu,
