@@ -426,6 +426,8 @@ VILLAGE_NAMES = [
 ]
 VILLAGE_OPTIONS = sorted(VILLAGE_NAMES + [t('others')])
 
+# Initialize placeholder for Geolocation data (removed feature)
+bmc_location = "N/A" 
 
 # --- UI START ---
 st.title(t('page_title'))
