@@ -42,6 +42,7 @@ translations = {
         'other_sub_district_label': "If Others, Specify Sub District:",
         'collecting_village_label': "Collecting Village (No.):", 
         'village_label': "Village:",
+        'other_village_label': "If Others, Specify Village:", # NEW LABEL
         
         'bcf_details_header': "BCF (Bulk Milk Cooler Farmer) Details",
         'bcf_name_label': "BCF Name:",
@@ -178,6 +179,7 @@ translations = {
         'other_sub_district_label': "इतर असल्यास, उप-जिल्हा नमूद करा:",
         'collecting_village_label': "संकलन गाव (संख्या):",
         'village_label': "गाव:",
+        'other_village_label': "इतर असल्यास, गाव नमूद करा:", # NEW LABEL
         
         'bcf_details_header': "BCF (बल्क मिल्क कूलर शेतकरी) तपशील",
         'bcf_name_label': "BCF नाव:",
@@ -299,7 +301,7 @@ translations = {
 def t(key):
     return translations[st.session_state.language].get(key, key)
 
-# --- INLINED LOGIC HELPER FUNCTION (Final, simple, always editable text input) ---
+# --- HELPER FUNCTION FOR CONDITIONAL UI (Permanent Specify Field) ---
 def render_select_with_specify_permanent(container, label_key, options_list, select_key, specify_label_key):
     """
     Renders a select widget and a PERMANENT, editable specify text input 
@@ -336,7 +338,7 @@ def render_select_with_specify_permanent(container, label_key, options_list, sel
 
     with col_specify:
         # 2. Render the *permanent and editable* text input
-        # Note: We must display the label, even if 'Others' isn't selected.
+        # NOTE: This textbox is ALWAYS editable and visible (based on current requirement)
         specify_output = st.text_input(
             t(specify_label_key), 
             key=specify_key, 
@@ -344,7 +346,6 @@ def render_select_with_specify_permanent(container, label_key, options_list, sel
         )
     
     return select_output, specify_output
-
 
 st.set_page_config(layout="centered", page_title="Ksheersagar - BMC Visit")
 
@@ -373,6 +374,17 @@ GOVIND_BMC_NAMES = ["VIGHNAHARTA VIDNI COOLER", "NIRAI DUDH SANKALAN KEND.PANCAB
 SDDPL_BMC_NAMES = ["SHELKEWASTI", "HAKEWASTI", "KUSEGAON", "NYAWASTI", "NANGAON-2", "PARGAON-1", "PARGAON-2", "PIMPALGAON", "YAWAT", "CHANDANWADI", "DALIMB", "NANDUR", "DELAWADI", "KANGAON", "BETWADI", "KHADKI", "ROTI", "SONAWADI", "GOPALWADI", "HOLEWASTI", "MIRADE", "JAWALI", "VIDANI", "BARAD", "GUNWARE", "SOMANTHALI", "CHAUDHARWADI", "SANGAVI-MOHITEWASTI", "RAUTVASTI VIDANI", "PHADTARWADI", "KAPASHI", "MALEWADI", "SAKHARWADI", "RAVADI", "NIMBLAK", "ASU", "TAMKHADA", "HANUMANTWADI", "KHATAKEVASTI", "SATHEPHATA", "GANEGAONDUMALA", "VADGAON RASAI", "RANJANGAON SANDAS", "BHAMBURDE", "INAMGAON6", "NAGARGAON PHATA", "AJNUJ", "INAMGAON5", "PHARATEWADI", "KURULII", "SHINDODI", "GOLEGAON", "NAGARGAON", "NIMONE", "AMBALE 3", "KARDE", "KANHUR MESAI", "MAHADEVWADI", "NIMGAON MHALUNGI", "DHANORE", "TALEGAON DHAMDHERE", "MANDAVGAN PHARATA", "GUNAT", "KASHTI", "GHADAGEMALA", "INAMGAON3", "WANGDHARI", "URALGAONI"]
 ALL_BMC_NAMES = sorted(list(set(GOVIND_BMC_NAMES + SDDPL_BMC_NAMES)))
 CATTLE_FEED_BRAND_OPTIONS = ["Royal Bypro and classic", "Govind Classic Biopro", "Govind Royle Biopro", "SDDPL Samruddhi", "SDDPL Samruddhi Plus", "SDDPL Samruddhi Gold", "SDDPL Shakti", t('others')]
+
+# NEW Village List
+VILLAGE_NAMES = [
+    "ALAND", "BORGAON ARJ", "MOHARA", "KAIGAON", "VIRAMGAON", "BANKINHOLA", "SHEKTA", 
+    "WADOD BAJAR", "SULTANWADI", "BABHULGAON", "LEHA", "KAUDGAON JAMB", "KARANJI", 
+    "KHANDGAON", "KAUDGAON", "CHICHONDI SHIRAL", "DAHIGAON", "BHENDA", "JAKHANGAON", 
+    "PARNER", "DEODAITHAN", "PANOLI 2", "CHIMBHALE", "RAYGAVHAN", "SULTANPUR", 
+    "RANDULLABAD", "PARGAON", "SUKHED", "KHED (BK)", "MOGARALE", "CHIMBHALE", 
+    "PADHEGAON", "JAVALKE"
+]
+VILLAGE_OPTIONS = sorted(VILLAGE_NAMES + [t('others')])
 
 # Initialize placeholder for Geolocation data (removed feature)
 bmc_location = "N/A (Geolocation Feature Removed for Optimization)" 
@@ -421,7 +433,7 @@ with st.form(key='bmc_visit_form'):
         activity_created_by = st.selectbox(t('activity_created_by_label'), ["Dr. Shyam", "Dr Sachin", "bhusan", "subhrat", "aniket", "ritesh"], index=0)
 
     with col2:
-        # State (UNLOCKED)
+        # State (UNLOCKED and Editable)
         state = st.text_input(t('state_label'), "Maharashtra", disabled=False)
         
         # District (Using render_select_with_specify_permanent)
@@ -447,7 +459,16 @@ with st.form(key='bmc_visit_form'):
         # Collecting Village (Numeric)
         collecting_village = st.number_input(t('collecting_village_label'), min_value=0, value=15)
         
-        village = st.text_input(t('village_label'), "HOL")
+        # Village Dropdown (NEW IMPLEMENTATION)
+        village_option, other_village_name = render_select_with_specify_permanent(
+            st,
+            'village_label',
+            VILLAGE_OPTIONS,
+            'village_select',
+            'other_village_label'
+        )
+        actual_village = other_village_name if village_option == t('others') else village_option
+
 
     # --- BCF Details ---
     st.header(t('bcf_details_header'))
@@ -618,7 +639,8 @@ with st.form(key='bmc_visit_form'):
             "Sub District": actual_sub_district,
             "Other Sub District": other_sub_district_input,
             "Collecting Village": collecting_village, 
-            "Village": village,
+            "Village": actual_village, # CAPTURE THE ACTUAL VILLAGE
+            "Other Village": other_village_name, # CAPTURE THE SPECIFY TEXT
             
             # --- BCF Details ---
             "BCF Name": bcf_name,
