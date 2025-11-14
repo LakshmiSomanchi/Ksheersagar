@@ -449,7 +449,7 @@ with st.form(key='bmc_visit_form'):
         district_option, other_district_input = render_select_with_specify_permanent(
             st, 
             'district_label', 
-            ["Satara", "Pune", "Ahmednagar", "Solapur", t('others')], 
+            ["Satara", "Pune", "Ahmednagar", "Solapur", "Aurangabad", t('others')], 
             'district_select',
             'other_district_label'
         )
