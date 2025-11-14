@@ -605,7 +605,8 @@ with st.form(key='bmc_visit_form'):
             'awareness_poster_label', 
             t('options_awareness_poster'), 
             'awareness_poster_select',
-            'other_awareness_poster_label'
+            'other_awareness_poster_label',
+            is_multi=True
         )
 
 
@@ -633,7 +634,7 @@ with st.form(key='bmc_visit_form'):
             CATTLE_FEED_BRAND_OPTIONS, 
             'cattle_feed_brand_select',
             'other_cattle_feed_brand_label',
-            is_multi=True # Set to True for Multi-Select
+            is_multi=True
         )
         
         farmer_use_mineral_mixture_qty = st.number_input(t('farmer_use_mineral_mixture_label'), min_value=0, value=14)
