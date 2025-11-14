@@ -42,7 +42,7 @@ translations = {
         'other_sub_district_label': "If Others, Specify Sub District:",
         'collecting_village_label': "Collecting Village (No.):", 
         'village_label': "Village:",
-        'other_village_label': "If Others, Specify Village:", # NEW LABEL
+        'other_village_label': "If Others, Specify Village:",
         
         'bcf_details_header': "BCF (Bulk Milk Cooler Farmer) Details",
         'bcf_name_label': "BCF Name:",
@@ -179,7 +179,7 @@ translations = {
         'other_sub_district_label': "इतर असल्यास, उप-जिल्हा नमूद करा:",
         'collecting_village_label': "संकलन गाव (संख्या):",
         'village_label': "गाव:",
-        'other_village_label': "इतर असल्यास, गाव नमूद करा:", # NEW LABEL
+        'other_village_label': "इतर असल्यास, गाव नमूद करा:",
         
         'bcf_details_header': "BCF (बल्क मिल्क कूलर शेतकरी) तपशील",
         'bcf_name_label': "BCF नाव:",
@@ -302,10 +302,11 @@ def t(key):
     return translations[st.session_state.language].get(key, key)
 
 # --- HELPER FUNCTION FOR CONDITIONAL UI (Permanent Specify Field) ---
+# NOTE: This function now renders the permanent text input beside the select box.
 def render_select_with_specify_permanent(container, label_key, options_list, select_key, specify_label_key):
     """
     Renders a select widget and a PERMANENT, editable specify text input 
-    in a clean two-column layout. The text input remains active regardless of selection.
+    in a clean two-column layout. 
     
     Returns: (select_output, specify_output)
     """
@@ -338,7 +339,7 @@ def render_select_with_specify_permanent(container, label_key, options_list, sel
 
     with col_specify:
         # 2. Render the *permanent and editable* text input
-        # NOTE: This textbox is ALWAYS editable and visible (based on current requirement)
+        # Note: This textbox is ALWAYS editable and visible
         specify_output = st.text_input(
             t(specify_label_key), 
             key=specify_key, 
@@ -375,13 +376,21 @@ SDDPL_BMC_NAMES = ["SHELKEWASTI", "HAKEWASTI", "KUSEGAON", "NYAWASTI", "NANGAON-
 ALL_BMC_NAMES = sorted(list(set(GOVIND_BMC_NAMES + SDDPL_BMC_NAMES)))
 CATTLE_FEED_BRAND_OPTIONS = ["Royal Bypro and classic", "Govind Classic Biopro", "Govind Royle Biopro", "SDDPL Samruddhi", "SDDPL Samruddhi Plus", "SDDPL Samruddhi Gold", "SDDPL Shakti", t('others')]
 
-# NEW Village List
+# NEW Sub-District List (Consolidated and Sorted)
+NEW_SUB_DISTRICTS = list(set([
+    "PHULAMBRI", "KANNAD", "SILLOD", "AURANGABAD", "PATHARDI", "NEWASA", 
+    "AHMEDNAGAR", "PARNER", "SHRIGONDA", "KHULTABAD", "KOREGAON", 
+    "KHANDALA", "MANN", "KOPARGAON"
+]))
+SUB_DISTRICT_OPTIONS = sorted(NEW_SUB_DISTRICTS + [t('others')])
+
+# Village List
 VILLAGE_NAMES = [
     "ALAND", "BORGAON ARJ", "MOHARA", "KAIGAON", "VIRAMGAON", "BANKINHOLA", "SHEKTA", 
     "WADOD BAJAR", "SULTANWADI", "BABHULGAON", "LEHA", "KAUDGAON JAMB", "KARANJI", 
     "KHANDGAON", "KAUDGAON", "CHICHONDI SHIRAL", "DAHIGAON", "BHENDA", "JAKHANGAON", 
     "PARNER", "DEODAITHAN", "PANOLI 2", "CHIMBHALE", "RAYGAVHAN", "SULTANPUR", 
-    "RANDULLABAD", "PARGAON", "SUKHED", "KHED (BK)", "MOGARALE", "CHIMBHALE", 
+    "RANDULLABAD", "PARGAON", "SUKHED", "KHED (BK)", "MOGARALE", 
     "PADHEGAON", "JAVALKE"
 ]
 VILLAGE_OPTIONS = sorted(VILLAGE_NAMES + [t('others')])
@@ -450,7 +459,7 @@ with st.form(key='bmc_visit_form'):
         sub_district_option, other_sub_district_input = render_select_with_specify_permanent(
             st, 
             'sub_district_label', 
-            ["Phaltan", "malshiras", "Baramati", "Indapur", "Daund", "Purander", "Pachgani", "Man", "Khatav", "Koregaon", "Khandala", "Shirur", t('others')], 
+            SUB_DISTRICT_OPTIONS, # NEW LIST USED HERE
             'sub_district_select',
             'other_sub_district_label'
         )
@@ -459,7 +468,7 @@ with st.form(key='bmc_visit_form'):
         # Collecting Village (Numeric)
         collecting_village = st.number_input(t('collecting_village_label'), min_value=0, value=15)
         
-        # Village Dropdown (NEW IMPLEMENTATION)
+        # Village Dropdown (Using render_select_with_specify_permanent)
         village_option, other_village_name = render_select_with_specify_permanent(
             st,
             'village_label',
@@ -639,8 +648,8 @@ with st.form(key='bmc_visit_form'):
             "Sub District": actual_sub_district,
             "Other Sub District": other_sub_district_input,
             "Collecting Village": collecting_village, 
-            "Village": actual_village, # CAPTURE THE ACTUAL VILLAGE
-            "Other Village": other_village_name, # CAPTURE THE SPECIFY TEXT
+            "Village": village_option, # Capture selected village option
+            "Other Village": other_village_name, # Capture specified village name
             
             # --- BCF Details ---
             "BCF Name": bcf_name,
