@@ -305,7 +305,7 @@ def t(key):
 def render_select_with_specify_permanent(container, label_key, options_list, select_key, specify_label_key, is_multi=False):
     """
     Renders a select widget and a PERMANENT, editable specify text input 
-    in a clean two-column layout.
+    in a clean two-column layout. The text input remains active regardless of selection.
     
     Returns: (select_output, specify_output)
     """
@@ -473,7 +473,7 @@ with st.form(key='bmc_visit_form'):
         activity_created_by = st.selectbox(t('activity_created_by_label'), ["Dr. Shyam", "Dr Sachin", "bhusan", "subhrat", "aniket", "ritesh"], index=0)
 
     with col2:
-        # State (UNLOCKED and Editable)
+        # State (UNLOCKED)
         state = st.text_input(t('state_label'), "Maharashtra", disabled=False)
         
         # District (Using render_select_with_specify_permanent)
@@ -632,7 +632,8 @@ with st.form(key='bmc_visit_form'):
             'cattle_feed_brand_label', 
             CATTLE_FEED_BRAND_OPTIONS, 
             'cattle_feed_brand_select',
-            'other_cattle_feed_brand_label'
+            'other_cattle_feed_brand_label',
+            is_multi=True # Set to True for Multi-Select
         )
         
         farmer_use_mineral_mixture_qty = st.number_input(t('farmer_use_mineral_mixture_label'), min_value=0, value=14)
