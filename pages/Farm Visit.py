@@ -2,9 +2,21 @@ import streamlit as st
 import pandas as pd
 from datetime import date as dt_date
 import os
+import random
 
-# --- Translation Dictionary ---
-# All UI text is stored here for easy switching between English and Marathi
+# --- Constants ---
+FARM_VISIT_DATA_FILE = "farm_visit_data.csv"
+
+# --- ADMIN CREDENTIALS ---
+# Using same credentials for consistency
+ACCESS_CODES = {
+    "rsomanchi@tns.org": "482910",
+    "rmukherjee@tns.org": "910384",
+    "shifalis@tns.org": "275639",
+    "mkaushal@tns.org": "603172"
+}
+
+# --- Translation Dictionary (Kept exactly as is) ---
 translations = {
     'en': {
         'page_title': "🐄 Ksheersagar - Farm Visit Data Entry",
@@ -176,10 +188,6 @@ if selected_lang_display == "English":
     st.session_state.language = 'en'
 else:
     st.session_state.language = 'mr'
-
-
-# --- CSV File Path for Persistent Storage ---
-FARM_VISIT_DATA_FILE = "farm_visit_data.csv"
 
 # --- Session State Initialization and Data Loading ---
 if 'farm_visit_data' not in st.session_state:
@@ -375,7 +383,7 @@ with st.form(key='farm_visit_form'):
         t('overall_hygiene_label'),
         t('options_hygiene'), index=2, key="overall_hygiene_fv"
     )
-    # This line was causing the KeyError
+    
     space_sick_animal = st.radio(t('space_sick_animal_label'), [t('yes'), t('no')], index=0, key="space_sick_animal_fv")
     recent_disease_reported = st.text_input(t('recent_disease_label'), "No")
     last_date_reporting_disease = st.date_input(t('last_disease_date_label'), value=None)
@@ -459,14 +467,34 @@ with st.form(key='farm_visit_form'):
         df_new_entry.to_csv(FARM_VISIT_DATA_FILE, mode='a', index=False, header=header)
         st.success("Farm Visit data submitted and saved!")
 
-# --- Admin Access ---
-st.sidebar.markdown("---")
-st.sidebar.header("Admin Access")
-admin_username = st.sidebar.text_input("Enter Admin Username to view past submissions:", key="admin_username_fv")
-ADMIN_USERS = ["mkaushal@tns.org", "rsomanchi@tns.org", "shifalis@tns.org"]
+# --- ADMIN ACCESS CONTROL LOGIN ---
+st.divider()
+st.header("🔐 Central Team Admin Access")
 
-if admin_username in ADMIN_USERS:
-    st.sidebar.success(f"Welcome, {admin_username.split('@')[0]}!")
+if 'admin_authenticated_fv' not in st.session_state:
+    st.session_state.admin_authenticated_fv = False
+
+if not st.session_state.admin_authenticated_fv:
+    col_auth1, col_auth2 = st.columns(2)
+    with col_auth1:
+        input_username = st.text_input("Enter Username (Email):", key="admin_username_fv_login")
+    with col_auth2:
+        input_access_code = st.text_input("Enter Access Code:", type="password", key="admin_access_code_fv")
+        
+    if st.button("Login to View Data", key="login_btn_fv"):
+        if input_username in ACCESS_CODES and input_access_code == ACCESS_CODES[input_username]:
+            st.session_state.admin_authenticated_fv = True
+            st.success("Authentication Successful!")
+            st.rerun()
+        else:
+            st.error("Invalid Username or Access Code.")
+else:
+    st.success("Logged in as Admin.")
+    if st.button("Logout", key="logout_btn_fv"):
+        st.session_state.admin_authenticated_fv = False
+        st.rerun()
+
+    # --- Data Viewing Section (Only shown if authenticated) ---
     st.header("🔑 Admin View: Past Farm Visit Submissions")
     if st.session_state.farm_visit_data:
         st.subheader("All Farm Visit Entries:")
@@ -475,29 +503,10 @@ if admin_username in ADMIN_USERS:
         st.dataframe(df_all_farm_visit, use_container_width=True)
         csv_all_farm_visit = df_all_farm_visit.to_csv(index=False).encode('utf-8')
         st.download_button(
-            label="Download All Farm Visit Data as CSV (Admin)",
+            label="Download All Farm Visit Data as CSV",
             data=csv_all_farm_visit,
             file_name="all_farm_visit_data.csv",
             mime="text/csv"
         )
     else:
         st.info("No Farm Visit data has been submitted yet.")
-elif admin_username:
-    st.sidebar.error("Access Denied: Invalid Admin Username.")
-
-# --- Real-time View and Download Option ---
-st.header("Real-time View & Download (Current Session & Past)")
-if st.session_state.farm_visit_data:
-    st.subheader("Submitted Farm Visit Entries:")
-    df_farm_visit = pd.DataFrame(st.session_state.farm_visit_data)
-    df_farm_visit = df_farm_visit.astype(str)
-    st.dataframe(df_farm_visit, use_container_width=True)
-    csv_farm_visit = df_farm_visit.to_csv(index=False).encode('utf-8')
-    st.download_button(
-        label="Download Farm Visit Data as CSV",
-        data=csv_farm_visit,
-        file_name="farm_visit_data.csv",
-        mime="text/csv"
-    )
-else:
-    st.info("No Farm Visit data submitted yet. Submit the form above to see data here.")
