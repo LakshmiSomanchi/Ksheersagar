@@ -26,7 +26,8 @@ ACCESS_CODES = {
     "rsomanchi@tns.org": "482910",
     "rmukherjee@tns.org": "910384",
     "shifalis@tns.org": "275639",
-    "mkaushal@tns.org": "603172"
+    "mkaushal@tns.org": "603172",
+    "bsananse@tns.org": "786598"
 }
 
 # --- Translation Dictionary (Definitions remain the same) ---
