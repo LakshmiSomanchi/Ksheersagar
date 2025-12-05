@@ -7,16 +7,6 @@ import random
 # --- Constants ---
 FARM_VISIT_DATA_FILE = "farm_visit_data.csv"
 
-# --- ADMIN CREDENTIALS ---
-# Using same credentials for consistency
-ACCESS_CODES = {
-    "rsomanchi@tns.org": "482910",
-    "rmukherjee@tns.org": "910384",
-    "shifalis@tns.org": "275639",
-    "mkaushal@tns.org": "603172",
-    "bsananse@tns.org": "786598"
-}
-
 # --- Translation Dictionary (Kept exactly as is) ---
 translations = {
     'en': {
@@ -468,46 +458,19 @@ with st.form(key='farm_visit_form'):
         df_new_entry.to_csv(FARM_VISIT_DATA_FILE, mode='a', index=False, header=header)
         st.success("Farm Visit data submitted and saved!")
 
-# --- ADMIN ACCESS CONTROL LOGIN ---
-st.divider()
-st.header("🔐 Central Team Admin Access")
-
-if 'admin_authenticated_fv' not in st.session_state:
-    st.session_state.admin_authenticated_fv = False
-
-if not st.session_state.admin_authenticated_fv:
-    col_auth1, col_auth2 = st.columns(2)
-    with col_auth1:
-        input_username = st.text_input("Enter Username (Email):", key="admin_username_fv_login")
-    with col_auth2:
-        input_access_code = st.text_input("Enter Access Code:", type="password", key="admin_access_code_fv")
-        
-    if st.button("Login to View Data", key="login_btn_fv"):
-        if input_username in ACCESS_CODES and input_access_code == ACCESS_CODES[input_username]:
-            st.session_state.admin_authenticated_fv = True
-            st.success("Authentication Successful!")
-            st.rerun()
-        else:
-            st.error("Invalid Username or Access Code.")
+# --- Real-time View and Download Option (Restored: No Login Required) ---
+st.header("Real-time View & Download")
+if st.session_state.farm_visit_data:
+    st.subheader("All Submitted Farm Visit Entries:")
+    df_all_farm_visit = pd.DataFrame(st.session_state.farm_visit_data)
+    df_all_farm_visit = df_all_farm_visit.astype(str)
+    st.dataframe(df_all_farm_visit, use_container_width=True)
+    csv_all_farm_visit = df_all_farm_visit.to_csv(index=False).encode('utf-8')
+    st.download_button(
+        label="Download All Farm Visit Data as CSV",
+        data=csv_all_farm_visit,
+        file_name="all_farm_visit_data.csv",
+        mime="text/csv"
+    )
 else:
-    st.success("Logged in as Admin.")
-    if st.button("Logout", key="logout_btn_fv"):
-        st.session_state.admin_authenticated_fv = False
-        st.rerun()
-
-    # --- Data Viewing Section (Only shown if authenticated) ---
-    st.header("🔑 Admin View: Past Farm Visit Submissions")
-    if st.session_state.farm_visit_data:
-        st.subheader("All Farm Visit Entries:")
-        df_all_farm_visit = pd.DataFrame(st.session_state.farm_visit_data)
-        df_all_farm_visit = df_all_farm_visit.astype(str)
-        st.dataframe(df_all_farm_visit, use_container_width=True)
-        csv_all_farm_visit = df_all_farm_visit.to_csv(index=False).encode('utf-8')
-        st.download_button(
-            label="Download All Farm Visit Data as CSV",
-            data=csv_all_farm_visit,
-            file_name="all_farm_visit_data.csv",
-            mime="text/csv"
-        )
-    else:
-        st.info("No Farm Visit data has been submitted yet.")
+    st.info("No Farm Visit data has been submitted yet.")
