@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 from datetime import date as dt_date
 import os
-import random
 
 # --- Constants ---
 BMC_VISIT_DATA_FILE = "bmc_visit_data.csv"
@@ -19,16 +18,6 @@ def load_existing_data():
         except Exception as e:
             st.warning(f"Warning: Could not load existing BMC data file. Starting fresh. Error: {e}")
     return data_list
-
-# --- ACCESS CONTROL CONFIGURATION ---
-# Randomly generated 6-digit access codes for the specified users
-ACCESS_CODES = {
-    "rsomanchi@tns.org": "482910",
-    "rmukherjee@tns.org": "910384",
-    "shifalis@tns.org": "275639",
-    "mkaushal@tns.org": "603172",
-    "bsananse@tns.org": "786598"
-}
 
 # --- Translation Dictionary (Definitions remain the same) ---
 translations = {
@@ -345,6 +334,7 @@ def render_select_with_specify_permanent(container, label_key, options_list, sel
 
     with col_specify:
         # 2. Render the *permanent and editable* text input
+        # Note: This textbox is ALWAYS editable and visible
         specify_output = st.text_input(
             t(specify_label_key), 
             key=specify_key, 
@@ -352,7 +342,6 @@ def render_select_with_specify_permanent(container, label_key, options_list, sel
         )
     
     return select_output, specify_output
-
 
 st.set_page_config(layout="centered", page_title="Ksheersagar - BMC Visit")
 
@@ -488,7 +477,7 @@ with st.form(key='bmc_visit_form'):
         district_option, other_district_input = render_select_with_specify_permanent(
             st, 
             'district_label', 
-            ["Satara", "Pune", "Ahmednagar", "Solapur", t('others')], 
+            ["Satara", "Pune", "Ahmednagar", "Solapur", "Aurangabad", t('others')], 
             'district_select',
             'other_district_label'
         )
@@ -781,45 +770,18 @@ with st.form(key='bmc_visit_form'):
         
         st.success("BMC Visit data submitted and saved!")
 
-# --- ADMIN ACCESS CONTROL LOGIN ---
-st.divider()
-st.header("🔐 Central Team Admin Access")
-
-if 'admin_authenticated' not in st.session_state:
-    st.session_state.admin_authenticated = False
-
-if not st.session_state.admin_authenticated:
-    col_auth1, col_auth2 = st.columns(2)
-    with col_auth1:
-        input_username = st.text_input("Enter Username (Email):")
-    with col_auth2:
-        input_access_code = st.text_input("Enter Access Code:", type="password")
-        
-    if st.button("Login to View Data"):
-        if input_username in ACCESS_CODES and input_access_code == ACCESS_CODES[input_username]:
-            st.session_state.admin_authenticated = True
-            st.success("Authentication Successful!")
-            st.rerun()
-        else:
-            st.error("Invalid Username or Access Code.")
+# --- Data Viewing and Admin Section ---
+st.header("Real-time View & Download")
+if st.session_state.bmc_visit_data:
+    st.subheader("All Submitted BMC Visit Entries:")
+    df_bmc_visit_all = pd.DataFrame(st.session_state.bmc_visit_data).astype(str)
+    st.dataframe(df_bmc_visit_all, use_container_width=True)
+    csv_bmc_visit_all = df_bmc_visit_all.to_csv(index=False).encode('utf-8')
+    st.download_button(
+        label="Download All BMC Visit Data as CSV",
+        data=csv_bmc_visit_all,
+        file_name="all_bmc_visit_data.csv",
+        mime="text/csv",
+    )
 else:
-    st.success("Logged in as Admin.")
-    if st.button("Logout"):
-        st.session_state.admin_authenticated = False
-        st.rerun()
-        
-    # --- Data Viewing Section (Only shown if authenticated) ---
-    st.header("Real-time View & Download")
-    if st.session_state.bmc_visit_data:
-        st.subheader("All Submitted BMC Visit Entries:")
-        df_bmc_visit_all = pd.DataFrame(st.session_state.bmc_visit_data).astype(str)
-        st.dataframe(df_bmc_visit_all, use_container_width=True)
-        csv_bmc_visit_all = df_bmc_visit_all.to_csv(index=False).encode('utf-8')
-        st.download_button(
-            label="Download All BMC Visit Data as CSV",
-            data=csv_bmc_visit_all,
-            file_name="all_bmc_visit_data.csv",
-            mime="text/csv",
-        )
-    else:
-        st.info("No BMC Visit data submitted yet.")
+    st.info("No BMC Visit data submitted yet.")
