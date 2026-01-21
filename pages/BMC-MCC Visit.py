@@ -36,8 +36,12 @@ translations = {
         'bmc_code_label': "BMC/MCC Code:",
         'start_date_label': "SCHEDULED START DATE:",
         'organization_label': "Organization:",
-        'bmc_name_label': "BMC/MCC Name:",
-        'other_bmc_name_label': "If Others, Specify BMC/MCC Name:",
+        
+        'bmc_name_label': "BMC Name:", 
+        'other_bmc_name_label': "If Others, Specify BMC Name:",
+        'mcc_name_label': "MCC Name:", 
+        'other_mcc_name_label': "If Others, Specify MCC Name:",
+        
         'activity_created_by_label': "ACTIVITY CREATED BY:",
         'state_label': "State:",
         'district_label': "District:",
@@ -99,7 +103,7 @@ translations = {
         'intact_floor_label': "Intact Floor in Premise:",
         
         'digitize_system_label': "Digitize System:",
-        'digitize_system_brand_label': "If Yes - Indifoss or Ekomilk:",  # NEW LABEL
+        'digitize_system_brand_label': "If Yes - Indifoss or Ekomilk:",
         
         'fssai_licence_label': "FSSAI Licence:",
         'remark_fssai_label': "Remark (FSSAI):",
@@ -174,8 +178,12 @@ translations = {
         'bmc_code_label': "BMC/MCC कोड:",
         'start_date_label': "नियोजित प्रारंभ तारीख:",
         'organization_label': "संस्था:",
-        'bmc_name_label': "BMC/MCC नाव:",
-        'other_bmc_name_label': "इतर असल्यास, BMC/MCC नाव नमूद करा:",
+        
+        'bmc_name_label': "BMC नाव:",
+        'other_bmc_name_label': "इतर असल्यास, BMC नाव नमूद करा:",
+        'mcc_name_label': "MCC नाव:", 
+        'other_mcc_name_label': "इतर असल्यास, MCC नाव नमूद करा:",
+        
         'activity_created_by_label': "ऍक्टिव्हिटी कोणी तयार केली:",
         'state_label': "राज्य:",
         'district_label': "जिल्हा:",
@@ -237,7 +245,7 @@ translations = {
         'intact_floor_label': "BMC परिसरात अखंड मजला:",
         
         'digitize_system_label': "डिजिटायझ प्रणाली:",
-        'digitize_system_brand_label': "जर होय - Indifoss किंवा Ekomilk:", # NEW LABEL
+        'digitize_system_brand_label': "जर होय - Indifoss किंवा Ekomilk:", 
         
         'fssai_licence_label': "FSSAI परवाना:",
         'remark_fssai_label': "टीप (FSSAI):",
@@ -340,14 +348,34 @@ st.session_state.language = 'en' if selected_lang_display == "English" else 'mr'
 if 'bmc_visit_data' not in st.session_state:
     st.session_state.bmc_visit_data = load_existing_data()
 
-# --- DATA LISTS (Extracted from your Excel image) ---
-PARAS_MCC_NAMES = sorted([
+# --- DATA LISTS (Strictly Separated as per Request) ---
+
+# 1. THE MCC LIST (Strictly from the Left Table in Image)
+PARAS_MCC_LIST = sorted([
     "Ghodegaon", "Anatarwali", "Chedgaon", "Umbari", "Pimparne", "Madve",
     "Wadegavhan", "Shrigonda", "Mahijalgaon", "Belapur", "Sarola Advai",
-    "Tandulwadi", "Nepatgaon", "Medshingi", "Khandali",
+    "Tandulwadi", "Nepatgaon", "Medshingi", "Khandali"
+])
+
+# 2. THE SPECIFIC PARAS BMC LIST (Strictly from the Right Table in Image)
+PARAS_BMC_LIST = [
     "Khadki", "Hivre", "Palve", "Kadus", "Padalirajangaon",
     "Deodaithan", "Dhawalgaon", "Walki"
-])
+]
+
+# 3. OTHER BMC LISTS
+GOVIND_BMC_NAMES = ["VIGHNAHARTA VIDNI COOLER", "NIRAI DUDH SANKALAN KEND.PANCABIGA", "PAWAR DAIRY ASU", "AJAY DUDH", "JAY HANUMAN BMC NAIKBOMWADI", "SHREE GANESH SASTEWADI BMC", "GOVIND DUDH SANKALAN KENDRA HOL", "JITOBA BULK COOLER JINTI", "JAY MHALLAR DUDH KALAJ", "WAGHESHWARI SASWAD", "BHAIRAVNATH DUDH HINGANGAON", "GOVIND DUDH SANKALAN KENDRA SASWAD", "SHREENATH MILK SANKALAN", "RAJMUDRA DUDH WATHARPHATA BMC", "ROKDESHWAR MILK SANKALAN", "BHAIRAVNATH MANDAVKHADAK COOLER", "SAYALI, MUNJAWADI", "JAY HANUMAN BARAD", "SHIVSHANKAR DUDH BARAD", "CHANDRABHAGA MILK SANKALAN", "KARCHE SAMPAT", "DURGADEVI DUDH ZIRAPVASTI COOLER", "JANAI DUDH SANKALAN KENDRA BMC", "GOKUL DUDH MATHACHIWADI", "GOVIND MAHILA SHVETKRANTI MILK SANKALAN", "VAJUBAI MILK SANKALAN", "SHRIRAM DUDH SANKALAN & SHIT.BHUINJ", "YASHODHAN MILK & MILK PROD. PACWAD", "OM BHAKTI DUDH WAI COW", "MAYURESHWAR DAIRY", "YOGESHWARI MILK SANKALAN", "JAY BHAVANI ANBHULEWADI", "MAHALAXMI MILK", "SHREENATH MILK", "MAHALAXMI DUDH MOHI", "SANCHALIT SUDARSHAN MILK", "MAULI DUDH SANKALAN KENDR.BHALAWADI", "SUPRIYA MILK", "JAGDAMBA DUDH BHATKI", "SHRI GANESH DUDH SAK VARKUTE MASWAD", "DAHIWADI DOCK", "SHREE JAYHARI RANAND PHALTAN COOLER", "SHIVAM DUDH BUDH", "GOMATA DUDH SANKALAN KEND.CHILEWADI", "REVANSIDDHA MILK SANKALAN", "VENKATESH AGRO PROCESSING CO.", "SHIVRAJ DUDH SANKALAN KENDRA", "SHIRAM DUDH PIMPRE DHAIGUDEMALA", "VANGNA DUDH HIVRE COW MILK", "GOWARDHAN MILK COLLECTION", "SHRI DATT DOODH DAIRY ANPATWADI", "JYOTIRLING DUDH SANKALAN KENDRA BORJAIWADI", "SHREE DATT MILK DAIRY AZADPUR", "SHIVKRUPA BMC", "SANT BHAGWANBABA AKOLE", "HINDAVI DAIRY FARM KHADAKI DAUND", "SHIVTEJ DUDH PAWARWASTI BORIBEL", "JAY HANUMAN DUDH VITTHALNAGAR", "BHAIRAVNATH DEVULGOAN RAJE", "A.S.DAIRY FARM", "VENKATESH AGRO PROCESSING CO.", "AKASH DUDH SANKALAN KENDRA", "BHAIRAVNATH MILK SANKALAN", "GOVIND SADASHIVNAGAR", "GOVIND WANIMALA", "GOVIND MILK SANKALAN", "LOKRAJ MILK SANKALAN", "SHAMBHU MAHADEV PHONDSHIRAS", "VISHNU NARAYAN DUDH", "JYOTIRLING DOODH SANKALAN EKSHIV"]
+SDDPL_BMC_NAMES = ["SHELKEWASTI", "HAKEWASTI", "KUSEGAON", "NYAWASTI", "NANGAON-2", "PARGAON-1", "PARGAON-2", "PIMPALGAON", "YAWAT", "CHANDANWADI", "DALIMB", "NANDUR", "DELAWADI", "KANGAON", "BETWADI", "KHADKI", "ROTI", "SONAWADI", "GOPALWADI", "HOLEWASTI", "MIRADE", "JAWALI", "VIDANI", "BARAD", "GUNWARE", "SOMANTHALI", "CHAUDHARWADI", "SANGAVI-MOHITEWASTI", "RAUTVASTI VIDANI", "PHADTARWADI", "KAPASHI", "MALEWADI", "SAKHARWADI", "RAVADI", "NIMBLAK", "ASU", "TAMKHADA", "HANUMANTWADI", "KHATAKEVASTI", "SATHEPHATA", "GANEGAONDUMALA", "VADGAON RASAI", "RANJANGAON SANDAS", "BHAMBURDE", "INAMGAON6", "NAGARGAON PHATA", "AJNUJ", "INAMGAON5", "PHARATEWADI", "KURULII", "SHINDODI", "GOLEGAON", "NAGARGAON", "NIMONE", "AMBALE 3", "KARDE", "KANHUR MESAI", "MAHADEVWADI", "NIMGAON MHALUNGI", "DHANORE", "TALEGAON DHAMDHERE", "MANDAVGAN PHARATA", "GUNAT", "KASHTI", "GHADAGEMALA", "INAMGAON3", "WANGDHARI", "URALGAONI", "JAI BHAVANI DUDH SANKLAN KENDRA PIMPRI S", "DATTAKRUPA DUDH SANKLAN KENDRA BORGAON ARJ", "SHREE SAI SAMARTH DUDH SANKALAN KENDRA", "JAY BAJRANGBALI DUDH SANKALAN KENDRA", "BHAIRAVNATH DUDH SANKALAN AND SHITKARAN KENDRA", "SWARAJ DUDH SANKALAN SHITAKENDR", "DYNAMIX DUDH SANKALAN AND SHITKARAN KENDRA", "SAMRUDDHI DUDH SANKALAN V SHITKARAN KENDRA", "DATTAKRUPA MILK DAIRY", "NARENDRA MAULI DUDH SANKALAN SHITKARAN KENDRA", "GURUDEV DUDH SANKALAN KENDRA", "VILAS NARAYAN GHORPADE", "SUNIL NAMDEORAO SAKHARE", "BHAIRAVNATHKRUPA DUDHA SANKALAN KENDRA", "YUVARAJ DUDH SANKALAN KENDRA", "SAMPADA DAIRY DUDH SANKALAN KENDRA", "GURUKRUPA DUDH SANKALAN KENDRA DAHIGAON", "NAGESHWAR DHUDH SANKALAN V SHITKARAN KENDRA", "RUCHI DAIRY", "SHREE GANESH CHILLING PLANT", "PAVANSAGAR MILK COLLECTION CENTER", "BHAIRAVNATH MILK COLLECTION AND CHILLING CENTRE", "HANGESHVAR DAIRY", "BHAIRAVNATH DUDH SANKLAN KENDRA RAYGAVHAN", "SULTANPUR CHILLING CENTRE", "SHRI DATTA DIGAMBAR SAHAKARI DUDH SANSTHA", "KRUSHIRAJ DUDH SANKALAN KENDRA", "BHAIRAVNATH DUDH DAIRY", "ANANDRAO BHIVA DHAIGUDE", "BIROBA DUDH SANKALAN V SHITKARAN KENDRA", "SHIVGANGA MILK CENTER", "SHRIKRUSHNA DAIRY", "SAI AMRUT DUDH SANKALAN KENDRA"]
+
+# 4. FINAL LISTS
+# MCC List: Only the 15 Specific Names
+ALL_MCC_NAMES = sorted(list(set(PARAS_MCC_LIST))) 
+
+# BMC List: Govind + SDDPL + The 8 Specific Paras BMCs (mixed together)
+ALL_BMC_NAMES = sorted(list(set(GOVIND_BMC_NAMES + SDDPL_BMC_NAMES + PARAS_BMC_LIST))) 
+
+
+# Other Data
 PARAS_DISTRICTS = sorted(["Ahilyanagar", "Solapur"])
 PARAS_SUB_DISTRICTS = sorted([
     "Newasa", "Pathardi", "Rahuri", "Sangamner", "Parner", 
@@ -362,10 +390,6 @@ PARAS_VILLAGES = sorted([
     "Deodaithan", "Dhawalgaon", "Walki"
 ])
 
-GOVIND_BMC_NAMES = ["VIGHNAHARTA VIDNI COOLER", "NIRAI DUDH SANKALAN KEND.PANCABIGA", "PAWAR DAIRY ASU", "AJAY DUDH", "JAY HANUMAN BMC NAIKBOMWADI", "SHREE GANESH SASTEWADI BMC", "GOVIND DUDH SANKALAN KENDRA HOL", "JITOBA BULK COOLER JINTI", "JAY MHALLAR DUDH KALAJ", "WAGHESHWARI SASWAD", "BHAIRAVNATH DUDH HINGANGAON", "GOVIND DUDH SANKALAN KENDRA SASWAD", "SHREENATH MILK SANKALAN", "RAJMUDRA DUDH WATHARPHATA BMC", "ROKDESHWAR MILK SANKALAN", "BHAIRAVNATH MANDAVKHADAK COOLER", "SAYALI, MUNJAWADI", "JAY HANUMAN BARAD", "SHIVSHANKAR DUDH BARAD", "CHANDRABHAGA MILK SANKALAN", "KARCHE SAMPAT", "DURGADEVI DUDH ZIRAPVASTI COOLER", "JANAI DUDH SANKALAN KENDRA BMC", "GOKUL DUDH MATHACHIWADI", "GOVIND MAHILA SHVETKRANTI MILK SANKALAN", "VAJUBAI MILK SANKALAN", "SHRIRAM DUDH SANKALAN & SHIT.BHUINJ", "YASHODHAN MILK & MILK PROD. PACWAD", "OM BHAKTI DUDH WAI COW", "MAYURESHWAR DAIRY", "YOGESHWARI MILK SANKALAN", "JAY BHAVANI ANBHULEWADI", "MAHALAXMI MILK", "SHREENATH MILK", "MAHALAXMI DUDH MOHI", "SANCHALIT SUDARSHAN MILK", "MAULI DUDH SANKALAN KENDR.BHALAWADI", "SUPRIYA MILK", "JAGDAMBA DUDH BHATKI", "SHRI GANESH DUDH SAK VARKUTE MASWAD", "DAHIWADI DOCK", "SHREE JAYHARI RANAND PHALTAN COOLER", "SHIVAM DUDH BUDH", "GOMATA DUDH SANKALAN KEND.CHILEWADI", "REVANSIDDHA MILK SANKALAN", "VENKATESH AGRO PROCESSING CO.", "SHIVRAJ DUDH SANKALAN KENDRA", "SHIRAM DUDH PIMPRE DHAIGUDEMALA", "VANGNA DUDH HIVRE COW MILK", "GOWARDHAN MILK COLLECTION", "SHRI DATT DOODH DAIRY ANPATWADI", "JYOTIRLING DUDH SANKALAN KENDRA BORJAIWADI", "SHREE DATT MILK DAIRY AZADPUR", "SHIVKRUPA BMC", "SANT BHAGWANBABA AKOLE", "HINDAVI DAIRY FARM KHADAKI DAUND", "SHIVTEJ DUDH PAWARWASTI BORIBEL", "JAY HANUMAN DUDH VITTHALNAGAR", "BHAIRAVNATH DEVULGOAN RAJE", "A.S.DAIRY FARM", "VENKATESH AGRO PROCESSING CO.", "AKASH DUDH SANKALAN KENDRA", "BHAIRAVNATH MILK SANKALAN", "GOVIND SADASHIVNAGAR", "GOVIND WANIMALA", "GOVIND MILK SANKALAN", "LOKRAJ MILK SANKALAN", "SHAMBHU MAHADEV PHONDSHIRAS", "VISHNU NARAYAN DUDH", "JYOTIRLING DOODH SANKALAN EKSHIV"]
-SDDPL_BMC_NAMES = ["SHELKEWASTI", "HAKEWASTI", "KUSEGAON", "NYAWASTI", "NANGAON-2", "PARGAON-1", "PARGAON-2", "PIMPALGAON", "YAWAT", "CHANDANWADI", "DALIMB", "NANDUR", "DELAWADI", "KANGAON", "BETWADI", "KHADKI", "ROTI", "SONAWADI", "GOPALWADI", "HOLEWASTI", "MIRADE", "JAWALI", "VIDANI", "BARAD", "GUNWARE", "SOMANTHALI", "CHAUDHARWADI", "SANGAVI-MOHITEWASTI", "RAUTVASTI VIDANI", "PHADTARWADI", "KAPASHI", "MALEWADI", "SAKHARWADI", "RAVADI", "NIMBLAK", "ASU", "TAMKHADA", "HANUMANTWADI", "KHATAKEVASTI", "SATHEPHATA", "GANEGAONDUMALA", "VADGAON RASAI", "RANJANGAON SANDAS", "BHAMBURDE", "INAMGAON6", "NAGARGAON PHATA", "AJNUJ", "INAMGAON5", "PHARATEWADI", "KURULII", "SHINDODI", "GOLEGAON", "NAGARGAON", "NIMONE", "AMBALE 3", "KARDE", "KANHUR MESAI", "MAHADEVWADI", "NIMGAON MHALUNGI", "DHANORE", "TALEGAON DHAMDHERE", "MANDAVGAN PHARATA", "GUNAT", "KASHTI", "GHADAGEMALA", "INAMGAON3", "WANGDHARI", "URALGAONI", "JAI BHAVANI DUDH SANKLAN KENDRA PIMPRI S", "DATTAKRUPA DUDH SANKLAN KENDRA BORGAON ARJ", "SHREE SAI SAMARTH DUDH SANKALAN KENDRA", "JAY BAJRANGBALI DUDH SANKALAN KENDRA", "BHAIRAVNATH DUDH SANKALAN AND SHITKARAN KENDRA", "SWARAJ DUDH SANKALAN SHITAKENDR", "DYNAMIX DUDH SANKALAN AND SHITKARAN KENDRA", "SAMRUDDHI DUDH SANKALAN V SHITKARAN KENDRA", "DATTAKRUPA MILK DAIRY", "NARENDRA MAULI DUDH SANKALAN SHITKARAN KENDRA", "GURUDEV DUDH SANKALAN KENDRA", "VILAS NARAYAN GHORPADE", "SUNIL NAMDEORAO SAKHARE", "BHAIRAVNATHKRUPA DUDHA SANKALAN KENDRA", "YUVARAJ DUDH SANKALAN KENDRA", "SAMPADA DAIRY DUDH SANKALAN KENDRA", "GURUKRUPA DUDH SANKALAN KENDRA DAHIGAON", "NAGESHWAR DHUDH SANKALAN V SHITKARAN KENDRA", "RUCHI DAIRY", "SHREE GANESH CHILLING PLANT", "PAVANSAGAR MILK COLLECTION CENTER", "BHAIRAVNATH MILK COLLECTION AND CHILLING CENTRE", "HANGESHVAR DAIRY", "BHAIRAVNATH DUDH SANKLAN KENDRA RAYGAVHAN", "SULTANPUR CHILLING CENTRE", "SHRI DATTA DIGAMBAR SAHAKARI DUDH SANSTHA", "KRUSHIRAJ DUDH SANKALAN KENDRA", "BHAIRAVNATH DUDH DAIRY", "ANANDRAO BHIVA DHAIGUDE", "BIROBA DUDH SANKALAN V SHITKARAN KENDRA", "SHIVGANGA MILK CENTER", "SHRIKRUSHNA DAIRY", "SAI AMRUT DUDH SANKALAN KENDRA"]
-
-ALL_BMC_NAMES = sorted(list(set(GOVIND_BMC_NAMES + SDDPL_BMC_NAMES + PARAS_MCC_NAMES)))
 CATTLE_FEED_BRAND_OPTIONS = ["Royal Bypro and classic", "Govind Classic Biopro", "Govind Royle Biopro", "SDDPL Samruddhi", "SDDPL Samruddhi Plus", "SDDPL Samruddhi Gold", "SDDPL Shakti", t('others')]
 EXISTING_SUB_DISTRICTS = ["PHULAMBRI", "KANNAD", "SILLOD", "AURANGABAD", "PATHARDI", "NEWASA", "AHMEDNAGAR", "PARNER", "SHRIGONDA", "KHULTABAD", "KOREGAON", "KHANDALA", "MANN", "KOPARGAON"]
 SUB_DISTRICT_OPTIONS = sorted(list(set(EXISTING_SUB_DISTRICTS + PARAS_SUB_DISTRICTS + [t('others')])))
@@ -417,8 +441,18 @@ with st.form(key='bmc_visit_form'):
     st.markdown("---")
     st.header(t('general_info_header'))
     
-    bmc_name_option, other_bmc_name = render_select_with_specify_permanent(st, 'bmc_name_label', ["SELECT"] + ALL_BMC_NAMES + [t('others')], 'bmc_name_select', 'other_bmc_name_label')
-    actual_bmc_name = other_bmc_name if bmc_name_option == t('others') else bmc_name_option
+    # --- SEPARATE BMC & MCC COLUMNS ---
+    col_bmc_name, col_mcc_name = st.columns(2)
+    with col_bmc_name:
+        # Contains Govind + SDDPL + Paras BMCs
+        bmc_name_option, other_bmc_name = render_select_with_specify_permanent(st, 'bmc_name_label', ["SELECT"] + ALL_BMC_NAMES + [t('others')], 'bmc_name_select', 'other_bmc_name_label')
+        actual_bmc_name = other_bmc_name if bmc_name_option == t('others') else bmc_name_option
+    
+    with col_mcc_name:
+        # Contains ONLY Paras MCCs
+        mcc_name_option, other_mcc_name = render_select_with_specify_permanent(st, 'mcc_name_label', ["SELECT"] + ALL_MCC_NAMES + [t('others')], 'mcc_name_select', 'other_mcc_name_label')
+        actual_mcc_name = other_mcc_name if mcc_name_option == t('others') else mcc_name_option
+    # -------------------------------------------
 
     col1, col2 = st.columns(2)
     with col1:
@@ -513,7 +547,6 @@ with st.form(key='bmc_visit_form'):
         digitize_system_brand = "N/A"
         
         if digitize_system == t('yes'):
-            # New question as per user request
             digitize_system_brand = st.radio(t('digitize_system_brand_label'), ["Indifoss", "Ekomilk"], key="digit_brand_select")
         # ---------------------------------------------
 
@@ -575,8 +608,10 @@ with st.form(key='bmc_visit_form'):
             "Photo 3 (Inside)": photo_inside.name if 'photo_inside' in locals() and photo_inside else "N/A",
             "BMC/MCC Code": bmc_code,
             "SCHEDULED START DATE": scheduled_start_date.isoformat() if scheduled_start_date else None,
-            "BMC/MCC Name": actual_bmc_name,
+            "BMC Name": actual_bmc_name, # Saved
             "Other BMC Name": other_bmc_name,
+            "MCC Name": actual_mcc_name, # Saved
+            "Other MCC Name": other_mcc_name,
             "ACTIVITY CREATED BY": activity_created_by,
             "Organization": organization,
             "State": state,
