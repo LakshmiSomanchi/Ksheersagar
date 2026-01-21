@@ -22,13 +22,13 @@ def load_existing_data():
 # --- Translation Dictionary (Definitions remain the same) ---
 translations = {
     'en': {
-        'page_title': "🚚 Ksheersagar - BMC Visit Data Entry",
+        'page_title': "🚚 Ksheersagar - BMC/MCC Visit Data Entry",
         'page_header': "Please fill out the details for the BMC visit below.",
         'language_select': "Select Language",
         'admin_access_header': "Admin Access",
         'admin_username_prompt': "Enter Admin Username to View Data:",
         'admin_invalid_warning': "Invalid Admin Username.",
-        'general_info_header': "General BMC Visit Information",
+        'general_info_header': "General BMC/MCC Visit Information",
         'bmc_code_label': "BMC Code:",
         'start_date_label': "SCHEDULED START DATE:",
         'organization_label': "Organization:",
