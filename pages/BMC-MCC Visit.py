@@ -19,21 +19,21 @@ def load_existing_data():
             st.warning(f"Warning: Could not load existing BMC data file. Starting fresh. Error: {e}")
     return data_list
 
-# --- Translation Dictionary (Definitions remain the same) ---
+# --- Translation Dictionary ---
 translations = {
     'en': {
         'page_title': "🚚 Ksheersagar - BMC/MCC Visit Data Entry",
-        'page_header': "Please fill out the details for the BMC visit below.",
+        'page_header': "Please fill out the details for the BMC/MCC visit below.",
         'language_select': "Select Language",
         'admin_access_header': "Admin Access",
         'admin_username_prompt': "Enter Admin Username to View Data:",
         'admin_invalid_warning': "Invalid Admin Username.",
         'general_info_header': "General BMC/MCC Visit Information",
-        'bmc_code_label': "BMC Code:",
+        'bmc_code_label': "BMC/MCC Code:",
         'start_date_label': "SCHEDULED START DATE:",
         'organization_label': "Organization:",
-        'bmc_name_label': "BMC Name:",
-        'other_bmc_name_label': "If Others, Specify BMC Name:",
+        'bmc_name_label': "BMC/MCC Name:",
+        'other_bmc_name_label': "If Others, Specify BMC/MCC Name:",
         'activity_created_by_label': "ACTIVITY CREATED BY:",
         'state_label': "State:",
         'district_label': "District:",
@@ -43,13 +43,16 @@ translations = {
         'collecting_village_label': "Collecting Village (No.):", 
         'village_label': "Village:",
         'other_village_label': "If Others, Specify Village:",
+        'geolocation_header': "Geolocation Details",
+        'latitude_label': "Latitude:",
+        'longitude_label': "Longitude:",
         
-        'bcf_details_header': "BCF (Bulk Milk Cooler Farmer) Details",
-        'bcf_name_label': "BCF Name:",
-        'bcf_gender_label': "BCF Gender:",
+        'bcf_details_header': "BCF/MCC In-charge Details",
+        'bcf_name_label': "BCF/In-charge Name:",
+        'bcf_gender_label': "Gender:",
         'education_label': "Education:",
         'other_education_label': "If Others, Specify Education:",
-        'bcf_mobile_label': "BCF Mobile Number:",
+        'bcf_mobile_label': "Mobile Number:",
         'operating_staff_label': "Operating Staff (No.):",
         'distance_from_ho_label': "Distance From HO (KM):",
         
@@ -62,6 +65,12 @@ translations = {
         'active_men_farmers_label': "No. of Men Farmers (Active Farmers):",
         
         'capacity_header': "Capacity & Collection Details",
+        # NEW QUESTIONS
+        'total_routes_label': "Total No. of Routes:",
+        'total_vlcs_label': "Total No. of VLCs:",
+        'offline_vlcs_label': "Offline VLCs:",
+        'online_vlcs_label': "Online VLCs:",
+        
         'total_tank_capacity_label': "Total Tank Capacity:",
         'tank_1_capacity_label': "Total Capacity (Tank 1):",
         'tank_2_capacity_label': "Total Capacity (Tank 2):",
@@ -88,12 +97,12 @@ translations = {
         'infra_compliance_header': "Infrastructure & Compliance",
         'overall_infra_label': "Overall Infrastructure:",
         'remark_infra_label': "Remark (Infrastructure):",
-        'bmc_cleaning_label': "BMC Cleaning & Hygiene:",
+        'bmc_cleaning_label': "BMC/MCC Cleaning & Hygiene:",
         'air_curtain_label': "Air curtain:",
         'fly_catcher_label': "Fly Catcher:",
         'wash_basin_label': "Wash Basin:",
         'opening_window_door_label': "Opening (Window/Door):",
-        'intact_floor_label': "Intact Floor in BMC Premise:",
+        'intact_floor_label': "Intact Floor in Premise:",
         'digitize_system_label': "Digitize System:",
         'fssai_licence_label': "FSSAI Licence:",
         'remark_fssai_label': "Remark (FSSAI):",
@@ -133,6 +142,8 @@ translations = {
         'evm_rtu_label': "EVM RTU:",
         'biogas_installed_label': "BIOGAS INSTALLED:",
         'bank_linkage_label': "ANY BANK LINKAGE:",
+        'other_services_label': "Other Services:", # NEW QUESTION
+        
         'competitor_details_subheader': "Competitor Details",
         'competitor1_name_label': "COMPETITOR 1 NAME:",
         'competitor1_milk_label': "COMPETITOR 1 MILK (LPD):",
@@ -143,11 +154,11 @@ translations = {
         'competitor4_name_label': "Competitor 4 Name:",
         'competitor4_milk_label': "Competitor 4 MILK (LPD):",
         
-        'photo_upload_header': "BMC Photos",
-        'photo_overall_label': "Photo 1: Overall BMC Structure",
+        'photo_upload_header': "BMC/MCC Photos",
+        'photo_overall_label': "Photo 1: Overall Structure",
         'photo_platform_label': "Photo 2: Platform/Entry Area",
-        'photo_inside_label': "Photo 3: BMC Cooling Area (Inside)",
-        'submit_button': "Submit BMC Visit Data",
+        'photo_inside_label': "Photo 3: Cooling Area (Inside)",
+        'submit_button': "Submit Visit Data",
         'yes': "YES",
         'no': "NO",
         'others': "OTHERS",
@@ -159,18 +170,18 @@ translations = {
         'options_awareness_poster': ["afm", "ab", "cmp", "OTHERS"]
     },
     'mr': {
-        'page_title': "🚚 क्षीरसागर - BMC भेट डेटा एंट्री",
-        'page_header': "कृपया खालील BMC भेटीसाठी तपशील भरा.",
+        'page_title': "🚚 क्षीरसागर - BMC/MCC भेट डेटा एंट्री",
+        'page_header': "कृपया खालील BMC/MCC भेटीसाठी तपशील भरा.",
         'language_select': "भाषा निवडा",
         'admin_access_header': "प्रशासक प्रवेश",
         'admin_username_prompt': "डेटा पाहण्यासाठी प्रशासक वापरकर्तानाव प्रविष्ट करा:",
         'admin_invalid_warning': "अवैध प्रशासक वापरकर्तानाव.",
-        'general_info_header': "सर्वसाधारण BMC भेट माहिती",
-        'bmc_code_label': "BMC कोड:",
+        'general_info_header': "सर्वसाधारण BMC/MCC भेट माहिती",
+        'bmc_code_label': "BMC/MCC कोड:",
         'start_date_label': "नियोजित प्रारंभ तारीख:",
         'organization_label': "संस्था:",
-        'bmc_name_label': "BMC नाव:",
-        'other_bmc_name_label': "इतर असल्यास, BMC नाव नमूद करा:",
+        'bmc_name_label': "BMC/MCC नाव:",
+        'other_bmc_name_label': "इतर असल्यास, BMC/MCC नाव नमूद करा:",
         'activity_created_by_label': "ऍक्टिव्हिटी कोणी तयार केली:",
         'state_label': "राज्य:",
         'district_label': "जिल्हा:",
@@ -180,13 +191,16 @@ translations = {
         'collecting_village_label': "संकलन गाव (संख्या):",
         'village_label': "गाव:",
         'other_village_label': "इतर असल्यास, गाव नमूद करा:",
+        'geolocation_header': "स्थान तपशील (Geolocation)",
+        'latitude_label': "अक्षांश (Latitude):",
+        'longitude_label': "रेखांश (Longitude):",
         
-        'bcf_details_header': "BCF (बल्क मिल्क कूलर शेतकरी) तपशील",
-        'bcf_name_label': "BCF नाव:",
-        'bcf_gender_label': "BCF लिंग:",
+        'bcf_details_header': "BCF/MCC प्रमुख तपशील",
+        'bcf_name_label': "BCF/प्रमुख नाव:",
+        'bcf_gender_label': "लिंग:",
         'education_label': "शिक्षण:",
         'other_education_label': "इतर असल्यास, शिक्षण नमूद करा:",
-        'bcf_mobile_label': "BCF मोबाईल नंबर:",
+        'bcf_mobile_label': "मोबाईल नंबर:",
         'operating_staff_label': "कार्यरत कर्मचारी (संख्या):",
         'distance_from_ho_label': "HO पासून अंतर (किमी):",
         
@@ -199,6 +213,12 @@ translations = {
         'active_men_farmers_label': "पुरुष शेतकरी (सक्रिय शेतकरी):",
         
         'capacity_header': "क्षमता आणि संकलन तपशील",
+        # NEW QUESTIONS TRANSLATIONS
+        'total_routes_label': "एकूण मार्ग (Routes):",
+        'total_vlcs_label': "एकूण VLC (संख्या):",
+        'offline_vlcs_label': "ऑफलाइन VLC:",
+        'online_vlcs_label': "ऑनलाइन VLC:",
+        
         'total_tank_capacity_label': "एकूण टाकी क्षमता:",
         'tank_1_capacity_label': "एकूण क्षमता (टाकी 1):",
         'tank_2_capacity_label': "एकूण क्षमता (टाकी 2):",
@@ -225,7 +245,7 @@ translations = {
         'infra_compliance_header': "पायाभूत सुविधा आणि अनुपालन",
         'overall_infra_label': "एकूण पायाभूत सुविधा:",
         'remark_infra_label': "टीप (पायाभूत सुविधा):",
-        'bmc_cleaning_label': "BMC स्वच्छता आणि आरोग्य:",
+        'bmc_cleaning_label': "BMC/MCC स्वच्छता आणि आरोग्य:",
         'air_curtain_label': "एअर पडदा:",
         'fly_catcher_label': "माशी पकडणारा:",
         'wash_basin_label': "वॉश बेसिन:",
@@ -270,6 +290,7 @@ translations = {
         'evm_rtu_label': "EVM RTU:",
         'biogas_installed_label': "बायोगॅस स्थापित:",
         'bank_linkage_label': "कोणतेही बँक लिंकेज:",
+        'other_services_label': "इतर सेवा:", # NEW QUESTION
         'competitor_details_subheader': "स्पर्धक तपशील",
         'competitor1_name_label': "स्पर्धक 1 नाव:",
         'competitor1_milk_label': "स्पर्धक 1 दूध (LPD):",
@@ -280,11 +301,11 @@ translations = {
         'competitor4_name_label': "स्पर्धक 4 नाव:",
         'competitor4_milk_label': "स्पर्धक 4 दूध (LPD):",
         
-        'photo_upload_header': "BMC Photos",
-        'photo_overall_label': "फोटो 1: एकूण BMC रचना",
+        'photo_upload_header': "BMC/MCC Photos",
+        'photo_overall_label': "फोटो 1: एकूण रचना",
         'photo_platform_label': "फोटो 2: प्लॅटफॉर्म/प्रवेश क्षेत्र",
-        'photo_inside_label': "फोटो 3: BMC कूलिंग क्षेत्र (आत)",
-        'submit_button': "BMC भेट डेटा सबमिट करा",
+        'photo_inside_label': "फोटो 3: कूलिंग क्षेत्र (आत)",
+        'submit_button': "भेट डेटा सबमिट करा",
         'yes': "होय",
         'no': "नाही",
         'others': "इतर",
@@ -343,7 +364,7 @@ def render_select_with_specify_permanent(container, label_key, options_list, sel
     
     return select_output, specify_output
 
-st.set_page_config(layout="centered", page_title="Ksheersagar - BMC Visit")
+st.set_page_config(layout="centered", page_title="Ksheersagar - BMC/MCC Visit")
 
 # --- Language Selection (persists across pages) ---
 if 'language' not in st.session_state:
@@ -365,7 +386,35 @@ else:
 if 'bmc_visit_data' not in st.session_state:
     st.session_state.bmc_visit_data = load_existing_data()
 
-# Define static lists (for data consistency)
+# --- DATA EXTRACTED FROM IMAGE FOR PARAS ---
+# MCCs and BMCs Combined into one list
+PARAS_MCC_NAMES = sorted([
+    "Ghodegaon", "Anatarwali", "Chedgaon", "Umbari", "Pimparne", "Madve",
+    "Wadegavhan", "Shrigonda", "Mahijalgaon", "Belapur", "Sarola Advai",
+    "Tandulwadi", "Nepatgaon", "Medshingi", "Khandali",
+    "Khadki", "Hivre", "Palve", "Kadus", "Padalirajangaon",
+    "Deodaithan", "Dhawalgaon", "Walki"
+])
+
+PARAS_DISTRICTS = sorted([
+    "Ahilyanagar", "Solapur"
+])
+
+PARAS_SUB_DISTRICTS = sorted([
+    "Newasa", "Pathardi", "Rahuri", "Sangamner", "Parner", 
+    "Shrigonda", "Karjat", "Shrirampur", "Pandharpur", 
+    "Sangola", "Mohol", "Ahilyanagar"
+])
+
+PARAS_VILLAGES = sorted([
+    "Ghodegaon", "Tisgaon", "Chedgaon", "Kanadagaon", "Pimparne", 
+    "Mandve", "Wadegavhan", "Shrigonda", "Mulewadi", "Belapur", 
+    "Sarola Advai", "Wakhari", "Nepatgaon", "Medshingi", "Roplae",
+    "Khadki", "Hivre", "Palve", "Kadus", "Padalirajangaon",
+    "Deodaithan", "Dhawalgaon", "Walki"
+])
+
+# Define static lists (merged)
 GOVIND_BMC_NAMES = ["VIGHNAHARTA VIDNI COOLER", "NIRAI DUDH SANKALAN KEND.PANCABIGA", "PAWAR DAIRY ASU", "AJAY DUDH", "JAY HANUMAN BMC NAIKBOMWADI", "SHREE GANESH SASTEWADI BMC", "GOVIND DUDH SANKALAN KENDRA HOL", "JITOBA BULK COOLER JINTI", "JAY MHALLAR DUDH KALAJ", "WAGHESHWARI SASWAD", "BHAIRAVNATH DUDH HINGANGAON", "GOVIND DUDH SANKALAN KENDRA SASWAD", "SHREENATH MILK SANKALAN", "RAJMUDRA DUDH WATHARPHATA BMC", "ROKDESHWAR MILK SANKALAN", "BHAIRAVNATH MANDAVKHADAK COOLER", "SAYALI, MUNJAWADI", "JAY HANUMAN BARAD", "SHIVSHANKAR DUDH BARAD", "CHANDRABHAGA MILK SANKALAN", "KARCHE SAMPAT", "DURGADEVI DUDH ZIRAPVASTI COOLER", "JANAI DUDH SANKALAN KENDRA BMC", "GOKUL DUDH MATHACHIWADI", "GOVIND MAHILA SHVETKRANTI MILK SANKALAN", "VAJUBAI MILK SANKALAN", "SHRIRAM DUDH SANKALAN & SHIT.BHUINJ", "YASHODHAN MILK & MILK PROD. PACWAD", "OM BHAKTI DUDH WAI COW", "MAYURESHWAR DAIRY", "YOGESHWARI MILK SANKALAN", "JAY BHAVANI ANBHULEWADI", "MAHALAXMI MILK", "SHREENATH MILK", "MAHALAXMI DUDH MOHI", "SANCHALIT SUDARSHAN MILK", "MAULI DUDH SANKALAN KENDR.BHALAWADI", "SUPRIYA MILK", "JAGDAMBA DUDH BHATKI", "SHRI GANESH DUDH SAK VARKUTE MASWAD", "DAHIWADI DOCK", "SHREE JAYHARI RANAND PHALTAN COOLER", "SHIVAM DUDH BUDH", "GOMATA DUDH SANKALAN KEND.CHILEWADI", "REVANSIDDHA MILK SANKALAN", "VENKATESH AGRO PROCESSING CO.", "SHIVRAJ DUDH SANKALAN KENDRA", "SHIRAM DUDH PIMPRE DHAIGUDEMALA", "VANGNA DUDH HIVRE COW MILK", "GOWARDHAN MILK COLLECTION", "SHRI DATT DOODH DAIRY ANPATWADI", "JYOTIRLING DUDH SANKALAN KENDRA BORJAIWADI", "SHREE DATT MILK DAIRY AZADPUR", "SHIVKRUPA BMC", "SANT BHAGWANBABA AKOLE", "HINDAVI DAIRY FARM KHADAKI DAUND", "SHIVTEJ DUDH PAWARWASTI BORIBEL", "JAY HANUMAN DUDH VITTHALNAGAR", "BHAIRAVNATH DEVULGOAN RAJE", "A.S.DAIRY FARM", "VENKATESH AGRO PROCESSING CO.", "AKASH DUDH SANKALAN KENDRA", "BHAIRAVNATH MILK SANKALAN", "GOVIND SADASHIVNAGAR", "GOVIND WANIMALA", "GOVIND MILK SANKALAN", "LOKRAJ MILK SANKALAN", "SHAMBHU MAHADEV PHONDSHIRAS", "VISHNU NARAYAN DUDH", "JYOTIRLING DOODH SANKALAN EKSHIV"]
 SDDPL_BMC_NAMES = ["SHELKEWASTI", "HAKEWASTI", "KUSEGAON", "NYAWASTI", "NANGAON-2", "PARGAON-1", "PARGAON-2", "PIMPALGAON", "YAWAT", "CHANDANWADI", "DALIMB", "NANDUR", "DELAWADI", "KANGAON", "BETWADI", "KHADKI", "ROTI", "SONAWADI", "GOPALWADI", "HOLEWASTI", "MIRADE", "JAWALI", "VIDANI", "BARAD", "GUNWARE", "SOMANTHALI", "CHAUDHARWADI", "SANGAVI-MOHITEWASTI", "RAUTVASTI VIDANI", "PHADTARWADI", "KAPASHI", "MALEWADI", "SAKHARWADI", "RAVADI", "NIMBLAK", "ASU", "TAMKHADA", "HANUMANTWADI", "KHATAKEVASTI", "SATHEPHATA", "GANEGAONDUMALA", "VADGAON RASAI", "RANJANGAON SANDAS", "BHAMBURDE", "INAMGAON6", "NAGARGAON PHATA", "AJNUJ", "INAMGAON5", "PHARATEWADI", "KURULII", "SHINDODI", "GOLEGAON", "NAGARGAON", "NIMONE", "AMBALE 3", "KARDE", "KANHUR MESAI", "MAHADEVWADI", "NIMGAON MHALUNGI", "DHANORE", "TALEGAON DHAMDHERE", "MANDAVGAN PHARATA", "GUNAT", "KASHTI", "GHADAGEMALA", "INAMGAON3", "WANGDHARI", "URALGAONI", "JAI BHAVANI DUDH SANKLAN KENDRA PIMPRI S", 
 "DATTAKRUPA DUDH SANKLAN KENDRA BORGAON ARJ", 
@@ -401,19 +450,22 @@ SDDPL_BMC_NAMES = ["SHELKEWASTI", "HAKEWASTI", "KUSEGAON", "NYAWASTI", "NANGAON-
 "SHRIKRUSHNA DAIRY", 
 "SAI AMRUT DUDH SANKALAN KENDRA", 
  ]
-ALL_BMC_NAMES = sorted(list(set(GOVIND_BMC_NAMES + SDDPL_BMC_NAMES)))
+
+# Merging All Names
+ALL_BMC_NAMES = sorted(list(set(GOVIND_BMC_NAMES + SDDPL_BMC_NAMES + PARAS_MCC_NAMES)))
+
 CATTLE_FEED_BRAND_OPTIONS = ["Royal Bypro and classic", "Govind Classic Biopro", "Govind Royle Biopro", "SDDPL Samruddhi", "SDDPL Samruddhi Plus", "SDDPL Samruddhi Gold", "SDDPL Shakti", t('others')]
 
-# NEW Sub-District List (Consolidated and Sorted)
-NEW_SUB_DISTRICTS = list(set([
+# NEW Sub-District List (Consolidated and Sorted including Paras data)
+EXISTING_SUB_DISTRICTS = [
     "PHULAMBRI", "KANNAD", "SILLOD", "AURANGABAD", "PATHARDI", "NEWASA", 
     "AHMEDNAGAR", "PARNER", "SHRIGONDA", "KHULTABAD", "KOREGAON", 
     "KHANDALA", "MANN", "KOPARGAON"
-]))
-SUB_DISTRICT_OPTIONS = sorted(NEW_SUB_DISTRICTS + [t('others')])
+]
+SUB_DISTRICT_OPTIONS = sorted(list(set(EXISTING_SUB_DISTRICTS + PARAS_SUB_DISTRICTS + [t('others')])))
 
 # Village List
-VILLAGE_NAMES = [
+EXISTING_VILLAGES = [
     "ALAND", "BORGAON ARJ", "MOHARA", "KAIGAON", "VIRAMGAON", "BANKINHOLA", "SHEKTA", 
     "WADOD BAJAR", "SULTANWADI", "BABHULGAON", "LEHA", "KAUDGAON JAMB", "KARANJI", 
     "KHANDGAON", "KAUDGAON", "CHICHONDI SHIRAL", "DAHIGAON", "BHENDA", "JAKHANGAON", 
@@ -421,16 +473,24 @@ VILLAGE_NAMES = [
     "RANDULLABAD", "PARGAON", "SUKHED", "KHED (BK)", "MOGARALE", 
     "PADHEGAON", "JAVALKE"
 ]
-VILLAGE_OPTIONS = sorted(VILLAGE_NAMES + [t('others')])
+VILLAGE_OPTIONS = sorted(list(set(EXISTING_VILLAGES + PARAS_VILLAGES + [t('others')])))
 
-# Initialize placeholder for Geolocation data (removed feature)
-bmc_location = "N/A (Geolocation Feature Removed for Optimization)" 
 
 # --- UI START ---
 st.title(t('page_title'))
 st.write(t('page_header'))
 
 with st.form(key='bmc_visit_form'):
+    
+    # --- GEOLOCATION SECTION (NEW) ---
+    st.header(t('geolocation_header'))
+    col_geo1, col_geo2 = st.columns(2)
+    with col_geo1:
+        latitude = st.text_input(t('latitude_label'), placeholder="e.g. 18.5204")
+    with col_geo2:
+        longitude = st.text_input(t('longitude_label'), placeholder="e.g. 73.8567")
+
+    st.markdown("---")
     
     # --- PHOTO UPLOAD SECTION ---
     st.header(t('photo_upload_header'))
@@ -464,7 +524,8 @@ with st.form(key='bmc_visit_form'):
     with col1:
         bmc_code = st.text_input(t('bmc_code_label'))
         scheduled_start_date = st.date_input(t('start_date_label'), value=dt_date(2025, 5, 7))
-        organization = st.selectbox(t('organization_label'), ["Govind Milk", "SDDPL"], index=0)
+        # Updated Organization List
+        organization = st.selectbox(t('organization_label'), ["Govind Milk", "SDDPL", "Paras"], index=0)
         
         # Surveyor Name (Dr. Shyam fix)
         activity_created_by = st.selectbox(t('activity_created_by_label'), ["Dr. Shyam", "Dr Sachin", "bhusan", "subhrat", "aniket", "ritesh"], index=0)
@@ -474,10 +535,12 @@ with st.form(key='bmc_visit_form'):
         state = st.text_input(t('state_label'), "Maharashtra", disabled=False)
         
         # District (Using render_select_with_specify_permanent)
+        # Added placeholders for Paras districts
+        district_list = sorted(list(set(["Satara", "Pune", "Ahmednagar", "Solapur", "Aurangabad"] + PARAS_DISTRICTS + [t('others')])))
         district_option, other_district_input = render_select_with_specify_permanent(
             st, 
             'district_label', 
-            ["Satara", "Pune", "Ahmednagar", "Solapur", "Aurangabad", t('others')], 
+            district_list, 
             'district_select',
             'other_district_label'
         )
@@ -487,7 +550,7 @@ with st.form(key='bmc_visit_form'):
         sub_district_option, other_sub_district_input = render_select_with_specify_permanent(
             st, 
             'sub_district_label', 
-            SUB_DISTRICT_OPTIONS, # NEW LIST USED HERE
+            SUB_DISTRICT_OPTIONS, 
             'sub_district_select',
             'other_sub_district_label'
         )
@@ -549,6 +612,18 @@ with st.form(key='bmc_visit_form'):
 
     # --- Capacity & Collection ---
     st.header(t('capacity_header'))
+    
+    # NEW CAPACITY QUESTIONS
+    col_routes1, col_routes2 = st.columns(2)
+    with col_routes1:
+        total_routes = st.number_input(t('total_routes_label'), min_value=0)
+        offline_vlcs = st.number_input(t('offline_vlcs_label'), min_value=0)
+    with col_routes2:
+        total_vlcs = st.number_input(t('total_vlcs_label'), min_value=0)
+        online_vlcs = st.number_input(t('online_vlcs_label'), min_value=0)
+        
+    st.markdown("---")
+    
     col5, col6 = st.columns(2)
     with col5:
         total_tank_capacity = st.number_input(t('total_tank_capacity_label'), min_value=0, value=2500)
@@ -640,6 +715,10 @@ with st.form(key='bmc_visit_form'):
         evm_rtu = st.text_input(t('evm_rtu_label'), "NA")
         biogas_installed = st.number_input(t('biogas_installed_label'), min_value=0, value=8)
         any_bank_linkage = st.text_input(t('bank_linkage_label'), "No")
+        
+        # NEW QUESTION: Other Services
+        other_services_text = st.text_area(t('other_services_label'))
+
     with col10:
         st.subheader(t('competitor_details_subheader'))
         competitor1_name = st.text_input(t('competitor1_name_label'), "Heritage")
@@ -660,14 +739,14 @@ with st.form(key='bmc_visit_form'):
         yes_en, no_en = translations['en']['yes'], translations['en']['no']
         
         submitted_data = {
-            "Photo 1 (Overall BMC)": photo_overall.name if 'photo_overall' in locals() and photo_overall else "N/A",
+            "Photo 1 (Overall)": photo_overall.name if 'photo_overall' in locals() and photo_overall else "N/A",
             "Photo 2 (Platform)": photo_platform.name if 'photo_platform' in locals() and photo_platform else "N/A",
-            "Photo 3 (Inside BMC)": photo_inside.name if 'photo_inside' in locals() and photo_inside else "N/A",
+            "Photo 3 (Inside)": photo_inside.name if 'photo_inside' in locals() and photo_inside else "N/A",
             
             # --- General Info ---
-            "BMC Code": bmc_code,
+            "BMC/MCC Code": bmc_code,
             "SCHEDULED START DATE": scheduled_start_date.isoformat() if scheduled_start_date else None,
-            "BMC Name": actual_bmc_name,
+            "BMC/MCC Name": actual_bmc_name,
             "Other BMC Name": other_bmc_name,
             "ACTIVITY CREATED BY": activity_created_by,
             "Organization": organization,
@@ -679,13 +758,15 @@ with st.form(key='bmc_visit_form'):
             "Collecting Village": collecting_village, 
             "Village": village_option, 
             "Other Village": other_village_name, 
+            "Latitude": latitude,
+            "Longitude": longitude,
             
             # --- BCF Details ---
-            "BCF Name": bcf_name,
-            "BCF Gender": translations['en']['options_gender'][t('options_gender').index(bcf_gender)],
+            "BCF/In-charge Name": bcf_name,
+            "Gender": translations['en']['options_gender'][t('options_gender').index(bcf_gender)],
             "Education": actual_education,
             "Other Education": other_education,
-            "BCF Mobile Number": bcf_mobile_number,
+            "Mobile Number": bcf_mobile_number,
             "Operating Staff (No.)": operating_staff_no,
             "Distance From HO (KM)": distance_from_ho_km,
             
@@ -698,6 +779,10 @@ with st.form(key='bmc_visit_form'):
             "No. of Men Farmers (Active Farmers)": active_men_farmer_no, 
             
             # --- Capacity & Collection ---
+            "Total No. of Routes": total_routes,
+            "Total No. of VLCs": total_vlcs,
+            "Offline VLCs": offline_vlcs,
+            "Online VLCs": online_vlcs,
             "Total Tank Capacity": total_tank_capacity,
             "Total Capacity (Tank 1)": total_capacity_tank1,
             "Total Capacity (Tank 2)": total_capacity_tank2,
@@ -715,12 +800,12 @@ with st.form(key='bmc_visit_form'):
             # --- Infrastructure & Compliance ---
             "Overall Infrastructure": overall_infrastructure,
             "Remark (Infrastructure)": remark_infra,
-            "BMC Cleaning & Hygiene": bmc_cleaning_hygiene,
+            "BMC/MCC Cleaning & Hygiene": bmc_cleaning_hygiene,
             "Air curtain": yes_en if air_curtain == t('yes') else no_en,
             "Fly Catcher": yes_en if fly_catcher == t('yes') else no_en,
             "Wash Basin": yes_en if wash_basin == t('yes') else no_en,
             "Opening(Window/Door)": yes_en if opening_window_door == t('yes') else no_en,
-            "Intact Floor in BMC Premise": yes_en if intact_floor == t('yes') else no_en,
+            "Intact Floor in Premise": yes_en if intact_floor == t('yes') else no_en,
             "Digitize System": yes_en if digitize_system == t('yes') else no_en,
             "FSSAI Licence": yes_en if fssai_licence == t('yes') else no_en,
             "Wg Scale Licence": yes_en if wg_scale_licence == t('yes') else no_en,
@@ -750,6 +835,7 @@ with st.form(key='bmc_visit_form'):
             "EVM RTU": evm_rtu,
             "BIOGAS INSTALLED": biogas_installed,
             "ANY BANK LINKAGE": any_bank_linkage,
+            "Other Services": other_services_text,
             "COMPETITOR 1 NAME": competitor1_name,
             "COMPETITOR 1 MILK (LPD)": competitor1_milk_lpd,
             "Competitor 2 Name": competitor2_name,
@@ -768,20 +854,20 @@ with st.form(key='bmc_visit_form'):
         else:
              df_new_entry.to_csv(BMC_VISIT_DATA_FILE, mode='a', index=False, header=False)
         
-        st.success("BMC Visit data submitted and saved!")
+        st.success("Visit data submitted and saved!")
 
 # --- Data Viewing and Admin Section ---
 st.header("Real-time View & Download")
 if st.session_state.bmc_visit_data:
-    st.subheader("All Submitted BMC Visit Entries:")
+    st.subheader("All Submitted Visit Entries:")
     df_bmc_visit_all = pd.DataFrame(st.session_state.bmc_visit_data).astype(str)
     st.dataframe(df_bmc_visit_all, use_container_width=True)
     csv_bmc_visit_all = df_bmc_visit_all.to_csv(index=False).encode('utf-8')
     st.download_button(
-        label="Download All BMC Visit Data as CSV",
+        label="Download All Data as CSV",
         data=csv_bmc_visit_all,
-        file_name="all_bmc_visit_data.csv",
+        file_name="all_visit_data.csv",
         mime="text/csv",
     )
 else:
-    st.info("No BMC Visit data submitted yet.")
+    st.info("No Visit data submitted yet.")
