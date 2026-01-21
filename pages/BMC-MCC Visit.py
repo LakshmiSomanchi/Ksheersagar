@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 from datetime import date as dt_date
 import os
+
 # --- NEW IMPORT FOR AUTO-GPS ---
 # You must run: pip install streamlit-js-eval
 try:
@@ -96,8 +97,10 @@ translations = {
         'wash_basin_label': "Wash Basin:",
         'opening_window_door_label': "Opening (Window/Door):",
         'intact_floor_label': "Intact Floor in Premise:",
+        
         'digitize_system_label': "Digitize System:",
-        'digitize_system_type_label': "Select Digitize System Type:", # NEW
+        'digitize_system_brand_label': "If Yes - Indifoss or Ekomilk:",  # NEW LABEL
+        
         'fssai_licence_label': "FSSAI Licence:",
         'remark_fssai_label': "Remark (FSSAI):",
         'wg_scale_licence_label': "Wg Scale Licence:",
@@ -232,8 +235,10 @@ translations = {
         'wash_basin_label': "वॉश बेसिन:",
         'opening_window_door_label': "उघडणे (खिडकी/दार):",
         'intact_floor_label': "BMC परिसरात अखंड मजला:",
+        
         'digitize_system_label': "डिजिटायझ प्रणाली:",
-        'digitize_system_type_label': "डिजिटायझ प्रणालीचा प्रकार निवडा:", # NEW
+        'digitize_system_brand_label': "जर होय - Indifoss किंवा Ekomilk:", # NEW LABEL
+        
         'fssai_licence_label': "FSSAI परवाना:",
         'remark_fssai_label': "टीप (FSSAI):",
         'wg_scale_licence_label': "वजन काटा परवाना:",
@@ -335,7 +340,7 @@ st.session_state.language = 'en' if selected_lang_display == "English" else 'mr'
 if 'bmc_visit_data' not in st.session_state:
     st.session_state.bmc_visit_data = load_existing_data()
 
-# --- DATA LISTS ---
+# --- DATA LISTS (Extracted from your Excel image) ---
 PARAS_MCC_NAMES = sorted([
     "Ghodegaon", "Anatarwali", "Chedgaon", "Umbari", "Pimparne", "Madve",
     "Wadegavhan", "Shrigonda", "Mahijalgaon", "Belapur", "Sarola Advai",
@@ -503,12 +508,14 @@ with st.form(key='bmc_visit_form'):
     with col_infra3:
         intact_floor = st.radio(t('intact_floor_label'), yes_no_options, index=0, key="intact_floor_bmc")
         
-        # --- NEW CONDITIONAL LOGIC FOR DIGITIZE SYSTEM ---
+        # --- CONDITIONAL LOGIC FOR DIGITIZE SYSTEM ---
         digitize_system = st.radio(t('digitize_system_label'), yes_no_options, index=1, key="digitize_system_bmc")
-        digitize_system_type = "N/A"
+        digitize_system_brand = "N/A"
+        
         if digitize_system == t('yes'):
-            digitize_system_type = st.radio(t('digitize_system_type_label'), ["Indifoss", "Ekomilk"], key="digit_type_select")
-        # ------------------------------------------------
+            # New question as per user request
+            digitize_system_brand = st.radio(t('digitize_system_brand_label'), ["Indifoss", "Ekomilk"], key="digit_brand_select")
+        # ---------------------------------------------
 
     with col_infra4:
         fssai_licence = st.radio(t('fssai_licence_label'), yes_no_options, index=0, key="fssai_licence_bmc")
@@ -621,7 +628,7 @@ with st.form(key='bmc_visit_form'):
             "Opening(Window/Door)": yes_en if opening_window_door == t('yes') else no_en,
             "Intact Floor in Premise": yes_en if intact_floor == t('yes') else no_en,
             "Digitize System": yes_en if digitize_system == t('yes') else no_en,
-            "Digitize System Type": digitize_system_type, # SAVED HERE
+            "Digitize System Brand": digitize_system_brand, # SAVED HERE
             "FSSAI Licence": yes_en if fssai_licence == t('yes') else no_en,
             "Wg Scale Licence": yes_en if wg_scale_licence == t('yes') else no_en,
             "Is SOP Available": yes_en if sop_available == t('yes') else no_en,
