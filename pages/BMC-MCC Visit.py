@@ -344,6 +344,164 @@ translations = {
         'options_health_camp': ["मासिक", "त्रैमासिक", "वार्षिक", "विशिष्ट वेळापत्रक नाही"],
         'options_data_recorded': ["मॅन्युअली (Manually)", "डिजिटली (Digitally)", "दोन्ही (Both)"],
         'options_seasons': ["उन्हाळा", "पावसाळा", "हिवाळा", "सर्व"]
+    },
+    'hi': {
+        'page_title': "🚚 क्षीरसागर - BMC/MCC विजिट डेटा एंट्री",
+        'page_header': "कृपया नीचे BMC/MCC विजिट के विवरण भरें।",
+        'language_select': "भाषा चुनें",
+        'general_info_header': "सामान्य BMC/MCC विजिट जानकारी",
+        'bmc_code_label': "BMC/MCC कोड:",
+        'start_date_label': "निर्धारित प्रारंभ तिथि:",
+        'organization_label': "संगठन:",
+        
+        'bmc_name_label': "BMC का नाम:",
+        'other_bmc_name_label': "यदि अन्य, तो BMC का नाम निर्दिष्ट करें:",
+        'mcc_name_label': "MCC का नाम:", 
+        'other_mcc_name_label': "यदि अन्य, तो MCC का नाम निर्दिष्ट करें:",
+        
+        'activity_created_by_label': "गतिविधि किसके द्वारा बनाई गई:",
+        'state_label': "राज्य:",
+        'district_label': "ज़िला:",
+        'sub_district_label': "उप-ज़िला:",
+        'other_district_label': "यदि अन्य, तो ज़िला निर्दिष्ट करें:",
+        'other_sub_district_label': "यदि अन्य, तो उप-ज़िला निर्दिष्ट करें:",
+        'collecting_village_label': "कलेक्शन गाँव (संख्या):",
+        'village_label': "गाँव:",
+        'other_village_label': "यदि अन्य, तो गाँव निर्दिष्ट करें:",
+        'geolocation_header': "जियोलोकेशन विवरण (Auto-GPS)",
+        'latitude_label': "अक्षांश (स्वचालित):",
+        'longitude_label': "देशांतर (स्वचालित):",
+        
+        'bcf_details_header': "BCF/MCC प्रभारी विवरण",
+        'bcf_name_label': "BCF/प्रभारी का नाम:",
+        'bcf_gender_label': "लिंग:",
+        'education_label': "शिक्षा:",
+        'other_education_label': "यदि अन्य, तो शिक्षा निर्दिष्ट करें:",
+        'bcf_mobile_label': "मोबाइल नंबर:",
+        'operating_staff_label': "ऑपरेटिंग स्टाफ (संख्या):",
+        'distance_from_ho_label': "HO से दूरी (किमी):",
+        
+        # Farmer Metrics
+        'total_farmers_label': "कुल पंजीकृत किसान (संख्या):",
+        'total_women_farmers_label': "महिला किसानों की संख्या (कुल पंजीकृत):",
+        'total_men_farmers_label': "पुरुष किसानों की संख्या (कुल पंजीकृत):",
+        'active_farmers_label': "सक्रिय किसान (संख्या):",
+        'active_women_farmers_label': "महिला किसानों की संख्या (सक्रिय किसान):",
+        'active_men_farmers_label': "पुरुष किसानों की संख्या (सक्रिय किसान):",
+        
+        'capacity_header': "क्षमता और संकलन (कलेक्शन) विवरण",
+        'total_routes_label': "रूट्स की कुल संख्या:",
+        'total_vlcs_label': "VLCs की कुल संख्या:",
+        'offline_vlcs_label': "ऑफ़लाइन VLCs:",
+        'online_vlcs_label': "ऑनलाइन VLCs:",
+        'total_tank_capacity_label': "कुल टैंक क्षमता:",
+        'tank_1_capacity_label': "कुल क्षमता (टैंक 1):",
+        'tank_2_capacity_label': "कुल क्षमता (टैंक 2):",
+        'tank_3_capacity_label': "कुल क्षमता (टैंक 3):",
+        'tank_4_capacity_label': "कुल क्षमता (टैंक 4):",
+        'segregation_tank_space_label': "सेग्रीगेशन टैंक के लिए उपलब्ध स्थान:",
+        'milk_segregated_label': "दूध सेग्रीगेट किया गया (LPD):",
+        'morning_collection_time_label': "सुबह के दूध संकलन का अंतिम समय (उदा. 9:30 AM के लिए 9.3):",
+        'morning_milk_lpd_label': "सुबह का दूध (LPD):",
+        'morning_farmers_label': "किसानों की संख्या (सुबह का दूध):",
+        'evening_collection_time_label': "शाम के दूध संकलन का अंतिम समय (उदा. 9:00 PM के लिए 9):",
+        'evening_milk_lpd_label': "शाम का दूध (LPD):",
+        'evening_farmers_label': "किसानों की संख्या (शाम का दूध):",
+
+        'quality_payment_header': "परीक्षण और गुणवत्ता (Testing & Quality)",
+        'afm_tested_label': "BMC स्तर पर AFM का परीक्षण किया गया:",
+        'afm_quantity_label': "यदि हाँ, तो मात्रा क्या है?",
+        'afm_season_label': "यदि हाँ, तो किस मौसम में यह पॉज़िटिव आता है?",
+        'mb_scanner_label': "MB स्कैनर उपलब्ध है:",
+        'mbrt_time_label': "MBRT का औसत परीक्षण समय:",
+
+        'infra_compliance_header': "बुनियादी ढांचा (Infrastructure) और अनुपालन",
+        'overall_infra_label': "संपूर्ण बुनियादी ढांचा:",
+        'remark_infra_label': "टिप्पणी (बुनियादी ढांचा):",
+        'bmc_cleaning_label': "BMC/MCC सफाई और स्वच्छता:",
+        'air_curtain_label': "एयर कर्टेन:",
+        'fly_catcher_label': "फ्लाई कैचर (मक्खी पकड़ने वाला):",
+        'wash_basin_label': "वॉश बेसिन:",
+        'opening_window_door_label': "ओपनिंग (खिड़की/दरवाजा):",
+        'intact_floor_label': "परिसर में फर्श बरकरार है:",
+        
+        'digitize_system_label': "डिजिटाइज़ सिस्टम:",
+        'digitize_system_brand_label': "यदि हाँ - Indifoss या Ekomilk:", 
+        
+        'data_recorded_label': "डेयरी डेटा कैसे प्रोसेस और रिकॉर्ड किया जाता है?",
+        'software_used_label': "यदि डिजिटल रूप से, तो कौन सा सॉफ्टवेयर उपयोग किया जाता है?",
+        
+        'fssai_licence_label': "FSSAI लाइसेंस:",
+        'remark_fssai_label': "टिप्पणी (FSSAI):",
+        'wg_scale_licence_label': "वजन कांटा लाइसेंस:",
+        'sops_label': "SOP's:",
+        'sop_available_label': "क्या SOP उपलब्ध है:",
+        'hot_water_available_label': "क्या गर्म पानी उपलब्ध है:",
+        'notice_board_available_label': "क्या नोटिस बोर्ड उपलब्ध है:",
+        'awareness_poster_label': "जागरूकता पोस्टर:",
+        'other_awareness_poster_label': "यदि अन्य, तो जागरूकता पोस्टर निर्दिष्ट करें:",
+        'stirrer_label': "स्टिरर/इकोमिल्क/इंडिफॉस:",
+        'remark_stirrer_label': "टिप्पणी (स्टिरर/इकोमिल्क/इंडिफॉस):",
+        'sampler_label': "सैम्पलर/डिपर/प्लंजर:",
+        'remark_sampler_label': "टिप्पणी (सैम्पलर/डिपर/प्लंजर):",
+        'milk_temp_check_label': "दूध का तापमान जांच:",
+        'remark_milk_temp_label': "टिप्पणी (दूध का तापमान):",
+        'cleaning_chemicals_label': "सफाई रसायन (केमिकल्स):",
+        'remark_cleaning_chemicals_label': "टिप्पणी (सफाई रसायन):",
+        'hot_water_source_label': "गर्म पानी का स्रोत:",
+        'remark_hot_water_label': "टिप्पणी (गर्म पानी का स्रोत):",
+        'strainer_label': "छलनी/नायलॉन का कपड़ा उपलब्ध है:",
+        'sample_bottle_label': "सैंपल बोतल:",
+
+        'payment_header': "भुगतान (Payment)",
+        'payment_schedule_label': "भुगतान अनुसूची:",
+        'payment_method_label': "भुगतान का तरीका:",
+        
+        'farmer_competitor_header': "किसान सेवाएं और प्रतियोगी विवरण",
+        'health_camp_freq_label': "BMC द्वारा आयोजित स्वास्थ्य शिविरों की आवृत्ति:",
+        'helpdesk_label': "क्या आपके BMC में हेल्पडेस्क है?",
+        'mastitis_drive_label': "क्या थनैला (Mastitis) निवारक अभियान चलाए जाते हैं?",
+        'training_label': "क्या प्रशिक्षकों के लिए नियमित प्रशिक्षण आयोजित किए जाते हैं?",
+        
+        'animal_welfare_farm_label': "पशु कल्याण फार्म (संख्या):",
+        'farmer_use_cattle_feed_label': "किसानों का उपयोग (कैटल फीड):",
+        'cattle_feed_bag_sale_label': "कैटल फीड बैग की बिक्री (महीना):",
+        'cattle_feed_brand_label': "कैटल फीड ब्रांड का नाम:",
+        'other_cattle_feed_brand_label': "यदि अन्य, तो कैटल फीड ब्रांड निर्दिष्ट करें:",
+        'farmer_use_mineral_mixture_label': "किसानों का उपयोग (मिनरल मिक्चर) मात्रा:",
+        'mineral_mixture_brand_label': "मिनरल मिक्चर ब्रांड का नाम:",
+        'farmer_use_evm_rtu_label': "किसानों का उपयोग (EVM RTU) मात्रा:",
+        'evm_rtu_label': "EVM RTU:",
+        'biogas_installed_label': "बायोगैस स्थापित:",
+        'bank_linkage_label': "कोई बैंक लिंकेज:",
+        'other_services_label': "अन्य सेवाएं:", 
+        'competitor_details_subheader': "प्रतियोगी (कम्पेटिटर) विवरण",
+        'competitor1_name_label': "प्रतियोगी 1 का नाम:",
+        'competitor1_milk_label': "प्रतियोगी 1 का दूध (LPD):",
+        'competitor2_name_label': "प्रतियोगी 2 का नाम:",
+        'competitor2_milk_label': "प्रतियोगी 2 का दूध (LPD):",
+        'competitor3_name_label': "प्रतियोगी 3 का नाम:",
+        'competitor3_milk_label': "प्रतियोगी 3 का दूध (LPD):",
+        'competitor4_name_label': "प्रतियोगी 4 का नाम:",
+        'competitor4_milk_label': "प्रतियोगी 4 का दूध (LPD):",
+        
+        'photo_upload_header': "BMC/MCC तस्वीरें",
+        'photo_overall_label': "फोटो 1: सम्पूर्ण ढांचा",
+        'photo_platform_label': "फोटो 2: प्लेटफॉर्म/प्रवेश क्षेत्र",
+        'photo_inside_label': "फोटो 3: कूलिंग क्षेत्र (अंदर)",
+        'submit_button': "विजिट डेटा सबमिट करें",
+        'yes': "हाँ",
+        'no': "नहीं",
+        'others': "अन्य",
+        'options_gender': ["पुरुष", "महिला"],
+        'options_education': ["10वीं पास", "12वीं पास", "ग्रेजुएशन", "पोस्ट ग्रेजुएशन", "अन्य"],
+        'options_quality': ["ख़राब", "ठीक", "अच्छा", "सबसे अच्छा"],
+        'options_payment_schedule': ["महीने के हर 10वें दिन", "महीने में दो बार", "महीने में एक बार", "कोई निश्चित अनुसूची नहीं"],
+        'options_payment_method': ["नकद", "बैंक ट्रांसफर", "दोनों"],
+        'options_awareness_poster': ["एएफएम", "एबी", "सीएमपी", "अन्य"],
+        'options_health_camp': ["मासिक", "त्रैमासिक", "वार्षिक", "कोई निश्चित अनुसूची नहीं"],
+        'options_data_recorded': ["मैन्युअल रूप से (Manually)", "डिजिटल रूप से (Digitally)", "दोनों (Both)"],
+        'options_seasons': ["गर्मी", "मानसून", "सर्दी", "सभी"]
     }
 }
 
@@ -371,12 +529,28 @@ st.set_page_config(layout="centered", page_title="Ksheersagar - BMC/MCC Visit")
 # --- Language Selection ---
 if 'language' not in st.session_state:
     st.session_state.language = 'en'
-st.sidebar.header(translations['en']['language_select'] + " / " + translations['mr']['language_select'])
-lang_options = ["English", "Marathi"]
+
+st.sidebar.header("Language / भाषा / भाषा")
+lang_options = ["English", "Marathi", "Hindi"]
 current_lang_capitalized = st.session_state.language.capitalize()
-lang_index = lang_options.index(current_lang_capitalized) if current_lang_capitalized in lang_options else 0
-selected_lang_display = st.sidebar.radio("Language", lang_options, index=lang_index, key="lang_radio_bmc")
-st.session_state.language = 'en' if selected_lang_display == "English" else 'mr'
+
+# Convert the stored 'en'/'mr'/'hi' back to selection index
+if st.session_state.language == 'en':
+    lang_index = 0
+elif st.session_state.language == 'mr':
+    lang_index = 1
+else:
+    lang_index = 2
+
+selected_lang_display = st.sidebar.radio("Select Language", lang_options, index=lang_index, key="lang_radio_bmc")
+
+# Update session state based on selection
+if selected_lang_display == "English":
+    st.session_state.language = 'en'
+elif selected_lang_display == "Marathi":
+    st.session_state.language = 'mr'
+else:
+    st.session_state.language = 'hi'
 
 # --- Data Loading ---
 if 'bmc_visit_data' not in st.session_state:
@@ -568,11 +742,10 @@ with st.form(key='bmc_visit_form'):
         evening_milk_lpd = st.number_input(t('evening_milk_lpd_label'), min_value=0, value=1100)
         evening_farmers_no = st.number_input(t('evening_farmers_label'), min_value=0, value=25)
     
-    # --- NEW: TESTING & QUALITY SECTION ---
+    # --- TESTING & QUALITY SECTION ---
     st.header(t('quality_payment_header'))
     yes_no_options = [t('yes'), t('no')]
     
-    # AFM Questions
     afm_tested = st.radio(t('afm_tested_label'), yes_no_options, index=1, key="afm_tested_radio")
     afm_quantity = "N/A"
     afm_season = []
@@ -585,7 +758,6 @@ with st.form(key='bmc_visit_form'):
 
     st.markdown("---")
     
-    # MB Scanner Questions
     mb_scanner = st.radio(t('mb_scanner_label'), yes_no_options, index=1, key="mb_scanner_radio")
     mbrt_time = "N/A"
     if mb_scanner == t('yes'):
@@ -616,11 +788,10 @@ with st.form(key='bmc_visit_form'):
         fssai_licence = st.radio(t('fssai_licence_label'), yes_no_options, index=0, key="fssai_licence_bmc")
         wg_scale_licence = st.radio(t('wg_scale_licence_label'), yes_no_options, index=1, key="wg_scale_licence_bmc")
 
-    # NEW: Data Processing Questions
+    # Data Processing Questions
     st.markdown("---")
     data_recorded = st.radio(t('data_recorded_label'), t('options_data_recorded'), index=0, horizontal=True)
     software_used = "N/A"
-    # If option is Digitally or Both
     if data_recorded in [t('options_data_recorded')[1], t('options_data_recorded')[2]]:
         software_used = st.text_input(t('software_used_label'))
     st.markdown("---")
@@ -645,7 +816,7 @@ with st.form(key='bmc_visit_form'):
     # --- FARMER SERVICES & COMPETITOR DETAILS ---
     st.header(t('farmer_competitor_header'))
     
-    # NEW: Services and Trainings
+    # Services and Trainings
     health_camp_freq = st.selectbox(t('health_camp_freq_label'), t('options_health_camp'))
     col_srv1, col_srv2, col_srv3 = st.columns(3)
     with col_srv1:
@@ -748,7 +919,6 @@ with st.form(key='bmc_visit_form'):
             "EVENING MILK (LPD)": evening_milk_lpd,
             "No. of Farmers (Evening Milk Collected)": evening_farmers_no, 
             
-            # --- NEW DATA SAVING ---
             "AFM Tested": to_en_yesno(afm_tested),
             "AFM Quantity": afm_quantity,
             "AFM Positive Season": ', '.join(afm_season) if afm_season else "N/A",
@@ -766,7 +936,6 @@ with st.form(key='bmc_visit_form'):
             "Digitize System": to_en_yesno(digitize_system),
             "Digitize System Brand": digitize_system_brand,
             
-            # --- NEW DATA SAVING ---
             "Data Recorded Method": data_recorded,
             "Software Used": software_used,
             
@@ -781,7 +950,6 @@ with st.form(key='bmc_visit_form'):
             "Payment Schedule": payment_schedule,
             "Payment Method": ', '.join(payment_method),
             
-            # --- NEW DATA SAVING ---
             "Frequency of Health Camps": health_camp_freq,
             "Helpdesk Setup": to_en_yesno(helpdesk_setup),
             "Mastitis Preventive Drive": to_en_yesno(mastitis_drive),
