@@ -91,7 +91,13 @@ translations = {
         'evening_milk_lpd_label': "EVENING MILK (LPD):",
         'evening_farmers_label': "No. of Farmers (Evening Milk Collected):",
 
-        'quality_payment_header': "Milk Quality & Payment",
+        'quality_payment_header': "Testing & Quality",
+        'afm_tested_label': "AFM tested at BMC level:",
+        'afm_quantity_label': "If yes, what is the quantity?",
+        'afm_season_label': "If yes, in which season it comes positive?",
+        'mb_scanner_label': "MB scanner available:",
+        'mbrt_time_label': "Avg testing time of MBRT:",
+        
         'infra_compliance_header': "Infrastructure & Compliance",
         'overall_infra_label': "Overall Infrastructure:",
         'remark_infra_label': "Remark (Infrastructure):",
@@ -104,6 +110,9 @@ translations = {
         
         'digitize_system_label': "Digitize System:",
         'digitize_system_brand_label': "If Yes - Indifoss or Ekomilk:",
+        
+        'data_recorded_label': "How is dairy data processed and recorded?",
+        'software_used_label': "If digitally, which software is used?",
         
         'fssai_licence_label': "FSSAI Licence:",
         'remark_fssai_label': "Remark (FSSAI):",
@@ -131,7 +140,12 @@ translations = {
         'payment_schedule_label': "Payment Schedule:",
         'payment_method_label': "Payment Method:",
         
-        'farmer_competitor_header': "Farmer & Competitor Details",
+        'farmer_competitor_header': "Farmer Services & Competitor Details",
+        'health_camp_freq_label': "Frequency of health camps organized by BMC:",
+        'helpdesk_label': "Is there a helpdesk set-up in your BMC?",
+        'mastitis_drive_label': "Are Mastitis preventive drives conducted?",
+        'training_label': "Are there regular trainings conducted for trainers?",
+        
         'animal_welfare_farm_label': "Animal Welfare Farm (No.):",
         'farmer_use_cattle_feed_label': "FARMER USE (compliant CATTLE FEED):",
         'cattle_feed_bag_sale_label': "Compliant Cattle Feed bag sale (month):",
@@ -168,7 +182,10 @@ translations = {
         'options_quality': ["Poor", "Fair", "Good", "Best"],
         'options_payment_schedule': ["Every 10th day in a month", "Twice a month", "Once a month", "No specific schedule"],
         'options_payment_method': ["Cash", "Bank Transfer", "Both"], 
-        'options_awareness_poster': ["afm", "ab", "cmp", "OTHERS"]
+        'options_awareness_poster': ["afm", "ab", "cmp", "OTHERS"],
+        'options_health_camp': ["Monthly", "Quarterly", "Yearly", "No specific schedule"],
+        'options_data_recorded': ["Manually", "Digitally", "Both"],
+        'options_seasons': ["Summer", "Monsoon", "Winter", "All"]
     },
     'mr': {
         'page_title': "🚚 क्षीरसागर - BMC/MCC भेट डेटा एंट्री",
@@ -233,7 +250,13 @@ translations = {
         'evening_milk_lpd_label': "संध्याकाळचे दूध (LPD):",
         'evening_farmers_label': "शेतकऱ्यांची संख्या (संध्याकाळचे दूध संकलन):",
 
-        'quality_payment_header': "दुधाची गुणवत्ता आणि पेमेंट",
+        'quality_payment_header': "चाचणी आणि गुणवत्ता (Testing & Quality)",
+        'afm_tested_label': "BMC स्तरावर AFM तपासले जाते का:",
+        'afm_quantity_label': "जर होय, तर प्रमाण किती आहे?",
+        'afm_season_label': "जर होय, कोणत्या ऋतूत ते पॉझिटिव्ह येते?",
+        'mb_scanner_label': "MB स्कॅनर उपलब्ध आहे का:",
+        'mbrt_time_label': "MBRT ची सरासरी चाचणी वेळ:",
+
         'infra_compliance_header': "पायाभूत सुविधा आणि अनुपालन",
         'overall_infra_label': "एकूण पायाभूत सुविधा:",
         'remark_infra_label': "टीप (पायाभूत सुविधा):",
@@ -246,6 +269,9 @@ translations = {
         
         'digitize_system_label': "डिजिटायझ प्रणाली:",
         'digitize_system_brand_label': "जर होय - Indifoss किंवा Ekomilk:", 
+        
+        'data_recorded_label': "डेअरी डेटा कसा प्रोसेस आणि रेकॉर्ड केला जातो?",
+        'software_used_label': "जर डिजिटल पद्धतीने, तर कोणते सॉफ्टवेअर वापरले जाते?",
         
         'fssai_licence_label': "FSSAI परवाना:",
         'remark_fssai_label': "टीप (FSSAI):",
@@ -273,7 +299,12 @@ translations = {
         'payment_schedule_label': "पेमेंट वेळापत्रक:",
         'payment_method_label': "पेमेंट पद्धत:",
         
-        'farmer_competitor_header': "शेतकरी आणि स्पर्धक तपशील",
+        'farmer_competitor_header': "शेतकरी सेवा आणि स्पर्धक तपशील",
+        'health_camp_freq_label': "BMC द्वारे आयोजित आरोग्य शिबिरांची वारंवारता:",
+        'helpdesk_label': "तुमच्या BMC मध्ये हेल्पडेस्क आहे का?",
+        'mastitis_drive_label': "स्तनदाह (Mastitis) प्रतिबंधक मोहीम राबवली जाते का?",
+        'training_label': "प्रशिक्षकांसाठी नियमित प्रशिक्षण दिले जाते का?",
+        
         'animal_welfare_farm_label': "पशु कल्याण फार्म (संख्या):",
         'farmer_use_cattle_feed_label': "शेतकरी वापर (compliant CATTLE FEED):",
         'cattle_feed_bag_sale_label': "Compliant Cattle Feed बॅग विक्री (महिना):",
@@ -309,7 +340,10 @@ translations = {
         'options_quality': ["खराब", "ठीक", "चांगली", "उत्तम"],
         'options_payment_schedule': ["महिन्यातून प्रत्येक 10 व्या दिवशी", "महिन्यातून दोनदा", "महिन्यातून एकदा", "विशिष्ट वेळापत्रक नाही"],
         'options_payment_method': ["रोख", "बँक ट्रान्सफर", "दोन्ही"],
-        'options_awareness_poster': ["एएफएम", "एबी", "सीएमपी", "इतर"]
+        'options_awareness_poster': ["एएफएम", "एबी", "सीएमपी", "इतर"],
+        'options_health_camp': ["मासिक", "त्रैमासिक", "वार्षिक", "विशिष्ट वेळापत्रक नाही"],
+        'options_data_recorded': ["मॅन्युअली (Manually)", "डिजिटली (Digitally)", "दोन्ही (Both)"],
+        'options_seasons': ["उन्हाळा", "पावसाळा", "हिवाळा", "सर्व"]
     }
 }
 
@@ -387,12 +421,8 @@ GOVIND_BMC_NAMES = ["VIGHNAHARTA VIDNI COOLER", "NIRAI DUDH SANKALAN KEND.PANCAB
 SDDPL_BMC_NAMES = ["SHELKEWASTI", "HAKEWASTI", "KUSEGAON", "NYAWASTI", "NANGAON-2", "PARGAON-1", "PARGAON-2", "PIMPALGAON", "YAWAT", "CHANDANWADI", "DALIMB", "NANDUR", "DELAWADI", "KANGAON", "BETWADI", "KHADKI", "ROTI", "SONAWADI", "GOPALWADI", "HOLEWASTI", "MIRADE", "JAWALI", "VIDANI", "BARAD", "GUNWARE", "SOMANTHALI", "CHAUDHARWADI", "SANGAVI-MOHITEWASTI", "RAUTVASTI VIDANI", "PHADTARWADI", "KAPASHI", "MALEWADI", "SAKHARWADI", "RAVADI", "NIMBLAK", "ASU", "TAMKHADA", "HANUMANTWADI", "KHATAKEVASTI", "SATHEPHATA", "GANEGAONDUMALA", "VADGAON RASAI", "RANJANGAON SANDAS", "BHAMBURDE", "INAMGAON6", "NAGARGAON PHATA", "AJNUJ", "INAMGAON5", "PHARATEWADI", "KURULII", "SHINDODI", "GOLEGAON", "NAGARGAON", "NIMONE", "AMBALE 3", "KARDE", "KANHUR MESAI", "MAHADEVWADI", "NIMGAON MHALUNGI", "DHANORE", "TALEGAON DHAMDHERE", "MANDAVGAN PHARATA", "GUNAT", "KASHTI", "GHADAGEMALA", "INAMGAON3", "WANGDHARI", "URALGAONI", "JAI BHAVANI DUDH SANKLAN KENDRA PIMPRI S", "DATTAKRUPA DUDH SANKLAN KENDRA BORGAON ARJ", "SHREE SAI SAMARTH DUDH SANKALAN KENDRA", "JAY BAJRANGBALI DUDH SANKALAN KENDRA", "BHAIRAVNATH DUDH SANKALAN AND SHITKARAN KENDRA", "SWARAJ DUDH SANKALAN SHITAKENDR", "DYNAMIX DUDH SANKALAN AND SHITKARAN KENDRA", "SAMRUDDHI DUDH SANKALAN V SHITKARAN KENDRA", "DATTAKRUPA MILK DAIRY", "NARENDRA MAULI DUDH SANKALAN SHITKARAN KENDRA", "GURUDEV DUDH SANKALAN KENDRA", "VILAS NARAYAN GHORPADE", "SUNIL NAMDEORAO SAKHARE", "BHAIRAVNATHKRUPA DUDHA SANKALAN KENDRA", "YUVARAJ DUDH SANKALAN KENDRA", "SAMPADA DAIRY DUDH SANKALAN KENDRA", "GURUKRUPA DUDH SANKALAN KENDRA DAHIGAON", "NAGESHWAR DHUDH SANKALAN V SHITKARAN KENDRA", "RUCHI DAIRY", "SHREE GANESH CHILLING PLANT", "PAVANSAGAR MILK COLLECTION CENTER", "BHAIRAVNATH MILK COLLECTION AND CHILLING CENTRE", "HANGESHVAR DAIRY", "BHAIRAVNATH DUDH SANKLAN KENDRA RAYGAVHAN", "SULTANPUR CHILLING CENTRE", "SHRI DATTA DIGAMBAR SAHAKARI DUDH SANSTHA", "KRUSHIRAJ DUDH SANKALAN KENDRA", "BHAIRAVNATH DUDH DAIRY", "ANANDRAO BHIVA DHAIGUDE", "BIROBA DUDH SANKALAN V SHITKARAN KENDRA", "SHIVGANGA MILK CENTER", "SHRIKRUSHNA DAIRY", "SAI AMRUT DUDH SANKALAN KENDRA"]
 
 # 5. FINAL LISTS
-# MCC List: Only the 15 Specific Names from Paras
 ALL_MCC_NAMES = sorted(list(set(PARAS_MCC_LIST))) 
-
-# BMC List: Govind + SDDPL + The 8 Specific Paras BMCs + Lactalis BMCs
 ALL_BMC_NAMES = sorted(list(set(GOVIND_BMC_NAMES + SDDPL_BMC_NAMES + PARAS_BMC_LIST + LACTALIS_BMC_NAMES))) 
-
 
 # Other Data
 PARAS_DISTRICTS = sorted(["Ahilyanagar", "Solapur"])
@@ -419,11 +449,10 @@ VILLAGE_OPTIONS = sorted(list(set(EXISTING_VILLAGES + PARAS_VILLAGES + LACTALIS_
 st.title(t('page_title'))
 st.write(t('page_header'))
 
-# --- AUTO GEOLOCATION (Must be outside st.form) ---
+# --- AUTO GEOLOCATION ---
 st.header(t('geolocation_header'))
 st.info("Please allow location access if prompted.")
 try:
-    # get_geolocation returns None initially, then a dict when found
     geo_location = get_geolocation()
     if geo_location:
         auto_lat = str(geo_location['coords']['latitude'])
@@ -441,7 +470,6 @@ st.markdown("---")
 
 with st.form(key='bmc_visit_form'):
     
-    # Display Captured GPS (ReadOnly)
     col_geo1, col_geo2 = st.columns(2)
     with col_geo1:
         st.text_input(t('latitude_label'), value=auto_lat, disabled=True)
@@ -460,18 +488,13 @@ with st.form(key='bmc_visit_form'):
     st.markdown("---")
     st.header(t('general_info_header'))
     
-    # --- SEPARATE BMC & MCC COLUMNS ---
     col_bmc_name, col_mcc_name = st.columns(2)
     with col_bmc_name:
-        # Contains Govind + SDDPL + Paras BMCs + Lactalis BMCs
         bmc_name_option, other_bmc_name = render_select_with_specify_permanent(st, 'bmc_name_label', ["SELECT"] + ALL_BMC_NAMES + [t('others')], 'bmc_name_select', 'other_bmc_name_label')
         actual_bmc_name = other_bmc_name if bmc_name_option == t('others') else bmc_name_option
-    
     with col_mcc_name:
-        # Contains ONLY Paras MCCs
         mcc_name_option, other_mcc_name = render_select_with_specify_permanent(st, 'mcc_name_label', ["SELECT"] + ALL_MCC_NAMES + [t('others')], 'mcc_name_select', 'other_mcc_name_label')
         actual_mcc_name = other_mcc_name if mcc_name_option == t('others') else mcc_name_option
-    # -------------------------------------------
 
     col1, col2 = st.columns(2)
     with col1:
@@ -545,13 +568,36 @@ with st.form(key='bmc_visit_form'):
         evening_milk_lpd = st.number_input(t('evening_milk_lpd_label'), min_value=0, value=1100)
         evening_farmers_no = st.number_input(t('evening_farmers_label'), min_value=0, value=25)
     
+    # --- NEW: TESTING & QUALITY SECTION ---
+    st.header(t('quality_payment_header'))
+    yes_no_options = [t('yes'), t('no')]
+    
+    # AFM Questions
+    afm_tested = st.radio(t('afm_tested_label'), yes_no_options, index=1, key="afm_tested_radio")
+    afm_quantity = "N/A"
+    afm_season = []
+    if afm_tested == t('yes'):
+        col_afm1, col_afm2 = st.columns(2)
+        with col_afm1:
+            afm_quantity = st.text_input(t('afm_quantity_label'))
+        with col_afm2:
+            afm_season = st.multiselect(t('afm_season_label'), t('options_seasons'))
+
+    st.markdown("---")
+    
+    # MB Scanner Questions
+    mb_scanner = st.radio(t('mb_scanner_label'), yes_no_options, index=1, key="mb_scanner_radio")
+    mbrt_time = "N/A"
+    if mb_scanner == t('yes'):
+        mbrt_time = st.text_input(t('mbrt_time_label'))
+
+    # --- INFRASTRUCTURE & COMPLIANCE ---
     st.header(t('infra_compliance_header'))
     overall_infrastructure = st.selectbox(t('overall_infra_label'), t('options_quality'), index=2)
     remark_infra = st.text_area(t('remark_infra_label'), "Good infrastructure, seprate room for cattle feed")
     bmc_cleaning_hygiene = st.selectbox(t('bmc_cleaning_label'), t('options_quality'), index=2)
 
     col_infra1, col_infra2, col_infra3, col_infra4 = st.columns(4)
-    yes_no_options = [t('yes'), t('no')]
     with col_infra1:
         air_curtain = st.radio(t('air_curtain_label'), yes_no_options, index=0, key="air_curtain_bmc")
         fly_catcher = st.radio(t('fly_catcher_label'), yes_no_options, index=0, key="fly_catcher_bmc")
@@ -561,18 +607,23 @@ with st.form(key='bmc_visit_form'):
     with col_infra3:
         intact_floor = st.radio(t('intact_floor_label'), yes_no_options, index=0, key="intact_floor_bmc")
         
-        # --- CONDITIONAL LOGIC FOR DIGITIZE SYSTEM ---
         digitize_system = st.radio(t('digitize_system_label'), yes_no_options, index=1, key="digitize_system_bmc")
         digitize_system_brand = "N/A"
-        
         if digitize_system == t('yes'):
-            # New question as per user request
             digitize_system_brand = st.radio(t('digitize_system_brand_label'), ["Indifoss", "Ekomilk"], key="digit_brand_select")
-        # ---------------------------------------------
 
     with col_infra4:
         fssai_licence = st.radio(t('fssai_licence_label'), yes_no_options, index=0, key="fssai_licence_bmc")
         wg_scale_licence = st.radio(t('wg_scale_licence_label'), yes_no_options, index=1, key="wg_scale_licence_bmc")
+
+    # NEW: Data Processing Questions
+    st.markdown("---")
+    data_recorded = st.radio(t('data_recorded_label'), t('options_data_recorded'), index=0, horizontal=True)
+    software_used = "N/A"
+    # If option is Digitally or Both
+    if data_recorded in [t('options_data_recorded')[1], t('options_data_recorded')[2]]:
+        software_used = st.text_input(t('software_used_label'))
+    st.markdown("---")
 
     col_new_infra1, col_new_infra2, col_new_infra3, col_new_infra4 = st.columns(4)
     with col_new_infra1:
@@ -591,7 +642,21 @@ with st.form(key='bmc_visit_form'):
     with col_pay2:
         payment_method = st.multiselect(t('payment_method_label'), t('options_payment_method'), default=[t('options_payment_method')[0]])
 
+    # --- FARMER SERVICES & COMPETITOR DETAILS ---
     st.header(t('farmer_competitor_header'))
+    
+    # NEW: Services and Trainings
+    health_camp_freq = st.selectbox(t('health_camp_freq_label'), t('options_health_camp'))
+    col_srv1, col_srv2, col_srv3 = st.columns(3)
+    with col_srv1:
+        helpdesk_setup = st.radio(t('helpdesk_label'), yes_no_options, index=1, key="helpdesk_radio")
+    with col_srv2:
+        mastitis_drive = st.radio(t('mastitis_drive_label'), yes_no_options, index=1, key="mastitis_radio")
+    with col_srv3:
+        training_conducted = st.radio(t('training_label'), yes_no_options, index=1, key="training_radio")
+
+    st.markdown("---")
+
     col9, col10 = st.columns(2)
     with col9:
         animal_welfare_farm_no = st.number_input(t('animal_welfare_farm_label'), min_value=0, value=9)
@@ -622,15 +687,20 @@ with st.form(key='bmc_visit_form'):
 
     if submit_button:
         yes_en, no_en = translations['en']['yes'], translations['en']['no']
+        
+        # Helper to convert translated Yes/No back to English for consistent CSV saving
+        def to_en_yesno(val):
+            return yes_en if val == t('yes') else no_en
+
         submitted_data = {
             "Photo 1 (Overall)": photo_overall.name if 'photo_overall' in locals() and photo_overall else "N/A",
             "Photo 2 (Platform)": photo_platform.name if 'photo_platform' in locals() and photo_platform else "N/A",
             "Photo 3 (Inside)": photo_inside.name if 'photo_inside' in locals() and photo_inside else "N/A",
             "BMC/MCC Code": bmc_code,
             "SCHEDULED START DATE": scheduled_start_date.isoformat() if scheduled_start_date else None,
-            "BMC Name": actual_bmc_name, # Saved
+            "BMC Name": actual_bmc_name, 
             "Other BMC Name": other_bmc_name,
-            "MCC Name": actual_mcc_name, # Saved
+            "MCC Name": actual_mcc_name, 
             "Other MCC Name": other_mcc_name,
             "ACTIVITY CREATED BY": activity_created_by,
             "Organization": organization,
@@ -644,6 +714,7 @@ with st.form(key='bmc_visit_form'):
             "Other Village": other_village_name, 
             "Latitude": auto_lat,
             "Longitude": auto_lon,
+            
             "BCF/In-charge Name": bcf_name,
             "Gender": translations['en']['options_gender'][t('options_gender').index(bcf_gender)],
             "Education": actual_education,
@@ -651,12 +722,14 @@ with st.form(key='bmc_visit_form'):
             "Mobile Number": bcf_mobile_number,
             "Operating Staff (No.)": operating_staff_no,
             "Distance From HO (KM)": distance_from_ho_km,
+            
             "Total Registered Farmer (No.)": total_registered_farmer_no,
             "No. of Women Farmers (Total Registered)": total_women_farmer_no, 
             "No. of Men Farmers (Total Registered)": total_men_farmer_no, 
             "Active Farmer (No.)": active_farmer_no,
             "No. of Women Farmers (Active Farmers)": active_women_farmer_no, 
             "No. of Men Farmers (Active Farmers)": active_men_farmer_no, 
+            
             "Total No. of Routes": total_routes,
             "Total No. of VLCs": total_vlcs,
             "Offline VLCs": offline_vlcs,
@@ -674,25 +747,46 @@ with st.form(key='bmc_visit_form'):
             "EVENING MILK COLLECTION END TIME": evening_collection_time_label,
             "EVENING MILK (LPD)": evening_milk_lpd,
             "No. of Farmers (Evening Milk Collected)": evening_farmers_no, 
+            
+            # --- NEW DATA SAVING ---
+            "AFM Tested": to_en_yesno(afm_tested),
+            "AFM Quantity": afm_quantity,
+            "AFM Positive Season": ', '.join(afm_season) if afm_season else "N/A",
+            "MB Scanner Available": to_en_yesno(mb_scanner),
+            "Avg MBRT Testing Time": mbrt_time,
+            
             "Overall Infrastructure": overall_infrastructure,
             "Remark (Infrastructure)": remark_infra,
             "BMC/MCC Cleaning & Hygiene": bmc_cleaning_hygiene,
-            "Air curtain": yes_en if air_curtain == t('yes') else no_en,
-            "Fly Catcher": yes_en if fly_catcher == t('yes') else no_en,
-            "Wash Basin": yes_en if wash_basin == t('yes') else no_en,
-            "Opening(Window/Door)": yes_en if opening_window_door == t('yes') else no_en,
-            "Intact Floor in Premise": yes_en if intact_floor == t('yes') else no_en,
-            "Digitize System": yes_en if digitize_system == t('yes') else no_en,
-            "Digitize System Brand": digitize_system_brand, # SAVED HERE
-            "FSSAI Licence": yes_en if fssai_licence == t('yes') else no_en,
-            "Wg Scale Licence": yes_en if wg_scale_licence == t('yes') else no_en,
-            "Is SOP Available": yes_en if sop_available == t('yes') else no_en,
-            "Is Hot Water Available": yes_en if hot_water_available == t('yes') else no_en,
-            "Is Notice Board Available": yes_en if notice_board_available == t('yes') else no_en,
+            "Air curtain": to_en_yesno(air_curtain),
+            "Fly Catcher": to_en_yesno(fly_catcher),
+            "Wash Basin": to_en_yesno(wash_basin),
+            "Opening(Window/Door)": to_en_yesno(opening_window_door),
+            "Intact Floor in Premise": to_en_yesno(intact_floor),
+            "Digitize System": to_en_yesno(digitize_system),
+            "Digitize System Brand": digitize_system_brand,
+            
+            # --- NEW DATA SAVING ---
+            "Data Recorded Method": data_recorded,
+            "Software Used": software_used,
+            
+            "FSSAI Licence": to_en_yesno(fssai_licence),
+            "Wg Scale Licence": to_en_yesno(wg_scale_licence),
+            "Is SOP Available": to_en_yesno(sop_available),
+            "Is Hot Water Available": to_en_yesno(hot_water_available),
+            "Is Notice Board Available": to_en_yesno(notice_board_available),
             "Awareness Poster": ', '.join(awareness_poster),
             "Other Awareness Poster": other_awareness_poster,
+            
             "Payment Schedule": payment_schedule,
             "Payment Method": ', '.join(payment_method),
+            
+            # --- NEW DATA SAVING ---
+            "Frequency of Health Camps": health_camp_freq,
+            "Helpdesk Setup": to_en_yesno(helpdesk_setup),
+            "Mastitis Preventive Drive": to_en_yesno(mastitis_drive),
+            "Regular Training Conducted": to_en_yesno(training_conducted),
+
             "Animal Welfare Farm (No.)": animal_welfare_farm_no,
             "FARMER USE (compliant CATTLE FEED)": farmer_use_cattle_feed,
             "Compliant Cattle Feed bag sale (month)": cattle_feed_bag_sale_month,
