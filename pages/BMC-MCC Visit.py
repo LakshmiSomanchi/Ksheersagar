@@ -599,7 +599,7 @@ ALL_MCC_NAMES = sorted(list(set(PARAS_MCC_LIST)))
 ALL_BMC_NAMES = sorted(list(set(GOVIND_BMC_NAMES + SDDPL_BMC_NAMES + PARAS_BMC_LIST + LACTALIS_BMC_NAMES))) 
 
 # Other Data
-PARAS_DISTRICTS = sorted(["Ahilyanagar", "Solapur"])
+PARAS_DISTRICTS = sorted(["Ahilyanagar", "Solapur", "Bulandshahr", "Merath"])
 PARAS_SUB_DISTRICTS = sorted([
     "Newasa", "Pathardi", "Rahuri", "Sangamner", "Parner", 
     "Shrigonda", "Karjat", "Shrirampur", "Pandharpur", 
