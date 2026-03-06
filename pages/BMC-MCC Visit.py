@@ -111,6 +111,7 @@ translations = {
         'digitize_system_label': "Digitize System:",
         'digitize_system_brand_label': "If Yes - Indifoss or Ekomilk:",
         
+        'mbrt_facility_label': "MBRT Testing Facility:",
         'data_recorded_label': "How is dairy data processed and recorded?",
         'software_used_label': "If digitally, which software is used?",
         
@@ -185,7 +186,8 @@ translations = {
         'options_awareness_poster': ["afm", "ab", "cmp", "OTHERS"],
         'options_health_camp': ["Monthly", "Quarterly", "Yearly", "No specific schedule"],
         'options_data_recorded': ["Manually", "Digitally", "Both"],
-        'options_seasons': ["Summer", "Monsoon", "Winter", "All"]
+        'options_seasons': ["Summer", "Monsoon", "Winter", "All"],
+        'options_mbrt_facility': ["None", "MBRT Scanner", "MBRT Water bath"]
     },
     'mr': {
         'page_title': "🚚 क्षीरसागर - BMC/MCC भेट डेटा एंट्री",
@@ -270,6 +272,7 @@ translations = {
         'digitize_system_label': "डिजिटायझ प्रणाली:",
         'digitize_system_brand_label': "जर होय - Indifoss किंवा Ekomilk:", 
         
+        'mbrt_facility_label': "MBRT चाचणी सुविधा:",
         'data_recorded_label': "डेअरी डेटा कसा प्रोसेस आणि रेकॉर्ड केला जातो?",
         'software_used_label': "जर डिजिटल पद्धतीने, तर कोणते सॉफ्टवेअर वापरले जाते?",
         
@@ -314,7 +317,7 @@ translations = {
         'mineral_mixture_brand_label': "MINERAL MIXTURE ब्रँड नाव:",
         'farmer_use_evm_rtu_label': "शेतकरी वापर (EVM RTU) प्रमाण:",
         'evm_rtu_label': "EVM RTU:",
-        'biogas_installed_label': "बायोगॅस स्थापित:",
+        'biogas_installed_label': "बायोगैस स्थापित:",
         'bank_linkage_label': "कोणतेही बँक लिंकेज:",
         'other_services_label': "इतर सेवा:", 
         'competitor_details_subheader': "स्पर्धक तपशील",
@@ -343,7 +346,8 @@ translations = {
         'options_awareness_poster': ["एएफएम", "एबी", "सीएमपी", "इतर"],
         'options_health_camp': ["मासिक", "त्रैमासिक", "वार्षिक", "विशिष्ट वेळापत्रक नाही"],
         'options_data_recorded': ["मॅन्युअली (Manually)", "डिजिटली (Digitally)", "दोन्ही (Both)"],
-        'options_seasons': ["उन्हाळा", "पावसाळा", "हिवाळा", "सर्व"]
+        'options_seasons': ["उन्हाळा", "पावसाळा", "हिवाळा", "सर्व"],
+        'options_mbrt_facility': ["काहीही नाही (None)", "MBRT स्कॅनर (MBRT Scanner)", "MBRT वॉटर बाथ (MBRT Water bath)"]
     },
     'hi': {
         'page_title': "🚚 क्षीरसागर - BMC/MCC विजिट डेटा एंट्री",
@@ -428,6 +432,7 @@ translations = {
         'digitize_system_label': "डिजिटाइज़ सिस्टम:",
         'digitize_system_brand_label': "यदि हाँ - Indifoss या Ekomilk:", 
         
+        'mbrt_facility_label': "MBRT परीक्षण सुविधा:",
         'data_recorded_label': "डेयरी डेटा कैसे प्रोसेस और रिकॉर्ड किया जाता है?",
         'software_used_label': "यदि डिजिटल रूप से, तो कौन सा सॉफ्टवेयर उपयोग किया जाता है?",
         
@@ -501,7 +506,8 @@ translations = {
         'options_awareness_poster': ["एएफएम", "एबी", "सीएमपी", "अन्य"],
         'options_health_camp': ["मासिक", "त्रैमासिक", "वार्षिक", "कोई निश्चित अनुसूची नहीं"],
         'options_data_recorded': ["मैन्युअल रूप से (Manually)", "डिजिटल रूप से (Digitally)", "दोनों (Both)"],
-        'options_seasons': ["गर्मी", "मानसून", "सर्दी", "सभी"]
+        'options_seasons': ["गर्मी", "मानसून", "सर्दी", "सभी"],
+        'options_mbrt_facility': ["कोई नहीं (None)", "MBRT स्कैनर (MBRT Scanner)", "MBRT वाटर बाथ (MBRT Water bath)"]
     }
 }
 
@@ -532,7 +538,6 @@ if 'language' not in st.session_state:
 
 st.sidebar.header("Language / भाषा / भाषा")
 lang_options = ["English", "Marathi", "Hindi"]
-current_lang_capitalized = st.session_state.language.capitalize()
 
 # Convert the stored 'en'/'mr'/'hi' back to selection index
 if st.session_state.language == 'en':
@@ -619,26 +624,29 @@ SUB_DISTRICT_OPTIONS = sorted(list(set(EXISTING_SUB_DISTRICTS + PARAS_SUB_DISTRI
 EXISTING_VILLAGES = ["ALAND", "BORGAON ARJ", "MOHARA", "KAIGAON", "VIRAMGAON", "BANKINHOLA", "SHEKTA", "WADOD BAJAR", "SULTANWADI", "BABHULGAON", "LEHA", "KAUDGAON JAMB", "KARANJI", "KHANDGAON", "KAUDGAON", "CHICHONDI SHIRAL", "DAHIGAON", "BHENDA", "JAKHANGAON", "PARNER", "DEODAITHAN", "PANOLI 2", "CHIMBHALE", "RAYGAVHAN", "SULTANPUR", "RANDULLABAD", "PARGAON", "SUKHED", "KHED (BK)", "MOGARALE", "PADHEGAON", "JAVALKE"]
 VILLAGE_OPTIONS = sorted(list(set(EXISTING_VILLAGES + PARAS_VILLAGES + LACTALIS_VILLAGES + [t('others')])))
 
-# --- UI START ---
-st.title(t('page_title'))
-st.write(t('page_header'))
-
-# --- AUTO GEOLOCATION ---
+# --- AUTO GEOLOCATION FIX (Infinite Loop Prevention) ---
 st.header(t('geolocation_header'))
-st.info("Please allow location access if prompted.")
-try:
-    geo_location = get_geolocation()
-    if geo_location:
-        auto_lat = str(geo_location['coords']['latitude'])
-        auto_lon = str(geo_location['coords']['longitude'])
-        st.success(f"GPS Locked: {auto_lat}, {auto_lon}")
-    else:
-        auto_lat = "Not Detected"
-        auto_lon = "Not Detected"
-        st.warning("Location not yet detected. Click the button above if visible.")
-except Exception as e:
-    st.error(f"GPS Error: {e}")
-    auto_lat, auto_lon = "Error", "Error"
+
+if 'auto_lat' not in st.session_state:
+    st.session_state.auto_lat = "Not Detected"
+    st.session_state.auto_lon = "Not Detected"
+
+# Only attempt to get GPS once per session to prevent infinite reloads
+if st.session_state.auto_lat == "Not Detected":
+    st.info("Please allow location access if prompted. Fetching GPS...")
+    try:
+        geo_location = get_geolocation()
+        if geo_location:
+            st.session_state.auto_lat = str(geo_location['coords']['latitude'])
+            st.session_state.auto_lon = str(geo_location['coords']['longitude'])
+            st.rerun() # Refresh the page once to lock in the location and hide the fetcher
+    except Exception as e:
+        st.error(f"GPS Error: {e}")
+else:
+    st.success(f"GPS Locked: {st.session_state.auto_lat}, {st.session_state.auto_lon}")
+
+auto_lat = st.session_state.auto_lat
+auto_lon = st.session_state.auto_lon
 
 st.markdown("---")
 
@@ -747,21 +755,17 @@ with st.form(key='bmc_visit_form'):
     yes_no_options = [t('yes'), t('no')]
     
     afm_tested = st.radio(t('afm_tested_label'), yes_no_options, index=1, key="afm_tested_radio")
-    afm_quantity = "N/A"
-    afm_season = []
-    if afm_tested == t('yes'):
-        col_afm1, col_afm2 = st.columns(2)
-        with col_afm1:
-            afm_quantity = st.text_input(t('afm_quantity_label'))
-        with col_afm2:
-            afm_season = st.multiselect(t('afm_season_label'), t('options_seasons'))
+    
+    col_afm1, col_afm2 = st.columns(2)
+    with col_afm1:
+        afm_quantity = st.text_input(t('afm_quantity_label'))
+    with col_afm2:
+        afm_season = st.multiselect(t('afm_season_label'), t('options_seasons'))
 
     st.markdown("---")
     
     mb_scanner = st.radio(t('mb_scanner_label'), yes_no_options, index=1, key="mb_scanner_radio")
-    mbrt_time = "N/A"
-    if mb_scanner == t('yes'):
-        mbrt_time = st.text_input(t('mbrt_time_label'))
+    mbrt_time = st.text_input(t('mbrt_time_label'))
 
     # --- INFRASTRUCTURE & COMPLIANCE ---
     st.header(t('infra_compliance_header'))
@@ -778,22 +782,21 @@ with st.form(key='bmc_visit_form'):
         opening_window_door = st.radio(t('opening_window_door_label'), yes_no_options, index=0, key="opening_window_door_bmc")
     with col_infra3:
         intact_floor = st.radio(t('intact_floor_label'), yes_no_options, index=0, key="intact_floor_bmc")
-        
         digitize_system = st.radio(t('digitize_system_label'), yes_no_options, index=1, key="digitize_system_bmc")
-        digitize_system_brand = "N/A"
-        if digitize_system == t('yes'):
-            digitize_system_brand = st.radio(t('digitize_system_brand_label'), ["Indifoss", "Ekomilk"], key="digit_brand_select")
+        digitize_system_brand = st.radio(t('digitize_system_brand_label'), ["Indifoss", "Ekomilk"], key="digit_brand_select")
 
     with col_infra4:
         fssai_licence = st.radio(t('fssai_licence_label'), yes_no_options, index=0, key="fssai_licence_bmc")
         wg_scale_licence = st.radio(t('wg_scale_licence_label'), yes_no_options, index=1, key="wg_scale_licence_bmc")
 
-    # Data Processing Questions
     st.markdown("---")
+    # NEW MBRT FACILITY DROPDOWN ADDED HERE
+    mbrt_facility = st.selectbox(t('mbrt_facility_label'), t('options_mbrt_facility'), index=0)
+    st.markdown("---")
+
+    # Data Processing Questions
     data_recorded = st.radio(t('data_recorded_label'), t('options_data_recorded'), index=0, horizontal=True)
-    software_used = "N/A"
-    if data_recorded in [t('options_data_recorded')[1], t('options_data_recorded')[2]]:
-        software_used = st.text_input(t('software_used_label'))
+    software_used = st.text_input(t('software_used_label'))
     st.markdown("---")
 
     col_new_infra1, col_new_infra2, col_new_infra3, col_new_infra4 = st.columns(4)
@@ -935,6 +938,8 @@ with st.form(key='bmc_visit_form'):
             "Intact Floor in Premise": to_en_yesno(intact_floor),
             "Digitize System": to_en_yesno(digitize_system),
             "Digitize System Brand": digitize_system_brand,
+            
+            "MBRT Testing Facility": mbrt_facility,
             
             "Data Recorded Method": data_recorded,
             "Software Used": software_used,
