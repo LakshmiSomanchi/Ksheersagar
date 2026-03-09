@@ -7,6 +7,19 @@ import random
 # --- Constants ---
 FARM_VISIT_DATA_FILE = "farm_visit_data.csv"
 
+# --- CACHING FIX: Load data only once ---
+@st.cache_data
+def load_existing_data():
+    """Loads existing data from CSV."""
+    data_list = []
+    if os.path.exists(FARM_VISIT_DATA_FILE):
+        try:
+            df_existing = pd.read_csv(FARM_VISIT_DATA_FILE)
+            data_list.extend(df_existing.to_dict('records'))
+        except Exception as e:
+            pass
+    return data_list
+
 # --- Translation Dictionary ---
 translations = {
     'en': {
@@ -28,6 +41,7 @@ translations = {
         'sub_district_label': "Sub District:",
         'collecting_village_label': "Collecting Village:",
         'bmc_label': "BMC:",
+        'mcc_label': "MCC Name:", # Added for MCC
         'other_bmc_label': "Other BMC Name (Specify):",
         'herd_details_header': "Milk Production & Herd Details",
         'milk_production_label': "Milk Production At Farm:",
@@ -92,7 +106,7 @@ translations = {
         'activity_name_label': "ऍक्टिव्हिटीचे नाव:",
         'activity_created_by_label': "ऍक्टिव्हिटी कोणी तयार केली:",
         'type_of_farm_label': "शेतीचा प्रकार:",
-        'farm_area_label': "शेतीचे क्षेत्र (एकर/हेक्टर):",
+        'farm_area_label': "शेतीचे क्षेत्र (एकर/हेक्टेयर):",
         'location_header': "स्थान आणि संस्था तपशील",
         'organization_label': "संस्था:",
         'state_label': "राज्य:",
@@ -100,6 +114,7 @@ translations = {
         'sub_district_label': "उप-जिल्हा:",
         'collecting_village_label': "संकलन गाव:",
         'bmc_label': "BMC:",
+        'mcc_label': "MCC नाव:", # Added for MCC
         'other_bmc_label': "इतर BMC नाव (नमूद करा):",
         'herd_details_header': "दूध उत्पादन आणि कळप तपशील",
         'milk_production_label': "शेतातील दूध उत्पादन:",
@@ -120,7 +135,7 @@ translations = {
         'green_fodder_name_label': "हिरव्या चाऱ्याचे नाव:",
         'specify_other_green_fodder': "इतर हिरवा चारा नमूद करा:",
         'silage_label': "मुरघास:",
-        'mineral_mixture_option_label': " खनिज मिश्रण (असल्याs, ब्रँडचे नाव):",
+        'mineral_mixture_option_label': " खनिज मिश्रण (असल्यास, ब्रँडचे नाव):",
         'name_of_mineral_mixture_label': "खनिज मिश्रणाचे नाव:",
         'toxin_binder_label': "विषारी घटक बांधणारे:",
         'cmt_kit_label': "CMT किट:",
@@ -132,8 +147,8 @@ translations = {
         'photo_1_label': "फोटो 1:",
         'other_details_header': "इतर तपशील",
         'source_of_water_label': "पाण्याचा स्रोत:",
-        'ai_proximity_label': "जवळपासच्या परिसरात कृत्रिम रेतन (AI) सेवांची उपलब्धता (दारोदारी/BMC/गावात/शेजारील गावात):",
-        'sex_semen_label': "सॉर्टेड सेक्स-सीमेन (Sorted Sex-Semen) वापरले का:",
+        'ai_proximity_label': "जवळपासच्या परिसरात कृत्रिम रेतन (AI) सेवांची उपलब्धता:",
+        'sex_semen_label': "सॉर्टेड सेक्स-सीमेन वापरले का:",
         'cmt_testing_freq_label': "CMT चाचणीची वारंवारता (दिवसांची संख्या):",
         'cleaning_freq_label': "दूध काढणी यंत्रांच्या स्वच्छतेची वारंवारता (दिवसांची संख्या):",
         'milk_container_type_label': "दुधाच्या भांड्याचा प्रकार:",
@@ -172,6 +187,7 @@ translations = {
         'sub_district_label': "उप-जिला:",
         'collecting_village_label': "संग्रहण गांव:",
         'bmc_label': "BMC:",
+        'mcc_label': "MCC का नाम:", # Added for MCC
         'other_bmc_label': "अन्य BMC नाम (निर्दिष्ट करें):",
         'herd_details_header': "दुग्ध उत्पादन और झुंड विवरण",
         'milk_production_label': "फार्म पर दुग्ध उत्पादन:",
@@ -204,13 +220,13 @@ translations = {
         'photo_1_label': "फोटो 1:",
         'other_details_header': "अन्य विवरण",
         'source_of_water_label': "पानी का स्रोत:",
-        'ai_proximity_label': "निकटतम क्षेत्र में एआई (AI) सेवाओं तक पहुंच (घर पर/BMC/गांव में/पास के गांवों में):",
+        'ai_proximity_label': "निकटतम क्षेत्र में एआई (AI) सेवाओं तक पहुंच:",
         'sex_semen_label': "सॉर्टेड सेक्स-सीमेन (Sorted Sex-Semen):",
         'cmt_testing_freq_label': "CMT परीक्षण की आवृत्ति (दिनों की संख्या):",
         'cleaning_freq_label': "दुग्ध मशीनों की सफाई की आवृत्ति (दिनों की संख्या):",
         'milk_container_type_label': "दूध के बर्तन का प्रकार:",
         'milk_kept_duration_label': "दुहने के बाद दूध फार्म पर रखने की अवधि (मिनट):",
-        'recent_outbreak_label': "हाल ही में कोई संदूषण/बीमारी का प्रकोप:",
+        'recent_outbreak_label': "हाल ही में कोई बीमारी का प्रकोप:",
         'overall_hygiene_label': "फार्म की समग्र स्वच्छता:",
         'space_sick_animal_label': "बीमार पशु को अलग रखने की जगह:",
         'recent_disease_label': "हाल ही में दर्ज की गई बीमारी:",
@@ -239,23 +255,24 @@ if 'language' not in st.session_state:
 
 st.sidebar.header("Language / भाषा")
 lang_map = {"English": "en", "Marathi": "mr", "Hindi": "hi"}
-selected_lang_display = st.sidebar.radio("Select Language", list(lang_map.keys()), 
-                                        index=list(lang_map.values()).index(st.session_state.language))
+selected_lang_display = st.sidebar.radio(
+    "Select Language", 
+    list(lang_map.keys()), 
+    index=list(lang_map.values()).index(st.session_state.language)
+)
 
 st.session_state.language = lang_map[selected_lang_display]
 
 # --- Session State Initialization ---
 if 'farm_visit_data' not in st.session_state:
-    st.session_state.farm_visit_data = []
-    if os.path.exists(FARM_VISIT_DATA_FILE):
-        try:
-            df_existing = pd.read_csv(FARM_VISIT_DATA_FILE)
-            st.session_state.farm_visit_data.extend(df_existing.to_dict('records'))
-        except Exception as e:
-            st.session_state.farm_visit_data = []
+    st.session_state.farm_visit_data = load_existing_data()
 
 st.title(t('page_title'))
 st.write(t('page_header'))
+
+# --- SPECIFIC LISTS ADDED ---
+MCC_NAMES_LIST = ["Barla", "Budhana", "Bulandshahr", "Jhadwan", "Jhangirabad", "Khurja", "Kuchesar Chopla", "Mawana", "Miranpur", "Najibabad"]
+ORGANIZATION_LIST = ["Govind", "Paras", "Lactalis", "NDDB", "Parag", "Schreiber"]
 
 # --- Form Implementation ---
 with st.form(key='farm_visit_form'):
@@ -274,13 +291,18 @@ with st.form(key='farm_visit_form'):
     st.header(t('location_header'))
     col3, col4 = st.columns(2)
     with col3:
-        organization = st.selectbox(t('organization_label'), ["Govind", "SDDPL", "Schreiber Dynamix"])
+        # UPDATED ORGANIZATION LIST
+        organization = st.selectbox(t('organization_label'), ORGANIZATION_LIST)
         state = st.text_input(t('state_label'), "Maharashtra", disabled=True)
         district = st.selectbox(t('district_label'), ["Satara", "Pune", "Ahmednagar", "Solapur"])
+        
+        # NEW MCC DROPDOWN
+        mcc_selected = st.selectbox(t('mcc_label'), ["SELECT"] + MCC_NAMES_LIST + ["OTHERS"])
+        
     with col4:
         sub_district = st.selectbox(t('sub_district_label'), ["Phaltan", "malshiras", "Baramati", "Indapur", "Daund", "Purander", "Pachgani", "Man", "Khatav", "Koregaon", "Khandala", "Shirur"])
         collecting_village = st.text_input(t('collecting_village_label'), "SAKHARWADi")
-        bmc_selected = st.selectbox(t('bmc_label'), ["SELECT", "OTHERS"]) # Simplified for brevity
+        bmc_selected = st.selectbox(t('bmc_label'), ["SELECT", "OTHERS"]) 
 
     st.header(t('herd_details_header'))
     col5, col6 = st.columns(2)
@@ -292,7 +314,6 @@ with st.form(key='farm_visit_form'):
         loose_housing = st.radio(t('loose_housing_label'), [t('yes'), t('no')])
 
     st.header(t('other_details_header'))
-    # --- NEW QUESTIONS ADDED HERE ---
     ai_proximity = st.radio(t('ai_proximity_label'), [t('yes'), t('no')], key="ai_proximity_fv")
     sex_semen = st.radio(t('sex_semen_label'), [t('yes'), t('no')], key="sex_semen_fv")
     
@@ -308,6 +329,12 @@ with st.form(key='farm_visit_form'):
         submitted_data = {
             "Date": date.isoformat() if date else None,
             "Farmer Name": farmer_name,
+            "Farmer ID": farmer_id,
+            "Organization": organization,
+            "MCC Name": mcc_selected, # Saved New Data
+            "BMC Name": bmc_selected,
+            "District": district,
+            "Sub District": sub_district,
             "AI Service Proximity": yes_en if ai_proximity == t('yes') else no_en,
             "Soughted Sex-Semen": yes_en if sex_semen == t('yes') else no_en,
             "Overall Hygiene": overall_hygiene,
