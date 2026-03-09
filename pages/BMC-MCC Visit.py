@@ -582,11 +582,10 @@ LACTALIS_SUB_DISTRICTS = sorted([
 LACTALIS_DISTRICTS = sorted(['Solapur', 'Ahilyanagar', 'Nashik', 'Pune'])
 LACTALIS_VILLAGES = LACTALIS_BMC_NAMES # Use BMC names as villages
 
-# 2. THE MCC LIST (Strictly from the Left Table in Image - Paras)
+# 2. THE MCC LIST (Updated with Specific District Names)
 PARAS_MCC_LIST = sorted([
-    "Ghodegaon", "Anatarwali", "Chedgaon", "Umbari", "Pimparne", "Madve",
-    "Wadegavhan", "Shrigonda", "Mahijalgaon", "Belapur", "Sarola Advai",
-    "Tandulwadi", "Nepatgaon", "Medshingi", "Khandali"
+    "Barla", "Budhana", "Bulandshahr", "Jhadwan", "Jhangirabad", 
+    "Khurja", "Kuchesar Chopla", "Mawana", "Miranpur", "Najibabad"
 ])
 
 # 3. THE SPECIFIC PARAS BMC LIST (Strictly from the Right Table in Image)
@@ -623,6 +622,7 @@ EXISTING_SUB_DISTRICTS = ["PHULAMBRI", "KANNAD", "SILLOD", "AURANGABAD", "PATHAR
 SUB_DISTRICT_OPTIONS = sorted(list(set(EXISTING_SUB_DISTRICTS + PARAS_SUB_DISTRICTS + LACTALIS_SUB_DISTRICTS + [t('others')])))
 EXISTING_VILLAGES = ["ALAND", "BORGAON ARJ", "MOHARA", "KAIGAON", "VIRAMGAON", "BANKINHOLA", "SHEKTA", "WADOD BAJAR", "SULTANWADI", "BABHULGAON", "LEHA", "KAUDGAON JAMB", "KARANJI", "KHANDGAON", "KAUDGAON", "CHICHONDI SHIRAL", "DAHIGAON", "BHENDA", "JAKHANGAON", "PARNER", "DEODAITHAN", "PANOLI 2", "CHIMBHALE", "RAYGAVHAN", "SULTANPUR", "RANDULLABAD", "PARGAON", "SUKHED", "KHED (BK)", "MOGARALE", "PADHEGAON", "JAVALKE"]
 VILLAGE_OPTIONS = sorted(list(set(EXISTING_VILLAGES + PARAS_VILLAGES + LACTALIS_VILLAGES + [t('others')])))
+
 
 # --- AUTO GEOLOCATION FIX (Infinite Loop Prevention) ---
 st.header(t('geolocation_header'))
