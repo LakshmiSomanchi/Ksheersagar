@@ -317,7 +317,7 @@ translations = {
         'mineral_mixture_brand_label': "MINERAL MIXTURE ब्रँड नाव:",
         'farmer_use_evm_rtu_label': "शेतकरी वापर (EVM RTU) प्रमाण:",
         'evm_rtu_label': "EVM RTU:",
-        'biogas_installed_label': "बायोगैस स्थापित:",
+        'biogas_installed_label': "बायोगॅस स्थापित:",
         'bank_linkage_label': "कोणतेही बँक लिंकेज:",
         'other_services_label': "इतर सेवा:", 
         'competitor_details_subheader': "स्पर्धक तपशील",
@@ -582,13 +582,14 @@ LACTALIS_SUB_DISTRICTS = sorted([
 LACTALIS_DISTRICTS = sorted(['Solapur', 'Ahilyanagar', 'Nashik', 'Pune'])
 LACTALIS_VILLAGES = LACTALIS_BMC_NAMES # Use BMC names as villages
 
-# 2. THE MCC LIST (Updated with Specific District Names)
+# 2. THE MCC LIST 
 PARAS_MCC_LIST = sorted([
-    "Barla", "Budhana", "Bulandshahr", "Jhadwan", "Jhangirabad", 
-    "Khurja", "Kuchesar Chopla", "Mawana", "Miranpur", "Najibabad"
+    "Ghodegaon", "Anatarwali", "Chedgaon", "Umbari", "Pimparne", "Madve",
+    "Wadegavhan", "Shrigonda", "Mahijalgaon", "Belapur", "Sarola Advai",
+    "Tandulwadi", "Nepatgaon", "Medshingi", "Khandali"
 ])
 
-# 3. THE SPECIFIC PARAS BMC LIST (Strictly from the Right Table in Image)
+# 3. THE SPECIFIC PARAS BMC LIST
 PARAS_BMC_LIST = [
     "Khadki", "Hivre", "Palve", "Kadus", "Padalirajangaon",
     "Deodaithan", "Dhawalgaon", "Walki"
@@ -603,7 +604,11 @@ ALL_MCC_NAMES = sorted(list(set(PARAS_MCC_LIST)))
 ALL_BMC_NAMES = sorted(list(set(GOVIND_BMC_NAMES + SDDPL_BMC_NAMES + PARAS_BMC_LIST + LACTALIS_BMC_NAMES))) 
 
 # Other Data
-PARAS_DISTRICTS = sorted(["Ahilyanagar", "Solapur", "Bulandshahr", "Merath"])
+# ADDED NEW DISTRICTS HERE
+EXISTING_DISTRICTS = ["Satara", "Pune", "Ahmednagar", "Solapur", "Aurangabad", "Ahilyanagar", "Bulandshahr", "Merath"]
+NEW_DISTRICTS = ["Barla", "Budhana", "Jhadwan", "Jhangirabad", "Khurja", "Kuchesar Chopla", "Mawana", "Miranpur", "Najibabad"]
+ALL_DISTRICTS = sorted(list(set(EXISTING_DISTRICTS + NEW_DISTRICTS + LACTALIS_DISTRICTS)))
+
 PARAS_SUB_DISTRICTS = sorted([
     "Newasa", "Pathardi", "Rahuri", "Sangamner", "Parner", 
     "Shrigonda", "Karjat", "Shrirampur", "Pandharpur", 
@@ -622,7 +627,6 @@ EXISTING_SUB_DISTRICTS = ["PHULAMBRI", "KANNAD", "SILLOD", "AURANGABAD", "PATHAR
 SUB_DISTRICT_OPTIONS = sorted(list(set(EXISTING_SUB_DISTRICTS + PARAS_SUB_DISTRICTS + LACTALIS_SUB_DISTRICTS + [t('others')])))
 EXISTING_VILLAGES = ["ALAND", "BORGAON ARJ", "MOHARA", "KAIGAON", "VIRAMGAON", "BANKINHOLA", "SHEKTA", "WADOD BAJAR", "SULTANWADI", "BABHULGAON", "LEHA", "KAUDGAON JAMB", "KARANJI", "KHANDGAON", "KAUDGAON", "CHICHONDI SHIRAL", "DAHIGAON", "BHENDA", "JAKHANGAON", "PARNER", "DEODAITHAN", "PANOLI 2", "CHIMBHALE", "RAYGAVHAN", "SULTANPUR", "RANDULLABAD", "PARGAON", "SUKHED", "KHED (BK)", "MOGARALE", "PADHEGAON", "JAVALKE"]
 VILLAGE_OPTIONS = sorted(list(set(EXISTING_VILLAGES + PARAS_VILLAGES + LACTALIS_VILLAGES + [t('others')])))
-
 
 # --- AUTO GEOLOCATION FIX (Infinite Loop Prevention) ---
 st.header(t('geolocation_header'))
@@ -682,13 +686,14 @@ with st.form(key='bmc_visit_form'):
     with col1:
         bmc_code = st.text_input(t('bmc_code_label'))
         scheduled_start_date = st.date_input(t('start_date_label'), value=dt_date(2025, 5, 7))
-        organization = st.selectbox(t('organization_label'), ["Govind Milk", "SDDPL", "Paras", "Lactalis"], index=0)
+        # ADDED NDDB (Harit Pradesh) to Organization List
+        organization = st.selectbox(t('organization_label'), ["Govind Milk", "SDDPL", "Paras", "Lactalis", "NDDB (Harit Pradesh)"], index=0)
         activity_created_by = st.selectbox(t('activity_created_by_label'), ["Dr. Shyam", "Dr Sachin", "bhusan", "subhrat", "aniket", "ritesh"], index=0)
 
     with col2:
         state = st.text_input(t('state_label'), "Maharashtra", disabled=False)
-        district_list = sorted(list(set(["Satara", "Pune", "Ahmednagar", "Solapur", "Aurangabad"] + PARAS_DISTRICTS + LACTALIS_DISTRICTS + [t('others')])))
-        district_option, other_district_input = render_select_with_specify_permanent(st, 'district_label', district_list, 'district_select', 'other_district_label')
+        # USING THE UPDATED DISTRICT LIST
+        district_option, other_district_input = render_select_with_specify_permanent(st, 'district_label', ALL_DISTRICTS + [t('others')], 'district_select', 'other_district_label')
         actual_district = other_district_input if district_option == t('others') else district_option
 
         sub_district_option, other_sub_district_input = render_select_with_specify_permanent(st, 'sub_district_label', SUB_DISTRICT_OPTIONS, 'sub_district_select', 'other_sub_district_label')
@@ -790,7 +795,6 @@ with st.form(key='bmc_visit_form'):
         wg_scale_licence = st.radio(t('wg_scale_licence_label'), yes_no_options, index=1, key="wg_scale_licence_bmc")
 
     st.markdown("---")
-    # NEW MBRT FACILITY DROPDOWN ADDED HERE
     mbrt_facility = st.selectbox(t('mbrt_facility_label'), t('options_mbrt_facility'), index=0)
     st.markdown("---")
 
