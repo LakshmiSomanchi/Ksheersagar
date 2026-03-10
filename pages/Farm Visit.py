@@ -2,6 +2,13 @@ import streamlit as st
 import pandas as pd
 from datetime import date as dt_date
 import os
+import random
+
+# --- NEW IMPORT FOR AUTO-GPS ---
+try:
+    from streamlit_js_eval import get_geolocation
+except ImportError:
+    st.error("Please install the missing package by running: pip install streamlit-js-eval")
 
 # --- Constants ---
 FARM_VISIT_DATA_FILE = "farm_visit_data.csv"
@@ -26,6 +33,12 @@ translations = {
         'page_header': "Please fill out the details for the farm visit below.",
         'language_select': "Select Language",
         'general_info_header': "General Farm Visit Information",
+        
+        # Geolocation additions
+        'geolocation_header': "Geolocation Details (Auto-GPS)",
+        'latitude_label': "Latitude (Auto-detected):",
+        'longitude_label': "Longitude (Auto-detected):",
+        
         'date_label': "Date:",
         'farmer_name_label': "Farmer Name:",
         'farmer_id_label': "Farmer ID:",
@@ -102,6 +115,12 @@ translations = {
         'page_header': "कृपया खालील फार्म भेटीसाठी तपशील भरा.",
         'language_select': "भाषा निवडा",
         'general_info_header': "सर्वसाधारण फार्म भेट माहिती",
+        
+        # Geolocation additions
+        'geolocation_header': "स्थान तपशील (Auto-GPS)",
+        'latitude_label': "अक्षांश (Automatic):",
+        'longitude_label': "रेखांश (Automatic):",
+        
         'date_label': "तारीख:",
         'farmer_name_label': "शेतकऱ्याचे नाव:",
         'farmer_id_label': "शेतकरी आयडी:",
@@ -178,6 +197,12 @@ translations = {
         'page_header': "कृपया नीचे दिए गए फॉर्म में फार्म विजिट का विवरण भरें।",
         'language_select': "भाषा चुनें",
         'general_info_header': "सामान्य फार्म विजिट जानकारी",
+        
+        # Geolocation additions
+        'geolocation_header': "जियोलोकेशन विवरण (Auto-GPS)",
+        'latitude_label': "अक्षांश (स्वचालित):",
+        'longitude_label': "देशांतर (स्वचालित):",
+        
         'date_label': "तारीख:",
         'farmer_name_label': "किसान का नाम:",
         'farmer_id_label': "किसान आईडी:",
@@ -194,7 +219,7 @@ translations = {
         'other_sub_district_label': "यदि अन्य, तो उप-ज़िला निर्दिष्ट करें:",
         'collecting_village_label': "संग्रहण गांव:",
         'bmc_label': "BMC:",
-        'mcc_label': "MCC का नाम:",
+        'mcc_label': "MCC का नाम:", 
         'other_bmc_label': "अन्य BMC नाम (निर्दिष्ट करें):",
         'herd_details_header': "दुग्ध उत्पादन और झुंड विवरण",
         'milk_production_label': "फार्म पर दुग्ध उत्पादन (मात्रा लीटर में):",
@@ -277,7 +302,7 @@ st.set_page_config(layout="centered", page_title="Ksheersagar - Data Entry")
 if 'language' not in st.session_state:
     st.session_state.language = 'en'
 
-st.sidebar.header("Language / भाषा")
+st.sidebar.header("Language / भाषा / भाषा")
 lang_map = {"English": "en", "Marathi": "mr", "Hindi": "hi"}
 selected_lang_display = st.sidebar.radio(
     "Select Language", 
@@ -294,6 +319,33 @@ if 'farm_visit_data' not in st.session_state:
 st.title(t('page_title'))
 st.write(t('page_header'))
 
+# --- AUTO GEOLOCATION FIX (Infinite Loop Prevention) ---
+st.header(t('geolocation_header'))
+
+if 'auto_lat' not in st.session_state:
+    st.session_state.auto_lat = "Not Detected"
+    st.session_state.auto_lon = "Not Detected"
+
+# Only attempt to get GPS once per session to prevent infinite reloads
+if st.session_state.auto_lat == "Not Detected":
+    st.info("Please allow location access if prompted. Fetching GPS...")
+    try:
+        geo_location = get_geolocation()
+        if geo_location:
+            st.session_state.auto_lat = str(geo_location['coords']['latitude'])
+            st.session_state.auto_lon = str(geo_location['coords']['longitude'])
+            st.rerun() # Refresh the page once to lock in the location and hide the fetcher
+    except Exception as e:
+        st.error(f"GPS Error: {e}")
+else:
+    st.success(f"GPS Locked: {st.session_state.auto_lat}, {st.session_state.auto_lon}")
+
+auto_lat = st.session_state.auto_lat
+auto_lon = st.session_state.auto_lon
+
+st.markdown("---")
+
+
 # --- SPECIFIC LISTS ADDED ---
 MCC_NAMES_LIST = ["Barla", "Budhana", "Bulandshahr", "Jhadwan", "Jhangirabad", "Khurja", "Kuchesar Chopla", "Mawana", "Miranpur", "Najibabad"]
 ORGANIZATION_LIST = ["Govind", "Paras", "Lactalis", "NDDB", "NDDB (Harit Pradesh)", "Parag", "Schreiber"]
@@ -305,6 +357,16 @@ ALL_DISTRICTS = sorted(list(set(EXISTING_DISTRICTS + NEW_DISTRICTS)))
 
 # --- Form Implementation ---
 with st.form(key='farm_visit_form'):
+    
+    # Display Captured GPS (ReadOnly) in the form so it is clear to the user
+    col_geo1, col_geo2 = st.columns(2)
+    with col_geo1:
+        st.text_input(t('latitude_label'), value=auto_lat, disabled=True)
+    with col_geo2:
+        st.text_input(t('longitude_label'), value=auto_lon, disabled=True)
+    
+    st.markdown("---")
+
     st.header(t('general_info_header'))
     col1, col2 = st.columns(2)
     with col1:
@@ -320,6 +382,7 @@ with st.form(key='farm_visit_form'):
     st.header(t('location_header'))
     col3, col4 = st.columns(2)
     with col3:
+        # UPDATED ORGANIZATION LIST
         organization = st.selectbox(t('organization_label'), ORGANIZATION_LIST)
         
         # UPDATED STATE
@@ -368,6 +431,8 @@ with st.form(key='farm_visit_form'):
         yes_en, no_en = translations['en']['yes'], translations['en']['no']
         
         submitted_data = {
+            "Latitude": auto_lat,
+            "Longitude": auto_lon,
             "Date": date.isoformat() if date else None,
             "Farmer Name": farmer_name,
             "Farmer ID": farmer_id,
