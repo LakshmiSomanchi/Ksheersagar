@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 from datetime import date as dt_date
 import os
-import random
 
 # --- Constants ---
 FARM_VISIT_DATA_FILE = "farm_visit_data.csv"
@@ -38,13 +37,15 @@ translations = {
         'organization_label': "Organization:",
         'state_label': "State:",
         'district_label': "District:",
+        'other_district_label': "If Others, Specify District:",
         'sub_district_label': "Sub District:",
+        'other_sub_district_label': "If Others, Specify Sub District:",
         'collecting_village_label': "Collecting Village:",
         'bmc_label': "BMC:",
-        'mcc_label': "MCC Name:", # Added for MCC
+        'mcc_label': "MCC Name:",
         'other_bmc_label': "Other BMC Name (Specify):",
         'herd_details_header': "Milk Production & Herd Details",
-        'milk_production_label': "Milk Production At Farm:",
+        'milk_production_label': "Milk Production At Farm (Volume in Litres):",
         'herd_size_label': "Herd Size:",
         'desi_no_label': "No Of Desi:",
         'cross_breed_no_label': "No Of Cross Breed:",
@@ -92,6 +93,7 @@ translations = {
         'submit_button': "Submit Farm Visit Data",
         'yes': "YES",
         'no': "NO",
+        'others': "OTHERS",
         'options_hygiene': ["POOR", "MODERATE", "GOOD", "BEST"],
         'options_cleaning_freq': ["DAILY", "WEEKLY", "FORTNIGHT", "TWICE IN A WEEK"]
     },
@@ -111,13 +113,15 @@ translations = {
         'organization_label': "संस्था:",
         'state_label': "राज्य:",
         'district_label': "जिल्हा:",
+        'other_district_label': "इतर असल्यास, जिल्हा नमूद करा:",
         'sub_district_label': "उप-जिल्हा:",
+        'other_sub_district_label': "इतर असल्यास, उप-जिल्हा नमूद करा:",
         'collecting_village_label': "संकलन गाव:",
         'bmc_label': "BMC:",
-        'mcc_label': "MCC नाव:", # Added for MCC
+        'mcc_label': "MCC नाव:", 
         'other_bmc_label': "इतर BMC नाव (नमूद करा):",
         'herd_details_header': "दूध उत्पादन आणि कळप तपशील",
-        'milk_production_label': "शेतातील दूध उत्पादन:",
+        'milk_production_label': "शेतातील दूध उत्पादन (लिटरमध्ये):",
         'herd_size_label': "कळपाचा आकार:",
         'desi_no_label': "देशी जनावरांची संख्या:",
         'cross_breed_no_label': "संकरित जनावरांची संख्या:",
@@ -165,6 +169,7 @@ translations = {
         'submit_button': "फार्म भेट डेटा सबमिट करा",
         'yes': "होय",
         'no': "नाही",
+        'others': "इतर",
         'options_hygiene': ["खराब", "मध्यम", "चांगली", "उत्तम"],
         'options_cleaning_freq': ["दररोज", "आठवड्यातून", "पंधरवड्यातून", "आठवड्यातून दोनदा"]
     },
@@ -184,13 +189,15 @@ translations = {
         'organization_label': "संगठन:",
         'state_label': "राज्य:",
         'district_label': "जिला:",
+        'other_district_label': "यदि अन्य, तो ज़िला निर्दिष्ट करें:",
         'sub_district_label': "उप-जिला:",
+        'other_sub_district_label': "यदि अन्य, तो उप-ज़िला निर्दिष्ट करें:",
         'collecting_village_label': "संग्रहण गांव:",
         'bmc_label': "BMC:",
-        'mcc_label': "MCC का नाम:", # Added for MCC
+        'mcc_label': "MCC का नाम:",
         'other_bmc_label': "अन्य BMC नाम (निर्दिष्ट करें):",
         'herd_details_header': "दुग्ध उत्पादन और झुंड विवरण",
-        'milk_production_label': "फार्म पर दुग्ध उत्पादन:",
+        'milk_production_label': "फार्म पर दुग्ध उत्पादन (मात्रा लीटर में):",
         'herd_size_label': "झुंड का आकार:",
         'desi_no_label': "देशी पशुओं की संख्या:",
         'cross_breed_no_label': "क्रॉस ब्रीड की संख्या:",
@@ -238,6 +245,7 @@ translations = {
         'submit_button': "फार्म विजिट डेटा सबमिट करें",
         'yes': "हाँ",
         'no': "नहीं",
+        'others': "अन्य",
         'options_hygiene': ["खराब", "सामान्य", "अच्छा", "सबसे अच्छा"],
         'options_cleaning_freq': ["दैनिक", "साप्ताहिक", "पखवाड़े में एक बार", "सप्ताह में दो बार"]
     }
@@ -246,6 +254,22 @@ translations = {
 # --- Function to get translated text ---
 def t(key):
     return translations[st.session_state.language][key]
+
+# --- HELPER FUNCTION FOR CONDITIONAL UI (Permanent Specify Field) ---
+def render_select_with_specify_permanent(container, label_key, options_list, select_key, specify_label_key, is_multi=False):
+    col_select, col_specify = container.columns([0.5, 0.5])
+    specify_key = f"{select_key}_specify"
+    if specify_key not in st.session_state:
+        st.session_state[specify_key] = ""
+    with col_select:
+        if is_multi:
+            select_output = st.multiselect(t(label_key), options_list, key=select_key, default=[])
+        else:
+            select_output = st.selectbox(t(label_key), options_list, key=select_key, index=0)
+    with col_specify:
+        specify_output = st.text_input(t(specify_label_key), key=specify_key, label_visibility="visible")
+    return select_output, specify_output
+
 
 st.set_page_config(layout="centered", page_title="Ksheersagar - Data Entry")
 
@@ -272,7 +296,12 @@ st.write(t('page_header'))
 
 # --- SPECIFIC LISTS ADDED ---
 MCC_NAMES_LIST = ["Barla", "Budhana", "Bulandshahr", "Jhadwan", "Jhangirabad", "Khurja", "Kuchesar Chopla", "Mawana", "Miranpur", "Najibabad"]
-ORGANIZATION_LIST = ["Govind", "Paras", "Lactalis", "NDDB", "Parag", "Schreiber"]
+ORGANIZATION_LIST = ["Govind", "Paras", "Lactalis", "NDDB", "NDDB (Harit Pradesh)", "Parag", "Schreiber"]
+
+# Districts List Updated
+EXISTING_DISTRICTS = ["Satara", "Pune", "Ahmednagar", "Solapur"]
+NEW_DISTRICTS = ["Barla", "Budhana", "Jhadwan", "Jhangirabad", "Khurja", "Kuchesar Chopla", "Mawana", "Miranpur", "Najibabad", "Merath", "Bulandshahr"]
+ALL_DISTRICTS = sorted(list(set(EXISTING_DISTRICTS + NEW_DISTRICTS)))
 
 # --- Form Implementation ---
 with st.form(key='farm_visit_form'):
@@ -291,22 +320,34 @@ with st.form(key='farm_visit_form'):
     st.header(t('location_header'))
     col3, col4 = st.columns(2)
     with col3:
-        # UPDATED ORGANIZATION LIST
         organization = st.selectbox(t('organization_label'), ORGANIZATION_LIST)
-        state = st.text_input(t('state_label'), "Maharashtra", disabled=True)
-        district = st.selectbox(t('district_label'), ["Satara", "Pune", "Ahmednagar", "Solapur"])
         
-        # NEW MCC DROPDOWN
+        # UPDATED STATE
+        state = st.selectbox(t('state_label'), ["Maharashtra", "UP"], index=0)
+        
+        # UPDATED DISTRICT
+        district_option, other_district_input = render_select_with_specify_permanent(
+            st, 'district_label', ALL_DISTRICTS + [t('others')], 'district_select', 'other_district_label'
+        )
+        actual_district = other_district_input if district_option == t('others') else district_option
+        
         mcc_selected = st.selectbox(t('mcc_label'), ["SELECT"] + MCC_NAMES_LIST + ["OTHERS"])
         
     with col4:
-        sub_district = st.selectbox(t('sub_district_label'), ["Phaltan", "malshiras", "Baramati", "Indapur", "Daund", "Purander", "Pachgani", "Man", "Khatav", "Koregaon", "Khandala", "Shirur"])
+        # UPDATED SUB-DISTRICT
+        sub_districts_list = ["Phaltan", "malshiras", "Baramati", "Indapur", "Daund", "Purander", "Pachgani", "Man", "Khatav", "Koregaon", "Khandala", "Shirur"]
+        sub_district_option, other_sub_district_input = render_select_with_specify_permanent(
+            st, 'sub_district_label', sub_districts_list + [t('others')], 'sub_district_select', 'other_sub_district_label'
+        )
+        actual_sub_district = other_sub_district_input if sub_district_option == t('others') else sub_district_option
+        
         collecting_village = st.text_input(t('collecting_village_label'), "SAKHARWADi")
         bmc_selected = st.selectbox(t('bmc_label'), ["SELECT", "OTHERS"]) 
 
     st.header(t('herd_details_header'))
     col5, col6 = st.columns(2)
     with col5:
+        # UPDATED MILK PRODUCTION LABEL
         milk_production = st.number_input(t('milk_production_label'), min_value=0, value=95)
         herd_size = st.number_input(t('herd_size_label'), min_value=0, value=16)
     with col6:
@@ -331,10 +372,12 @@ with st.form(key='farm_visit_form'):
             "Farmer Name": farmer_name,
             "Farmer ID": farmer_id,
             "Organization": organization,
-            "MCC Name": mcc_selected, # Saved New Data
+            "State": state,
+            "District": actual_district,
+            "Sub District": actual_sub_district,
+            "MCC Name": mcc_selected, 
             "BMC Name": bmc_selected,
-            "District": district,
-            "Sub District": sub_district,
+            "Milk Production At Farm": milk_production,
             "AI Service Proximity": yes_en if ai_proximity == t('yes') else no_en,
             "Soughted Sex-Semen": yes_en if sex_semen == t('yes') else no_en,
             "Overall Hygiene": overall_hygiene,
