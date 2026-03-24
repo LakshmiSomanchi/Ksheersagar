@@ -72,6 +72,12 @@ translations = {
         'active_women_farmers_label': "No. of Women Farmers (Active Farmers):",
         'active_men_farmers_label': "No. of Men Farmers (Active Farmers):",
         
+        # NEW: Cow and Buffalo Breakdown
+        'no_of_cows_label': "No. of Cows:",
+        'no_of_buffaloes_label': "No. of Buffaloes:",
+        'cow_milk_lpd_label': "Litres of milk from Cows (LPD):",
+        'buffalo_milk_lpd_label': "Litres of milk from Buffaloes (LPD):",
+        
         'capacity_header': "Capacity & Collection Details",
         'total_routes_label': "Total No. of Routes:",
         'total_vlcs_label': "Total No. of VLCs:",
@@ -232,6 +238,12 @@ translations = {
         'active_farmers_label': "सक्रिय शेतकरी (संख्या):",
         'active_women_farmers_label': "महिला शेतकरी (सक्रिय शेतकरी):",
         'active_men_farmers_label': "पुरुष शेतकरी (सक्रिय शेतकरी):",
+
+        # NEW: Cow and Buffalo Breakdown
+        'no_of_cows_label': "गायींची संख्या:",
+        'no_of_buffaloes_label': "म्हशींची संख्या:",
+        'cow_milk_lpd_label': "गायींचे दूध (लिटर प्रतिदिन):",
+        'buffalo_milk_lpd_label': "म्हशींचे दूध (लिटर प्रतिदिन):",
         
         'capacity_header': "क्षमता आणि संकलन तपशील",
         'total_routes_label': "एकूण मार्ग (Routes):",
@@ -392,6 +404,12 @@ translations = {
         'active_farmers_label': "सक्रिय किसान (संख्या):",
         'active_women_farmers_label': "महिला किसानों की संख्या (सक्रिय किसान):",
         'active_men_farmers_label': "पुरुष किसानों की संख्या (सक्रिय किसान):",
+
+        # NEW: Cow and Buffalo Breakdown
+        'no_of_cows_label': "गायों की संख्या:",
+        'no_of_buffaloes_label': "भैंसों की संख्या:",
+        'cow_milk_lpd_label': "गायों से दूध (लीटर प्रतिदिन):",
+        'buffalo_milk_lpd_label': "भैंसों से दूध (लीटर प्रतिदिन):",
         
         'capacity_header': "क्षमता और संकलन (कलेक्शन) विवरण",
         'total_routes_label': "रूट्स की कुल संख्या:",
@@ -728,6 +746,16 @@ with st.form(key='bmc_visit_form'):
         active_men_farmer_no = st.number_input(t('active_men_farmers_label'), min_value=0, value=55, key="active_men")
         active_women_farmer_no = st.number_input(t('active_women_farmers_label'), min_value=0, value=10, key="active_women")
 
+    # --- NEW: Animal Counts and Production ---
+    st.subheader("Animal Counts & Production Breakdown")
+    col_anim1, col_anim2 = st.columns(2)
+    with col_anim1:
+        no_of_cows = st.number_input(t('no_of_cows_label'), min_value=0)
+        cow_milk_lpd = st.number_input(t('cow_milk_lpd_label'), min_value=0.0)
+    with col_anim2:
+        no_of_buffaloes = st.number_input(t('no_of_buffaloes_label'), min_value=0)
+        buffalo_milk_lpd = st.number_input(t('buffalo_milk_lpd_label'), min_value=0.0)
+
     st.header(t('capacity_header'))
     col_routes1, col_routes2 = st.columns(2)
     with col_routes1:
@@ -907,6 +935,11 @@ with st.form(key='bmc_visit_form'):
             "Active Farmer (No.)": active_farmer_no,
             "No. of Women Farmers (Active Farmers)": active_women_farmer_no, 
             "No. of Men Farmers (Active Farmers)": active_men_farmer_no, 
+
+            "Total No. of Cows": no_of_cows,
+            "Total No. of Buffaloes": no_of_buffaloes,
+            "Cow Milk (LPD)": cow_milk_lpd,
+            "Buffalo Milk (LPD)": buffalo_milk_lpd,
             
             "Total No. of Routes": total_routes,
             "Total No. of VLCs": total_vlcs,
