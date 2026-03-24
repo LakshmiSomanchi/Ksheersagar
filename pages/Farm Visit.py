@@ -219,7 +219,7 @@ translations = {
         'other_sub_district_label': "यदि अन्य, तो उप-ज़िला निर्दिष्ट करें:",
         'collecting_village_label': "संग्रहण गांव:",
         'bmc_label': "BMC:",
-        'mcc_label': "MCC का नाम:", 
+        'mcc_label': "MCC का नाम:",
         'other_bmc_label': "अन्य BMC नाम (निर्दिष्ट करें):",
         'herd_details_header': "दुग्ध उत्पादन और झुंड विवरण",
         'milk_production_label': "फार्म पर दुग्ध उत्पादन (मात्रा लीटर में):",
@@ -302,7 +302,7 @@ st.set_page_config(layout="centered", page_title="Ksheersagar - Data Entry")
 if 'language' not in st.session_state:
     st.session_state.language = 'en'
 
-st.sidebar.header("Language / भाषा / भाषा")
+st.sidebar.header("Language / भाषा")
 lang_map = {"English": "en", "Marathi": "mr", "Hindi": "hi"}
 selected_lang_display = st.sidebar.radio(
     "Select Language", 
@@ -318,6 +318,15 @@ if 'farm_visit_data' not in st.session_state:
 
 st.title(t('page_title'))
 st.write(t('page_header'))
+
+# --- SPECIFIC LISTS ADDED ---
+MCC_NAMES_LIST = ["Barla", "Budhana", "Bulandshahr", "Jhadwan", "Jhangirabad", "Khurja", "Kuchesar Chopla", "Mawana", "Miranpur", "Najibabad"]
+ORGANIZATION_LIST = ["Govind", "Paras", "Lactalis", "NDDB", "NDDB (Harit Pradesh)", "Parag", "Schreiber"]
+
+# Districts List Updated
+EXISTING_DISTRICTS = ["Satara", "Pune", "Ahmednagar", "Solapur"]
+NEW_DISTRICTS = ["Barla", "Budhana", "Jhadwan", "Jhangirabad", "Khurja", "Kuchesar Chopla", "Mawana", "Miranpur", "Najibabad", "Merath", "Bulandshahr"]
+ALL_DISTRICTS = sorted(list(set(EXISTING_DISTRICTS + NEW_DISTRICTS)))
 
 # --- AUTO GEOLOCATION FIX (Infinite Loop Prevention) ---
 st.header(t('geolocation_header'))
@@ -344,16 +353,6 @@ auto_lat = st.session_state.auto_lat
 auto_lon = st.session_state.auto_lon
 
 st.markdown("---")
-
-
-# --- SPECIFIC LISTS ADDED ---
-MCC_NAMES_LIST = ["Barla", "Budhana", "Bulandshahr", "Jhadwan", "Jhangirabad", "Khurja", "Kuchesar Chopla", "Mawana", "Miranpur", "Najibabad"]
-ORGANIZATION_LIST = ["Govind", "Paras", "Lactalis", "NDDB", "NDDB (Harit Pradesh)", "Parag", "Schreiber"]
-
-# Districts List Updated
-EXISTING_DISTRICTS = ["Satara", "Pune", "Ahmednagar", "Solapur"]
-NEW_DISTRICTS = ["Barla", "Budhana", "Jhadwan", "Jhangirabad", "Khurja", "Kuchesar Chopla", "Mawana", "Miranpur", "Najibabad", "Merath", "Bulandshahr"]
-ALL_DISTRICTS = sorted(list(set(EXISTING_DISTRICTS + NEW_DISTRICTS)))
 
 # --- Form Implementation ---
 with st.form(key='farm_visit_form'):
@@ -455,4 +454,16 @@ with st.form(key='farm_visit_form'):
 
 # --- View Data ---
 if st.session_state.farm_visit_data:
-    st.dataframe(pd.DataFrame(st.session_state.farm_visit_data))
+    df_display = pd.DataFrame(st.session_state.farm_visit_data)
+    st.dataframe(df_display)
+    
+    # --- DOWNLOAD BUTTON SECTION ---
+    st.markdown("---")
+    st.subheader("Download Data")
+    csv = df_display.to_csv(index=False).encode('utf-8')
+    st.download_button(
+        label="Download Farm Visit Data as CSV",
+        data=csv,
+        file_name="farm_visit_data.csv",
+        mime="text/csv",
+    )
