@@ -58,11 +58,13 @@ translations = {
         'mcc_label': "MCC Name:",
         'other_bmc_label': "Other BMC Name (Specify):",
         'herd_details_header': "Milk Production & Herd Details",
-        'milk_production_label': "Milk Production At Farm (Volume in Litres):",
+        'cow_milk_production_label': "Litres of milk from Cows per day:",
+        'buffalo_milk_production_label': "Litres of milk from Buffaloes per day:",
         'herd_size_label': "Herd Size:",
         'desi_no_label': "No Of Desi:",
         'cross_breed_no_label': "No Of Cross Breed:",
-        'cattle_in_milk_no_label': "No Of Cattle In Milk:",
+        'cows_in_milk_no_label': "No. of Cows:",
+        'buffaloes_in_milk_no_label': "No. of Buffaloes:",
         'shed_label': "Shed (Provision For Minimum 5 Animals):",
         'loose_housing_label': "Loose Housing:",
         'water_availability_label': "Ad-hoc Water Availability:",
@@ -140,11 +142,13 @@ translations = {
         'mcc_label': "MCC नाव:", 
         'other_bmc_label': "इतर BMC नाव (नमूद करा):",
         'herd_details_header': "दूध उत्पादन आणि कळप तपशील",
-        'milk_production_label': "शेतातील दूध उत्पादन (लिटरमध्ये):",
+        'cow_milk_production_label': "गायींपासून दररोज मिळणारे दूध (लिटरमध्ये):",
+        'buffalo_milk_production_label': "म्हशींपासून दररोज मिळणारे दूध (लिटरमध्ये):",
         'herd_size_label': "कळपाचा आकार:",
         'desi_no_label': "देशी जनावरांची संख्या:",
         'cross_breed_no_label': "संकरित जनावरांची संख्या:",
-        'cattle_in_milk_no_label': "दुधाळ जनावरांची संख्या:",
+        'cows_in_milk_no_label': "गायींची संख्या:",
+        'buffaloes_in_milk_no_label': "म्हशींची संख्या:",
         'shed_label': "शेड (किमान 5 जनावरांची तरतूद):",
         'loose_housing_label': "मोकळा गोठा:",
         'water_availability_label': "पाण्याची उपलब्धता:",
@@ -219,14 +223,16 @@ translations = {
         'other_sub_district_label': "यदि अन्य, तो उप-ज़िला निर्दिष्ट करें:",
         'collecting_village_label': "संग्रहण गांव:",
         'bmc_label': "BMC:",
-        'mcc_label': "MCC का नाम:",
+        'mcc_label': "MCC का नाम:", 
         'other_bmc_label': "अन्य BMC नाम (निर्दिष्ट करें):",
         'herd_details_header': "दुग्ध उत्पादन और झुंड विवरण",
-        'milk_production_label': "फार्म पर दुग्ध उत्पादन (मात्रा लीटर में):",
+        'cow_milk_production_label': "गायों से प्रतिदिन मिलने वाला दूध (लीटर में):",
+        'buffalo_milk_production_label': "भैंसों से प्रतिदिन मिलने वाला दूध (लीटर में):",
         'herd_size_label': "झुंड का आकार:",
         'desi_no_label': "देशी पशुओं की संख्या:",
         'cross_breed_no_label': "क्रॉस ब्रीड की संख्या:",
-        'cattle_in_milk_no_label': "दुधारू पशुओं की संख्या:",
+        'cows_in_milk_no_label': "गायों की संख्या:",
+        'buffaloes_in_milk_no_label': "भैंसों की संख्या:",
         'shed_label': "शेड (न्यूनतम 5 पशुओं के लिए व्यवस्था):",
         'loose_housing_label': "लूज हाउसिंग:",
         'water_availability_label': "पानी की उपलब्धता:",
@@ -302,7 +308,7 @@ st.set_page_config(layout="centered", page_title="Ksheersagar - Data Entry")
 if 'language' not in st.session_state:
     st.session_state.language = 'en'
 
-st.sidebar.header("Language / भाषा")
+st.sidebar.header("Language / भाषा / भाषा")
 lang_map = {"English": "en", "Marathi": "mr", "Hindi": "hi"}
 selected_lang_display = st.sidebar.radio(
     "Select Language", 
@@ -318,15 +324,6 @@ if 'farm_visit_data' not in st.session_state:
 
 st.title(t('page_title'))
 st.write(t('page_header'))
-
-# --- SPECIFIC LISTS ADDED ---
-MCC_NAMES_LIST = ["Barla", "Budhana", "Bulandshahr", "Jhadwan", "Jhangirabad", "Khurja", "Kuchesar Chopla", "Mawana", "Miranpur", "Najibabad"]
-ORGANIZATION_LIST = ["Govind", "Paras", "Lactalis", "NDDB", "NDDB (Harit Pradesh)", "Parag", "Schreiber"]
-
-# Districts List Updated
-EXISTING_DISTRICTS = ["Satara", "Pune", "Ahmednagar", "Solapur"]
-NEW_DISTRICTS = ["Barla", "Budhana", "Jhadwan", "Jhangirabad", "Khurja", "Kuchesar Chopla", "Mawana", "Miranpur", "Najibabad", "Merath", "Bulandshahr"]
-ALL_DISTRICTS = sorted(list(set(EXISTING_DISTRICTS + NEW_DISTRICTS)))
 
 # --- AUTO GEOLOCATION FIX (Infinite Loop Prevention) ---
 st.header(t('geolocation_header'))
@@ -353,6 +350,16 @@ auto_lat = st.session_state.auto_lat
 auto_lon = st.session_state.auto_lon
 
 st.markdown("---")
+
+
+# --- SPECIFIC LISTS ADDED ---
+MCC_NAMES_LIST = ["Barla", "Budhana", "Bulandshahr", "Jhadwan", "Jhangirabad", "Khurja", "Kuchesar Chopla", "Mawana", "Miranpur", "Najibabad"]
+ORGANIZATION_LIST = ["Govind", "Paras", "Lactalis", "NDDB", "NDDB (Harit Pradesh)", "Parag", "Schreiber"]
+
+# Districts List Updated
+EXISTING_DISTRICTS = ["Satara", "Pune", "Ahmednagar", "Solapur"]
+NEW_DISTRICTS = ["Barla", "Budhana", "Jhadwan", "Jhangirabad", "Khurja", "Kuchesar Chopla", "Mawana", "Miranpur", "Najibabad", "Merath", "Bulandshahr"]
+ALL_DISTRICTS = sorted(list(set(EXISTING_DISTRICTS + NEW_DISTRICTS)))
 
 # --- Form Implementation ---
 with st.form(key='farm_visit_form'):
@@ -409,10 +416,14 @@ with st.form(key='farm_visit_form'):
     st.header(t('herd_details_header'))
     col5, col6 = st.columns(2)
     with col5:
-        # UPDATED MILK PRODUCTION LABEL
-        milk_production = st.number_input(t('milk_production_label'), min_value=0, value=95)
+        # UPDATED: Replaced generic milk production with specific Cow & Buffalo
+        cow_milk_production = st.number_input(t('cow_milk_production_label'), min_value=0.0, value=50.0)
+        buffalo_milk_production = st.number_input(t('buffalo_milk_production_label'), min_value=0.0, value=45.0)
         herd_size = st.number_input(t('herd_size_label'), min_value=0, value=16)
     with col6:
+        # UPDATED: Replaced cattle in milk with specific Cows & Buffaloes
+        cows_in_milk = st.number_input(t('cows_in_milk_no_label'), min_value=0, value=8)
+        buffaloes_in_milk = st.number_input(t('buffaloes_in_milk_no_label'), min_value=0, value=6)
         shed = st.radio(t('shed_label'), [t('yes'), t('no')])
         loose_housing = st.radio(t('loose_housing_label'), [t('yes'), t('no')])
 
@@ -441,7 +452,11 @@ with st.form(key='farm_visit_form'):
             "Sub District": actual_sub_district,
             "MCC Name": mcc_selected, 
             "BMC Name": bmc_selected,
-            "Milk Production At Farm": milk_production,
+            "Cow Milk Production (L/day)": cow_milk_production,
+            "Buffalo Milk Production (L/day)": buffalo_milk_production,
+            "Cows": cows_in_milk,
+            "Buffaloes": buffaloes_in_milk,
+            "Herd Size": herd_size,
             "AI Service Proximity": yes_en if ai_proximity == t('yes') else no_en,
             "Soughted Sex-Semen": yes_en if sex_semen == t('yes') else no_en,
             "Overall Hygiene": overall_hygiene,
@@ -454,16 +469,4 @@ with st.form(key='farm_visit_form'):
 
 # --- View Data ---
 if st.session_state.farm_visit_data:
-    df_display = pd.DataFrame(st.session_state.farm_visit_data)
-    st.dataframe(df_display)
-    
-    # --- DOWNLOAD BUTTON SECTION ---
-    st.markdown("---")
-    st.subheader("Download Data")
-    csv = df_display.to_csv(index=False).encode('utf-8')
-    st.download_button(
-        label="Download Farm Visit Data as CSV",
-        data=csv,
-        file_name="farm_visit_data.csv",
-        mime="text/csv",
-    )
+    st.dataframe(pd.DataFrame(st.session_state.farm_visit_data))
