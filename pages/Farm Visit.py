@@ -109,6 +109,7 @@ translations = {
         'yes': "YES",
         'no': "NO",
         'others': "OTHERS",
+        'Download CSV': "Download CSV",
         'options_hygiene': ["POOR", "MODERATE", "GOOD", "BEST"],
         'options_cleaning_freq': ["DAILY", "WEEKLY", "FORTNIGHT", "TWICE IN A WEEK"]
     },
@@ -193,6 +194,7 @@ translations = {
         'yes': "होय",
         'no': "नाही",
         'others': "इतर",
+        'Download CSV': "CSV डाउनलोड करा",
         'options_hygiene': ["खराब", "मध्यम", "चांगली", "उत्तम"],
         'options_cleaning_freq': ["दररोज", "आठवड्यातून", "पंधरवड्यातून", "आठवड्यातून दोनदा"]
     },
@@ -277,6 +279,7 @@ translations = {
         'yes': "हाँ",
         'no': "नहीं",
         'others': "अन्य",
+        'Download CSV': "CSV डाउनलोड करें",
         'options_hygiene': ["खराब", "सामान्य", "अच्छा", "सबसे अच्छा"],
         'options_cleaning_freq': ["दैनिक", "साप्ताहिक", "पखवाड़े में एक बार", "सप्ताह में दो बार"]
     }
@@ -376,7 +379,7 @@ with st.form(key='farm_visit_form'):
     st.header(t('general_info_header'))
     col1, col2 = st.columns(2)
     with col1:
-        date = st.date_input(t('date_label'), value=dt_date(2025, 5, 7))
+        date = st.date_input(t('date_label'), value=dt_date.today())
         farmer_name = st.text_input(t('farmer_name_label'), "Sarika Pawar")
         farmer_id = st.text_input(t('farmer_id_label'), "123-02-BB-00768")
     with col2:
@@ -388,13 +391,9 @@ with st.form(key='farm_visit_form'):
     st.header(t('location_header'))
     col3, col4 = st.columns(2)
     with col3:
-        # UPDATED ORGANIZATION LIST
         organization = st.selectbox(t('organization_label'), ORGANIZATION_LIST)
-        
-        # UPDATED STATE
         state = st.selectbox(t('state_label'), ["Maharashtra", "UP"], index=0)
         
-        # UPDATED DISTRICT
         district_option, other_district_input = render_select_with_specify_permanent(
             st, 'district_label', ALL_DISTRICTS + [t('others')], 'district_select', 'other_district_label'
         )
@@ -403,7 +402,6 @@ with st.form(key='farm_visit_form'):
         mcc_selected = st.selectbox(t('mcc_label'), ["SELECT"] + MCC_NAMES_LIST + ["OTHERS"])
         
     with col4:
-        # UPDATED SUB-DISTRICT
         sub_districts_list = ["Phaltan", "malshiras", "Baramati", "Indapur", "Daund", "Purander", "Pachgani", "Man", "Khatav", "Koregaon", "Khandala", "Shirur"]
         sub_district_option, other_sub_district_input = render_select_with_specify_permanent(
             st, 'sub_district_label', sub_districts_list + [t('others')], 'sub_district_select', 'other_sub_district_label'
@@ -416,12 +414,10 @@ with st.form(key='farm_visit_form'):
     st.header(t('herd_details_header'))
     col5, col6 = st.columns(2)
     with col5:
-        # UPDATED: Replaced generic milk production with specific Cow & Buffalo
         cow_milk_production = st.number_input(t('cow_milk_production_label'), min_value=0.0, value=50.0)
         buffalo_milk_production = st.number_input(t('buffalo_milk_production_label'), min_value=0.0, value=45.0)
         herd_size = st.number_input(t('herd_size_label'), min_value=0, value=16)
     with col6:
-        # UPDATED: Replaced cattle in milk with specific Cows & Buffaloes
         cows_in_milk = st.number_input(t('cows_in_milk_no_label'), min_value=0, value=8)
         buffaloes_in_milk = st.number_input(t('buffaloes_in_milk_no_label'), min_value=0, value=6)
         shed = st.radio(t('shed_label'), [t('yes'), t('no')])
@@ -467,6 +463,23 @@ with st.form(key='farm_visit_form'):
         pd.DataFrame([submitted_data]).to_csv(FARM_VISIT_DATA_FILE, mode='a', index=False, header=not os.path.exists(FARM_VISIT_DATA_FILE))
         st.success("Data Saved!")
 
-# --- View Data ---
+# --- View Data & Download Section ---
 if st.session_state.farm_visit_data:
-    st.dataframe(pd.DataFrame(st.session_state.farm_visit_data))
+    st.markdown("---")
+    st.subheader("Submitted Data")
+    
+    # Convert data into DataFrame
+    df_display = pd.DataFrame(st.session_state.farm_visit_data)
+    st.dataframe(df_display)
+    
+    # Generate CSV byte data
+    csv = df_display.to_csv(index=False).encode('utf-8')
+    
+    # Download Button placed safely outside the form logic
+    st.download_button(
+        label=t('Download CSV'),
+        data=csv,
+        file_name=f"farm_visit_data_{dt_date.today()}.csv",
+        mime="text/csv",
+        key="download_csv_button"
+    )
