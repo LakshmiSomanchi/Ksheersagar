@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 from datetime import date as dt_date
 import os
-import io  # --- NEW IMPORT FOR EXCEL DOWNLOAD ---
 
 # --- NEW IMPORT FOR AUTO-GPS ---
 # You must run: pip install streamlit-js-eval
@@ -13,6 +12,7 @@ except ImportError:
 
 # --- Constants ---
 BMC_VISIT_DATA_FILE = "bmc_visit_data.csv"
+FARM_VISIT_DATA_FILE = "farm_visit_data.csv"
 
 # --- CACHING FIX: Load data only once ---
 @st.cache_data
@@ -1034,29 +1034,37 @@ if st.session_state.bmc_visit_data:
     df_bmc_visit_all = pd.DataFrame(st.session_state.bmc_visit_data).astype(str)
     st.dataframe(df_bmc_visit_all, use_container_width=True)
     
-    # --- MULTI-PAGE DOWNLOAD FEATURE ---
-    buffer = io.BytesIO()
+    # --- MULTI-PAGE CSV DOWNLOAD FEATURE ---
+    st.markdown("### 📥 Download Data (CSV)")
+    col_dl1, col_dl2 = st.columns(2)
     
-    with pd.ExcelWriter(buffer, engine='xlsxwriter') as writer:
-        df_bmc_visit_all.to_excel(writer, sheet_name='Page 1 - BMC Visit', index=False)
+    # Button 1: Download Current Page (BMC Visit)
+    with col_dl1:
+        csv_bmc = df_bmc_visit_all.to_csv(index=False).encode('utf-8')
+        st.download_button(
+            label="Download BMC Visit Data (Page 1)",
+            data=csv_bmc,
+            file_name=f"BMC_Visit_Data_{dt_date.today()}.csv",
+            mime="text/csv",
+            key="dl_bmc_csv_page1"
+        )
         
-        # Placeholder for Page 2 file name - update this when you have Page 2 ready
-        page_2_file = "page_2_data.csv" 
-        
-        if os.path.exists(page_2_file):
+    # Button 2: Download Other Page (Farm Visit)
+    with col_dl2:
+        if os.path.exists(FARM_VISIT_DATA_FILE):
             try:
-                df_page_2 = pd.read_csv(page_2_file, dtype=str)
-                df_page_2.to_excel(writer, sheet_name='Page 2 - Other Data', index=False)
+                df_farm = pd.read_csv(FARM_VISIT_DATA_FILE, dtype=str)
+                csv_farm = df_farm.to_csv(index=False).encode('utf-8')
+                st.download_button(
+                    label="Download Farm Visit Data (Page 2)",
+                    data=csv_farm,
+                    file_name=f"Farm_Visit_Data_{dt_date.today()}.csv",
+                    mime="text/csv",
+                    key="dl_farm_csv_page1"
+                )
             except Exception as e:
-                st.warning(f"Could not load Page 2 data for download: {e}")
+                st.warning(f"Could not load Page 2 data: {e}")
         else:
-            pd.DataFrame({"Message": ["No data submitted on Page 2 yet."]}).to_excel(writer, sheet_name='Page 2 - Other Data', index=False)
-
-    st.download_button(
-        label="📥 Download All Data (Both Pages)",
-        data=buffer.getvalue(),
-        file_name="All_Ksheersagar_Data.xlsx",
-        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    )
+            st.button("No Page 2 Data Available Yet", disabled=True, key="dl_farm_disabled")
 else:
     st.info("No Visit data submitted yet.")
