@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 from datetime import date as dt_date
 import os
+import io  # --- NEW IMPORT FOR EXCEL DOWNLOAD ---
 
 # --- NEW IMPORT FOR AUTO-GPS ---
 # You must run: pip install streamlit-js-eval
@@ -1032,7 +1033,30 @@ if st.session_state.bmc_visit_data:
     st.subheader("All Submitted Visit Entries:")
     df_bmc_visit_all = pd.DataFrame(st.session_state.bmc_visit_data).astype(str)
     st.dataframe(df_bmc_visit_all, use_container_width=True)
-    csv_bmc_visit_all = df_bmc_visit_all.to_csv(index=False).encode('utf-8')
-    st.download_button(label="Download All Data as CSV", data=csv_bmc_visit_all, file_name="all_visit_data.csv", mime="text/csv")
+    
+    # --- MULTI-PAGE DOWNLOAD FEATURE ---
+    buffer = io.BytesIO()
+    
+    with pd.ExcelWriter(buffer, engine='xlsxwriter') as writer:
+        df_bmc_visit_all.to_excel(writer, sheet_name='Page 1 - BMC Visit', index=False)
+        
+        # Placeholder for Page 2 file name - update this when you have Page 2 ready
+        page_2_file = "page_2_data.csv" 
+        
+        if os.path.exists(page_2_file):
+            try:
+                df_page_2 = pd.read_csv(page_2_file, dtype=str)
+                df_page_2.to_excel(writer, sheet_name='Page 2 - Other Data', index=False)
+            except Exception as e:
+                st.warning(f"Could not load Page 2 data for download: {e}")
+        else:
+            pd.DataFrame({"Message": ["No data submitted on Page 2 yet."]}).to_excel(writer, sheet_name='Page 2 - Other Data', index=False)
+
+    st.download_button(
+        label="📥 Download All Data (Both Pages)",
+        data=buffer.getvalue(),
+        file_name="All_Ksheersagar_Data.xlsx",
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
 else:
     st.info("No Visit data submitted yet.")
