@@ -3,6 +3,7 @@ import pandas as pd
 from datetime import date as dt_date
 import os
 import random
+import io  # --- NEW IMPORT FOR EXCEL DOWNLOAD ---
 
 # --- NEW IMPORT FOR AUTO-GPS ---
 try:
@@ -12,6 +13,7 @@ except ImportError:
 
 # --- Constants ---
 FARM_VISIT_DATA_FILE = "farm_visit_data.csv"
+BMC_VISIT_DATA_FILE = "bmc_visit_data.csv" # Added reference to Page 1 file
 
 # --- CACHING FIX: Load data only once ---
 @st.cache_data
@@ -109,7 +111,7 @@ translations = {
         'yes': "YES",
         'no': "NO",
         'others': "OTHERS",
-        'Download CSV': "Download CSV",
+        'Download CSV': "Download All Data (Both Pages)", # Updated translation
         'options_hygiene': ["POOR", "MODERATE", "GOOD", "BEST"],
         'options_cleaning_freq': ["DAILY", "WEEKLY", "FORTNIGHT", "TWICE IN A WEEK"]
     },
@@ -194,7 +196,7 @@ translations = {
         'yes': "होय",
         'no': "नाही",
         'others': "इतर",
-        'Download CSV': "CSV डाउनलोड करा",
+        'Download CSV': "सर्व डेटा डाउनलोड करा (दोन्ही पृष्ठे)", # Updated translation
         'options_hygiene': ["खराब", "मध्यम", "चांगली", "उत्तम"],
         'options_cleaning_freq': ["दररोज", "आठवड्यातून", "पंधरवड्यातून", "आठवड्यातून दोनदा"]
     },
@@ -279,7 +281,7 @@ translations = {
         'yes': "हाँ",
         'no': "नहीं",
         'others': "अन्य",
-        'Download CSV': "CSV डाउनलोड करें",
+        'Download CSV': "सभी डेटा डाउनलोड करें (दोनों पृष्ठ)", # Updated translation
         'options_hygiene': ["खराब", "सामान्य", "अच्छा", "सबसे अच्छा"],
         'options_cleaning_freq': ["दैनिक", "साप्ताहिक", "पखवाड़े में एक बार", "सप्ताह में दो बार"]
     }
@@ -466,20 +468,34 @@ with st.form(key='farm_visit_form'):
 # --- View Data & Download Section ---
 if st.session_state.farm_visit_data:
     st.markdown("---")
-    st.subheader("Submitted Data")
+    st.subheader("Submitted Farm Visit Data")
     
     # Convert data into DataFrame
-    df_display = pd.DataFrame(st.session_state.farm_visit_data)
-    st.dataframe(df_display)
+    df_farm_visit_all = pd.DataFrame(st.session_state.farm_visit_data).astype(str)
+    st.dataframe(df_farm_visit_all, use_container_width=True)
     
-    # Generate CSV byte data
-    csv = df_display.to_csv(index=False).encode('utf-8')
+    # --- MULTI-PAGE EXCEL DOWNLOAD FEATURE ---
+    buffer = io.BytesIO()
+    
+    with pd.ExcelWriter(buffer, engine='xlsxwriter') as writer:
+        # 1. Write Page 2 Data (Current Page)
+        df_farm_visit_all.to_excel(writer, sheet_name='Page 2 - Farm Visit', index=False)
+        
+        # 2. Write Page 1 Data (BMC Visit) if it exists
+        if os.path.exists(BMC_VISIT_DATA_FILE):
+            try:
+                df_page_1 = pd.read_csv(BMC_VISIT_DATA_FILE, dtype=str)
+                df_page_1.to_excel(writer, sheet_name='Page 1 - BMC Visit', index=False)
+            except Exception as e:
+                st.warning(f"Could not load Page 1 data for download: {e}")
+        else:
+            pd.DataFrame({"Message": ["No data submitted on Page 1 yet."]}).to_excel(writer, sheet_name='Page 1 - BMC Visit', index=False)
     
     # Download Button placed safely outside the form logic
     st.download_button(
-        label=t('Download CSV'),
-        data=csv,
-        file_name=f"farm_visit_data_{dt_date.today()}.csv",
-        mime="text/csv",
-        key="download_csv_button"
+        label="📥 " + t('Download CSV'),
+        data=buffer.getvalue(),
+        file_name="All_Ksheersagar_Data.xlsx",
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        key="download_excel_button"
     )
