@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 from datetime import date as dt_date
 import os
-import random
 
 # --- NEW IMPORT FOR AUTO-GPS ---
 try:
@@ -34,7 +33,6 @@ translations = {
         'language_select': "Select Language",
         'general_info_header': "General Farm Visit Information",
         
-        # Geolocation additions
         'geolocation_header': "Geolocation Details (Auto-GPS)",
         'latitude_label': "Latitude (Auto-detected):",
         'longitude_label': "Longitude (Auto-detected):",
@@ -55,7 +53,6 @@ translations = {
         'other_sub_district_label': "If Others, Specify Sub District:",
         'collecting_village_label': "Collecting Village:",
         
-        # --- BMC / MCC Updates ---
         'bmc_label': "BMC / MCC Name 1:",
         'mcc_2_label': "BMC / MCC Name 2 (Optional):",
         'other_bmc_label': "Other BMC/MCC Name (Specify):",
@@ -73,8 +70,9 @@ translations = {
         'loose_housing_label': "Loose Housing:",
         'water_availability_label': "Ad-hoc Water Availability:",
         'floor_mats_label': "Floor Mats:",
+        
         'feed_fodder_header': "Feed & Fodder Management",
-        'concentrated_feed_option_label': "Concentrated Feed (If Yes, brand Name Available):",
+        'concentrated_feed_option_label': "Concentrated Feed Available:",
         'name_of_concentrated_feed_label': "Name Of Concentrated Feed:",
         'specify_other_concentrated_feed': "Specify Other Concentrated Feed:",
         'feed_supplements_label': "Feed Supplements (Mention Names):",
@@ -82,24 +80,23 @@ translations = {
         'green_fodder_name_label': "Green Fodder Name:",
         'specify_other_green_fodder': "Specify Other Green Fodder:",
         'silage_label': "Silage:",
-        'mineral_mixture_option_label': "Mineral Mixture (If Yes, Brand Name):",
+        'mineral_mixture_option_label': "Mineral Mixture Available:",
         'name_of_mineral_mixture_label': "Name Of Mineral Mixture:",
-        'toxin_binder_label': "Toxin Binder:",
-        'cmt_kit_label': "CMT Kit:",
+        'toxin_binder_label': "Toxin Binder Used:",
+        
+        'cmt_kit_label': "CMT Kit Available:",
         'dip_cup_label': "Dip Cup With Solution:",
         'manure_pit_label': "Separate Space For Dumping Pit For Manure Waste:",
         'drainage_waste_label': "Provision For Drainage And Waste:",
         'biogas_label': "Biogas Installation:",
-        'photo_1_label': "Photo 1:",
+        
+        'photo_1_label': "Photo 1 (Field Evidence):",
         'other_details_header': "Other Details",
         'source_of_water_label': "Source Of Water:",
-        
-        # --- Updated to include MCC ---
         'ai_proximity_label': "Access to AI services in close proximity (doorstep/BMC/MCC/ in village/ nearby villages):",
-        
         'sex_semen_label': "Soughted sex-semen:",
         'cmt_testing_freq_label': "Frequency Of CMT Testing (No Of Days):",
-        'cleaning_freq_label': "Frequency Of Cleaning Of Milking Machines (No Of Days):",
+        'cleaning_freq_label': "Frequency Of Cleaning Of Milking Machines:",
         'milk_container_type_label': "Type Of Milk Container:",
         'milk_kept_duration_label': "Duration Of Milk Kept At Farm Post Milking (minutes):",
         'recent_outbreak_label': "Any Recent Outbreak Of Contamination/Disease:",
@@ -111,13 +108,15 @@ translations = {
         'vet_treatment_label': "Most Recent Veterinary Treatment Given:",
         'last_vet_treatment_date_label': "Date Of Last Veterinary Treatment:",
         'moldy_feed_presence_label': "Presence Of Moldy Or Contaminated Feed:",
+        
         'submit_button': "Submit Farm Visit Data",
         'yes': "YES",
         'no': "NO",
         'others': "OTHERS",
         'Download CSV': "Download CSV",
         'options_hygiene': ["POOR", "MODERATE", "GOOD", "BEST"],
-        'options_cleaning_freq': ["DAILY", "WEEKLY", "FORTNIGHT", "TWICE IN A WEEK"]
+        'options_cleaning_freq': ["DAILY", "WEEKLY", "FORTNIGHT", "TWICE IN A WEEK"],
+        'options_containers': ["Stainless Steel", "Aluminum", "Plastic", "Other"]
     },
     'mr': {
         'page_title': "🐄 क्षीरसागर - फार्म भेट डेटा एंट्री",
@@ -145,7 +144,6 @@ translations = {
         'other_sub_district_label': "इतर असल्यास, उप-जिल्हा नमूद करा:",
         'collecting_village_label': "संकलन गाव:",
         
-        # --- BMC / MCC Updates ---
         'bmc_label': "BMC / MCC नाव 1:",
         'mcc_2_label': "BMC / MCC नाव 2 (पर्यायी):",
         'other_bmc_label': "इतर BMC/MCC नाव (नमूद करा):",
@@ -163,6 +161,7 @@ translations = {
         'loose_housing_label': "मोकळा गोठा:",
         'water_availability_label': "पाण्याची उपलब्धता:",
         'floor_mats_label': "फ्लोर मॅट्स:",
+        
         'feed_fodder_header': "चारा आणि खाद्य व्यवस्थापन",
         'concentrated_feed_option_label': "concentrated खाद्य (असल्यास, ब्रँडचे नाव):",
         'name_of_concentrated_feed_label': "Concentrated खाद्याचे नाव:",
@@ -175,21 +174,20 @@ translations = {
         'mineral_mixture_option_label': " खनिज मिश्रण (असल्यास, ब्रँडचे नाव):",
         'name_of_mineral_mixture_label': "खनिज मिश्रणाचे नाव:",
         'toxin_binder_label': "विषारी घटक बांधणारे:",
+        
         'cmt_kit_label': "CMT किट:",
         'dip_cup_label': "Dip Cup With Solution:",
         'manure_pit_label': "शेणखत/कचरा टाकण्यासाठी स्वतंत्र जागा:",
         'drainage_waste_label': "पाणी आणि कचरा निचरा करण्याची तरतूद:",
         'biogas_label': "बायोगॅस:",
+        
         'photo_1_label': "फोटो 1:",
         'other_details_header': "इतर तपशील",
         'source_of_water_label': "पाण्याचा स्रोत:",
-        
-        # --- Updated to include MCC ---
         'ai_proximity_label': "जवळपासच्या परिसरात कृत्रिम रेतन (AI) सेवांची उपलब्धता (दारोदारी/BMC/MCC/गावात):",
-        
         'sex_semen_label': "सॉर्टेड सेक्स-सीमेन वापरले का:",
         'cmt_testing_freq_label': "CMT चाचणीची वारंवारता (दिवसांची संख्या):",
-        'cleaning_freq_label': "दूध काढणी यंत्रांच्या स्वच्छतेची वारंवारता (दिवसांची संख्या):",
+        'cleaning_freq_label': "दूध काढणी यंत्रांच्या स्वच्छतेची वारंवारता:",
         'milk_container_type_label': "दुधाच्या भांड्याचा प्रकार:",
         'milk_kept_duration_label': "दूध काढल्यानंतर फार्मवर किती वेळ ठेवले जाते (मिनिटे):",
         'recent_outbreak_label': " अलीकडे कोणताही प्रादुर्भाव/रोगराई:",
@@ -201,13 +199,15 @@ translations = {
         'vet_treatment_label': "सर्वात अलीकडील पशुवैद्यकीय उपचार:",
         'last_vet_treatment_date_label': "शेवटच्या पशुवैद्यकीय उपचाराची तारीख:",
         'moldy_feed_presence_label': "बुरशीजन्य किंवा दूषित चाऱ्याची उपस्थिती:",
+        
         'submit_button': "फार्म भेट डेटा सबमिट करा",
         'yes': "होय",
         'no': "नाही",
         'others': "इतर",
         'Download CSV': "CSV डाउनलोड करा",
         'options_hygiene': ["खराब", "मध्यम", "चांगली", "उत्तम"],
-        'options_cleaning_freq': ["दररोज", "आठवड्यातून", "पंधरवड्यातून", "आठवड्यातून दोनदा"]
+        'options_cleaning_freq': ["दररोज", "आठवड्यातून", "पंधरवड्यातून", "आठवड्यातून दोनदा"],
+        'options_containers': ["स्टेनलेस स्टील", "अॅल्युमिनियम", "प्लास्टिक", "इतर"]
     },
     'hi': {
         'page_title': "🐄 क्षीरसागर - फार्म विजिट डेटा एंट्री",
@@ -235,7 +235,6 @@ translations = {
         'other_sub_district_label': "यदि अन्य, तो उप-ज़िला निर्दिष्ट करें:",
         'collecting_village_label': "संग्रहण गांव:",
         
-        # --- BMC / MCC Updates ---
         'bmc_label': "BMC / MCC का नाम 1:",
         'mcc_2_label': "BMC / MCC का नाम 2 (वैकल्पिक):",
         'other_bmc_label': "अन्य BMC/MCC नाम (निर्दिष्ट करें):",
@@ -253,6 +252,7 @@ translations = {
         'loose_housing_label': "लूज हाउसिंग:",
         'water_availability_label': "पानी की उपलब्धता:",
         'floor_mats_label': "फ्लोर मैट्स:",
+        
         'feed_fodder_header': "चारा और आहार प्रबंधन",
         'concentrated_feed_option_label': "सांद्रित आहार (यदि हाँ, तो ब्रांड का नाम):",
         'name_of_concentrated_feed_label': "सांद्रित आहार का नाम:",
@@ -265,21 +265,20 @@ translations = {
         'mineral_mixture_option_label': "खनिज मिश्रण (यदि हाँ, तो ब्रांड का नाम):",
         'name_of_mineral_mixture_label': "खनिज मिश्रण का नाम:",
         'toxin_binder_label': "टॉक्सिन बाइंडर:",
+        
         'cmt_kit_label': "CMT किट:",
         'dip_cup_label': "डिप कप (घोल के साथ):",
         'manure_pit_label': "खाद/कचरे के लिए अलग जगह:",
         'drainage_waste_label': "निकासी और अपशिष्ट की व्यवस्था:",
         'biogas_label': "बायोगैस स्थापना:",
+        
         'photo_1_label': "फोटो 1:",
         'other_details_header': "अन्य विवरण",
         'source_of_water_label': "पानी का स्रोत:",
-        
-        # --- Updated to include MCC ---
         'ai_proximity_label': "निकटतम क्षेत्र में एआई (AI) सेवाओं तक पहुंच (दरवाजे पर/BMC/MCC/गांव में):",
-        
         'sex_semen_label': "सॉर्टेड सेक्स-सीमेन (Sorted Sex-Semen):",
         'cmt_testing_freq_label': "CMT परीक्षण की आवृत्ति (दिनों की संख्या):",
-        'cleaning_freq_label': "दुग्ध मशीनों की सफाई की आवृत्ति (दिनों की संख्या):",
+        'cleaning_freq_label': "दुग्ध मशीनों की सफाई की आवृत्ति:",
         'milk_container_type_label': "दूध के बर्तन का प्रकार:",
         'milk_kept_duration_label': "दुहने के बाद दूध फार्म पर रखने की अवधि (मिनट):",
         'recent_outbreak_label': "हाल ही में कोई बीमारी का प्रकोप:",
@@ -291,13 +290,15 @@ translations = {
         'vet_treatment_label': "हाल ही में दिया गया पशु चिकित्सा उपचार:",
         'last_vet_treatment_date_label': "अंतिम पशु चिकित्सा उपचार की तिथि:",
         'moldy_feed_presence_label': "फफूंदयुक्त या दूषित चारे की उपस्थिति:",
+        
         'submit_button': "फार्म विजिट डेटा सबमिट करें",
         'yes': "हाँ",
         'no': "नहीं",
         'others': "अन्य",
         'Download CSV': "CSV डाउनलोड करें",
         'options_hygiene': ["खराब", "सामान्य", "अच्छा", "सबसे अच्छा"],
-        'options_cleaning_freq': ["दैनिक", "साप्ताहिक", "पखवाड़े में एक बार", "सप्ताह में दो बार"]
+        'options_cleaning_freq': ["दैनिक", "साप्ताहिक", "पखवाड़े में एक बार", "सप्ताह में दो बार"],
+        'options_containers': ["स्टेनलेस स्टील", "एल्युमिनियम", "प्लास्टिक", "अन्य"]
     }
 }
 
@@ -351,7 +352,6 @@ if 'auto_lat' not in st.session_state:
     st.session_state.auto_lat = "Not Detected"
     st.session_state.auto_lon = "Not Detected"
 
-# Only attempt to get GPS once per session to prevent infinite reloads
 if st.session_state.auto_lat == "Not Detected":
     st.info("Please allow location access if prompted. Fetching GPS...")
     try:
@@ -359,7 +359,7 @@ if st.session_state.auto_lat == "Not Detected":
         if geo_location:
             st.session_state.auto_lat = str(geo_location['coords']['latitude'])
             st.session_state.auto_lon = str(geo_location['coords']['longitude'])
-            st.rerun() # Refresh the page once to lock in the location and hide the fetcher
+            st.rerun()
     except Exception as e:
         st.error(f"GPS Error: {e}")
 else:
@@ -370,23 +370,16 @@ auto_lon = st.session_state.auto_lon
 
 st.markdown("---")
 
-
-# --- UPDATED LISTS ---
-# Added new requested dairy partners here, while keeping the old ones as fallbacks
+# --- LISTS ---
 ORGANIZATION_LIST = ["Govind", "Paras", "NDDB (Harit Pradesh)", "Lactalis", "SDDPL", "NDDB", "Parag", "Schreiber", "Other"]
-
-# Kept the combined list of BMC/MCC names to feed into our unified fields
 BMC_MCC_NAMES_LIST = ["SELECT", "Barla", "Budhana", "Bulandshahr", "Jhadwan", "Jhangirabad", "Khurja", "Kuchesar Chopla", "Mawana", "Miranpur", "Najibabad", "OTHERS"]
-
-# Districts List Updated
 EXISTING_DISTRICTS = ["Satara", "Pune", "Ahmednagar", "Solapur"]
 NEW_DISTRICTS = ["Barla", "Budhana", "Jhadwan", "Jhangirabad", "Khurja", "Kuchesar Chopla", "Mawana", "Miranpur", "Najibabad", "Merath", "Bulandshahr"]
 ALL_DISTRICTS = sorted(list(set(EXISTING_DISTRICTS + NEW_DISTRICTS)))
 
-# --- Form Implementation ---
+# --- FORM IMPLEMENTATION ---
 with st.form(key='farm_visit_form'):
     
-    # Display Captured GPS (ReadOnly) in the form so it is clear to the user
     col_geo1, col_geo2 = st.columns(2)
     with col_geo1:
         st.text_input(t('latitude_label'), value=auto_lat, disabled=True)
@@ -410,7 +403,6 @@ with st.form(key='farm_visit_form'):
     st.header(t('location_header'))
     col3, col4 = st.columns(2)
     with col3:
-        # Replaced with the new organization list
         organization = st.selectbox(t('organization_label'), ORGANIZATION_LIST)
         state = st.selectbox(t('state_label'), ["Maharashtra", "UP"], index=0)
         
@@ -418,8 +410,6 @@ with st.form(key='farm_visit_form'):
             st, 'district_label', ALL_DISTRICTS + [t('others')], 'district_select', 'other_district_label'
         )
         actual_district = other_district_input if district_option == t('others') else district_option
-        
-        # --- Unified BMC / MCC Field 1 ---
         bmc_mcc_selected_1 = st.selectbox(t('bmc_label'), BMC_MCC_NAMES_LIST)
         
     with col4:
@@ -428,10 +418,7 @@ with st.form(key='farm_visit_form'):
             st, 'sub_district_label', sub_districts_list + [t('others')], 'sub_district_select', 'other_sub_district_label'
         )
         actual_sub_district = other_sub_district_input if sub_district_option == t('others') else sub_district_option
-        
         collecting_village = st.text_input(t('collecting_village_label'), "SAKHARWADi")
-        
-        # --- Unified BMC / MCC Field 2 (For the 'Add one more MCC' request) ---
         bmc_mcc_selected_2 = st.selectbox(t('mcc_2_label'), BMC_MCC_NAMES_LIST) 
 
     st.header(t('herd_details_header'))
@@ -440,23 +427,75 @@ with st.form(key='farm_visit_form'):
         cow_milk_production = st.number_input(t('cow_milk_production_label'), min_value=0.0, value=50.0)
         buffalo_milk_production = st.number_input(t('buffalo_milk_production_label'), min_value=0.0, value=45.0)
         herd_size = st.number_input(t('herd_size_label'), min_value=0, value=16)
-    with col6:
         cows_in_milk = st.number_input(t('cows_in_milk_no_label'), min_value=0, value=8)
         buffaloes_in_milk = st.number_input(t('buffaloes_in_milk_no_label'), min_value=0, value=6)
+    with col6:
         shed = st.radio(t('shed_label'), [t('yes'), t('no')])
         loose_housing = st.radio(t('loose_housing_label'), [t('yes'), t('no')])
+        floor_mats = st.radio(t('floor_mats_label'), [t('yes'), t('no')])
+        water_avail = st.radio(t('water_availability_label'), [t('yes'), t('no')])
+        surplus_milk = st.radio(t('surplus_milk_label'), [t('yes'), t('no')])
 
+    # --- ADDED: Feed & Fodder Management ---
+    st.header(t('feed_fodder_header'))
+    col7, col8 = st.columns(2)
+    with col7:
+        conc_feed = st.radio(t('concentrated_feed_option_label'), [t('yes'), t('no')])
+        conc_feed_name = st.text_input(t('name_of_concentrated_feed_label'))
+        dry_fodder = st.text_input(t('dry_fodder_name_label'))
+        green_fodder = st.text_input(t('green_fodder_name_label'))
+    with col8:
+        feed_supp = st.text_input(t('feed_supplements_label'))
+        silage = st.text_input(t('silage_label'))
+        min_mix = st.radio(t('mineral_mixture_option_label'), [t('yes'), t('no')])
+        min_mix_name = st.text_input(t('name_of_mineral_mixture_label'))
+        toxin_binder = st.radio(t('toxin_binder_label'), [t('yes'), t('no')])
+
+    # --- ADDED: Expanded Infrastructure & Other Details ---
     st.header(t('other_details_header'))
-    # Updated to show BMC/MCC
-    ai_proximity = st.radio(t('ai_proximity_label'), [t('yes'), t('no')], key="ai_proximity_fv")
-    sex_semen = st.radio(t('sex_semen_label'), [t('yes'), t('no')], key="sex_semen_fv")
+    col9, col10 = st.columns(2)
+    with col9:
+        ai_proximity = st.radio(t('ai_proximity_label'), [t('yes'), t('no')])
+        sex_semen = st.radio(t('sex_semen_label'), [t('yes'), t('no')])
+        source_of_water = st.text_input(t('source_of_water_label'), "Bore well")
+        overall_hygiene = st.selectbox(t('overall_hygiene_label'), t('options_hygiene'), index=2)
+        presence_moldy_feed = st.radio(t('moldy_feed_presence_label'), [t('no'), t('yes')])
+        
+        # New Toggles added
+        cmt_kit = st.radio(t('cmt_kit_label'), [t('yes'), t('no')])
+        dip_cup = st.radio(t('dip_cup_label'), [t('yes'), t('no')])
+        manure_pit = st.radio(t('manure_pit_label'), [t('yes'), t('no')])
     
-    source_of_water = st.text_input(t('source_of_water_label'), "Bore well")
-    overall_hygiene = st.selectbox(t('overall_hygiene_label'), t('options_hygiene'), index=2)
-    presence_moldy_contaminated_feed = st.radio(t('moldy_feed_presence_label'), [t('no'), t('yes')])
+    with col10:
+        drainage = st.radio(t('drainage_waste_label'), [t('yes'), t('no')])
+        biogas = st.radio(t('biogas_label'), [t('yes'), t('no')])
+        
+        # New specific numeric/categorical inputs added
+        cleaning_freq = st.selectbox(t('cleaning_freq_label'), t('options_cleaning_freq'))
+        milk_container = st.selectbox(t('milk_container_type_label'), t('options_containers'))
+        cmt_test_freq = st.number_input(t('cmt_testing_freq_label'), min_value=0)
+        milk_kept_dur = st.number_input(t('milk_kept_duration_label'), min_value=0)
+        
+    # --- ADDED: Health & Vet ---
+    st.subheader("Health & Veterinary")
+    col11, col12 = st.columns(2)
+    with col11:
+        recent_outbreak = st.radio(t('recent_outbreak_label'), [t('no'), t('yes')])
+        sick_animal_space = st.radio(t('space_sick_animal_label'), [t('yes'), t('no')])
+        recent_disease = st.text_input(t('recent_disease_label'))
+        disease_date = st.date_input(t('last_disease_date_label'), value=None)
+    with col12:
+        cattle_affected = st.number_input(t('cattle_affected_no_label'), min_value=0)
+        vet_treatment = st.text_input(t('vet_treatment_label'))
+        last_vet_date = st.date_input(t('last_vet_treatment_date_label'), value=None)
+
+    # --- ADDED: Photo Evidence ---
+    st.subheader("Media Evidence")
+    photo_evidence = st.camera_input(t('photo_1_label'))
 
     submit_button = st.form_submit_button(label=t('submit_button'))
 
+    # --- UPDATED: Payload collection ---
     if submit_button:
         yes_en, no_en = translations['en']['yes'], translations['en']['no']
         
@@ -470,18 +509,63 @@ with st.form(key='farm_visit_form'):
             "State": state,
             "District": actual_district,
             "Sub District": actual_sub_district,
-            # Saving both BMC/MCC fields cleanly into the data dictionary
             "BMC/MCC Name 1": bmc_mcc_selected_1, 
             "BMC/MCC Name 2": bmc_mcc_selected_2,
+            
+            # Herd Details
             "Cow Milk Production (L/day)": cow_milk_production,
             "Buffalo Milk Production (L/day)": buffalo_milk_production,
             "Cows": cows_in_milk,
             "Buffaloes": buffaloes_in_milk,
             "Herd Size": herd_size,
-            "AI Service Proximity": yes_en if ai_proximity == t('yes') else no_en,
-            "Soughted Sex-Semen": yes_en if sex_semen == t('yes') else no_en,
+            
+            # Infrastructure Basics
+            "Shed": shed,
+            "Loose Housing": loose_housing,
+            "Floor Mats": floor_mats,
+            "Water Availability": water_avail,
+            "Surplus Milk Poured": surplus_milk,
+            
+            # Feed & Fodder
+            "Concentrated Feed": conc_feed,
+            "Concentrated Feed Name": conc_feed_name,
+            "Dry Fodder": dry_fodder,
+            "Green Fodder": green_fodder,
+            "Feed Supplements": feed_supp,
+            "Silage": silage,
+            "Mineral Mixture": min_mix,
+            "Mineral Mixture Name": min_mix_name,
+            "Toxin Binder": toxin_binder,
+            
+            # Advanced Infrastructure
+            "AI Service Proximity": ai_proximity,
+            "Soughted Sex-Semen": sex_semen,
+            "Source of Water": source_of_water,
             "Overall Hygiene": overall_hygiene,
-            "Moldy Feed": yes_en if presence_moldy_contaminated_feed == t('yes') else no_en
+            "Moldy Feed": presence_moldy_feed,
+            "CMT Kit": cmt_kit,
+            "Dip Cup": dip_cup,
+            "Manure Pit": manure_pit,
+            "Drainage": drainage,
+            "Biogas": biogas,
+            
+            # Milking & Cleaning Routine
+            "Cleaning Freq": cleaning_freq,
+            "Milk Container Type": milk_container,
+            "CMT Test Freq (Days)": cmt_test_freq,
+            "Milk Kept Duration (Mins)": milk_kept_dur,
+            
+            # Veterinary Tracking
+            "Recent Outbreak": recent_outbreak,
+            "Sick Animal Space": sick_animal_space,
+            "Recent Disease": recent_disease,
+            "Disease Report Date": disease_date.isoformat() if disease_date else None,
+            "Cattle Affected": cattle_affected,
+            "Vet Treatment": vet_treatment,
+            "Vet Treatment Date": last_vet_date.isoformat() if last_vet_date else None,
+            
+            # Photo status (Saving 'Captured' or 'Not Captured' instead of raw byte data)
+            "Photo 1 Captured": "Yes" if photo_evidence else "No"
         }
         
         st.session_state.farm_visit_data.append(submitted_data)
@@ -493,14 +577,11 @@ if st.session_state.farm_visit_data:
     st.markdown("---")
     st.subheader("Submitted Data")
     
-    # Convert data into DataFrame
     df_display = pd.DataFrame(st.session_state.farm_visit_data)
     st.dataframe(df_display)
     
-    # Generate CSV byte data
     csv = df_display.to_csv(index=False).encode('utf-8')
     
-    # Download Button placed safely outside the form logic
     st.download_button(
         label=t('Download CSV'),
         data=csv,
