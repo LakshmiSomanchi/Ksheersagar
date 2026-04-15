@@ -43,6 +43,7 @@ translations = {
         'activity_name_label': "Activity Name:",
         'activity_created_by_label': "Activity Created By:",
         'type_of_farm_label': "Type Of Farm:",
+        'other_type_of_farm_label': "If Others, Specify Farm Type:", # ADDED
         'farm_area_label': "Farm Area (acres/hectare):",
         'location_header': "Location & Organization Details",
         'organization_label': "Organization / Dairy Partner:",
@@ -134,6 +135,7 @@ translations = {
         'activity_name_label': "ऍक्टिव्हिटीचे नाव:",
         'activity_created_by_label': "ऍक्टिव्हिटी कोणी तयार केली:",
         'type_of_farm_label': "शेतीचा प्रकार:",
+        'other_type_of_farm_label': "इतर असल्यास, शेतीचा प्रकार नमूद करा:", # ADDED
         'farm_area_label': "शेतीचे क्षेत्र (एकर/हेक्टेयर):",
         'location_header': "स्थान आणि संस्था तपशील",
         'organization_label': "संस्था / डेअरी पार्टनर:",
@@ -225,6 +227,7 @@ translations = {
         'activity_name_label': "गतिविधि का नाम:",
         'activity_created_by_label': "गतिविधि किसके द्वारा बनाई गई:",
         'type_of_farm_label': "फार्म का प्रकार:",
+        'other_type_of_farm_label': "यदि अन्य, तो फार्म का प्रकार निर्दिष्ट करें:", # ADDED
         'farm_area_label': "फार्म क्षेत्र (एकड़/हेक्टेयर):",
         'location_header': "स्थान और संगठन विवरण",
         'organization_label': "संगठन / डेयरी पार्टनर:",
@@ -396,8 +399,15 @@ with st.form(key='farm_visit_form'):
         farmer_id = st.text_input(t('farmer_id_label'), "123-02-BB-00768")
     with col2:
         activity_name = st.text_input(t('activity_name_label'), "TNS- Farm Activity")
-        activity_created_by = st.selectbox(t('activity_created_by_label'), ["Dr Sachin", "bhusan", "nilesh", "subhrat", "aniket", "ritesh"])
-        type_of_farm = st.text_input(t('type_of_farm_label'), "Conventional")
+        # ADDED KAKULI TO THE LIST
+        activity_created_by = st.selectbox(t('activity_created_by_label'), ["Dr Sachin", "Bhusan", "Nilesh", "Subhrat", "Aniket", "Ritesh", "Kakuli"])
+        
+        # CHANGED TO DROPDOWN WITH SPECIFY TEXT BOX
+        type_of_farm_option, other_type_of_farm_input = render_select_with_specify_permanent(
+            st, 'type_of_farm_label', ["Conventional", "Animal welfare", "Model farm", t('others')], 'type_of_farm_select', 'other_type_of_farm_label'
+        )
+        actual_type_of_farm = other_type_of_farm_input if type_of_farm_option == t('others') else type_of_farm_option
+        
         farm_area = st.number_input(t('farm_area_label'), min_value=0.0, value=1.52)
 
     st.header(t('location_header'))
@@ -436,7 +446,6 @@ with st.form(key='farm_visit_form'):
         water_avail = st.radio(t('water_availability_label'), [t('yes'), t('no')])
         surplus_milk = st.radio(t('surplus_milk_label'), [t('yes'), t('no')])
 
-    # --- ADDED: Feed & Fodder Management ---
     st.header(t('feed_fodder_header'))
     col7, col8 = st.columns(2)
     with col7:
@@ -451,7 +460,6 @@ with st.form(key='farm_visit_form'):
         min_mix_name = st.text_input(t('name_of_mineral_mixture_label'))
         toxin_binder = st.radio(t('toxin_binder_label'), [t('yes'), t('no')])
 
-    # --- ADDED: Expanded Infrastructure & Other Details ---
     st.header(t('other_details_header'))
     col9, col10 = st.columns(2)
     with col9:
@@ -461,7 +469,6 @@ with st.form(key='farm_visit_form'):
         overall_hygiene = st.selectbox(t('overall_hygiene_label'), t('options_hygiene'), index=2)
         presence_moldy_feed = st.radio(t('moldy_feed_presence_label'), [t('no'), t('yes')])
         
-        # New Toggles added
         cmt_kit = st.radio(t('cmt_kit_label'), [t('yes'), t('no')])
         dip_cup = st.radio(t('dip_cup_label'), [t('yes'), t('no')])
         manure_pit = st.radio(t('manure_pit_label'), [t('yes'), t('no')])
@@ -470,13 +477,11 @@ with st.form(key='farm_visit_form'):
         drainage = st.radio(t('drainage_waste_label'), [t('yes'), t('no')])
         biogas = st.radio(t('biogas_label'), [t('yes'), t('no')])
         
-        # New specific numeric/categorical inputs added
         cleaning_freq = st.selectbox(t('cleaning_freq_label'), t('options_cleaning_freq'))
         milk_container = st.selectbox(t('milk_container_type_label'), t('options_containers'))
         cmt_test_freq = st.number_input(t('cmt_testing_freq_label'), min_value=0)
         milk_kept_dur = st.number_input(t('milk_kept_duration_label'), min_value=0)
         
-    # --- ADDED: Health & Vet ---
     st.subheader("Health & Veterinary")
     col11, col12 = st.columns(2)
     with col11:
@@ -489,13 +494,11 @@ with st.form(key='farm_visit_form'):
         vet_treatment = st.text_input(t('vet_treatment_label'))
         last_vet_date = st.date_input(t('last_vet_treatment_date_label'), value=None)
 
-    # --- ADDED: Photo Evidence ---
     st.subheader("Media Evidence")
     photo_evidence = st.camera_input(t('photo_1_label'))
 
     submit_button = st.form_submit_button(label=t('submit_button'))
 
-    # --- UPDATED: Payload collection ---
     if submit_button:
         yes_en, no_en = translations['en']['yes'], translations['en']['no']
         
@@ -505,6 +508,12 @@ with st.form(key='farm_visit_form'):
             "Date": date.isoformat() if date else None,
             "Farmer Name": farmer_name,
             "Farmer ID": farmer_id,
+            # ADDED THE MISSING FIELDS HERE SO THEY SAVE TO CSV
+            "Activity Name": activity_name,
+            "Activity Created By": activity_created_by,
+            "Type of Farm": actual_type_of_farm,
+            "Farm Area": farm_area,
+            
             "Organization": organization,
             "State": state,
             "District": actual_district,
@@ -512,21 +521,18 @@ with st.form(key='farm_visit_form'):
             "BMC/MCC Name 1": bmc_mcc_selected_1, 
             "BMC/MCC Name 2": bmc_mcc_selected_2,
             
-            # Herd Details
             "Cow Milk Production (L/day)": cow_milk_production,
             "Buffalo Milk Production (L/day)": buffalo_milk_production,
             "Cows": cows_in_milk,
             "Buffaloes": buffaloes_in_milk,
             "Herd Size": herd_size,
             
-            # Infrastructure Basics
             "Shed": shed,
             "Loose Housing": loose_housing,
             "Floor Mats": floor_mats,
             "Water Availability": water_avail,
             "Surplus Milk Poured": surplus_milk,
             
-            # Feed & Fodder
             "Concentrated Feed": conc_feed,
             "Concentrated Feed Name": conc_feed_name,
             "Dry Fodder": dry_fodder,
@@ -537,7 +543,6 @@ with st.form(key='farm_visit_form'):
             "Mineral Mixture Name": min_mix_name,
             "Toxin Binder": toxin_binder,
             
-            # Advanced Infrastructure
             "AI Service Proximity": ai_proximity,
             "Soughted Sex-Semen": sex_semen,
             "Source of Water": source_of_water,
@@ -549,13 +554,11 @@ with st.form(key='farm_visit_form'):
             "Drainage": drainage,
             "Biogas": biogas,
             
-            # Milking & Cleaning Routine
             "Cleaning Freq": cleaning_freq,
             "Milk Container Type": milk_container,
             "CMT Test Freq (Days)": cmt_test_freq,
             "Milk Kept Duration (Mins)": milk_kept_dur,
             
-            # Veterinary Tracking
             "Recent Outbreak": recent_outbreak,
             "Sick Animal Space": sick_animal_space,
             "Recent Disease": recent_disease,
@@ -564,7 +567,6 @@ with st.form(key='farm_visit_form'):
             "Vet Treatment": vet_treatment,
             "Vet Treatment Date": last_vet_date.isoformat() if last_vet_date else None,
             
-            # Photo status (Saving 'Captured' or 'Not Captured' instead of raw byte data)
             "Photo 1 Captured": "Yes" if photo_evidence else "No"
         }
         
